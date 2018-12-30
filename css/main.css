@@ -957,7 +957,7 @@ pre .javascript .function {
   bottom: 19px;
 }
 .header {
-  background: url("http://on937g0jc.bkt.clouddn.com/background.jpg");
+  background: url("../images/background.jpg");
 }
 .header-inner {
   position: relative;
@@ -1815,7 +1815,7 @@ pre .javascript .function {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #05ffc7;
+  background: #463247;
 }
 .links-of-blogroll {
   font-size: 13px;
@@ -2940,7 +2940,7 @@ body {
   border-radius: initial;
 }
 .header {
-  background: url("http://on937g0jc.bkt.clouddn.com/header-bk2.jpg");
+  background: url("../images/header-bk2.jpg");
 }
 .site-meta {
   float: none;
