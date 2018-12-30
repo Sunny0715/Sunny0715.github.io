@@ -1,0 +1,390 @@
+<!DOCTYPE HTML>
+<html lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!--Setting-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta http-equiv="Cache-Control" content="no-transform">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="apple-mobile-web-app-capable" content="rainbowhorse&#39;s blog">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    <meta name="browsermode" content="application">
+    <meta name="screen-orientation" content="portrait">
+    <link rel="dns-prefetch" href="https://sunny0715.github.io">
+    <!--SEO-->
+
+<meta name="description" content="总结个人心得，记录个人知识">
+
+
+
+
+
+<meta name="robots" content="all">
+<meta name="google" content="all">
+<meta name="googlebot" content="all">
+<meta name="verify" content="all">
+    <!--Title-->
+
+
+<title>Apache-Commons-Email发送邮件 | rainbowhorse&#39;s blog</title>
+
+
+    <link rel="alternate" href="/atom.xml" title="rainbowhorse&#39;s blog" type="application/atom+xml">
+
+
+    <link rel="icon" href="/favicon.ico">
+
+    
+
+
+
+<link rel="stylesheet" href="/css/bootstrap.min.css?rev=3.3.7">
+<link rel="stylesheet" href="/css/font-awesome.min.css?rev=4.5.0">
+<link rel="stylesheet" href="/css/style.css?rev=@@hash">
+
+
+
+
+    
+	<div class="hide">
+		<script type="text/javascript">
+			var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan class='cnzz_stat_icon_1263868967 hide' %3E%3Cscript%20src%3D%22https%3A%2F%2Fs95.cnzz.com%2Fz_stat.php%3Fweb_id%3D1272564536%22%3E%3C%2Fscript%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s19.cnzz.com/z_stat.php%3Fid%3D1263868967%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));
+		</script>
+	</div>
+
+
+
+
+
+
+    
+
+    <script>
+        (function(){
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+            }
+            else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        })();
+    </script>
+
+</head>
+
+</html>
+<!--[if lte IE 8]>
+<style>
+    html{ font-size: 1em }
+</style>
+<![endif]-->
+<!--[if lte IE 9]>
+<div style="ie">你使用的浏览器版本过低，为了你更好的阅读体验，请更新浏览器的版本或者使用其他现代浏览器，比如Chrome、Firefox、Safari等。</div>
+<![endif]-->
+
+<body>
+    <header class="main-header" style="background-image:url(http://snippet.shenliyang.com/img/banner.jpg)">
+    <div class="main-header-box">
+        <a class="header-avatar" href="/" title="rainbowhorse">
+            <img src="/img/avatar.jpg" alt="logo头像" class="img-responsive center-block">
+        </a>
+        <div class="branding">
+        	<!--<h2 class="text-hide">Snippet主题,从未如此简单有趣</h2>-->
+            
+                <h2> 不忘初心 方得始终 </h2>
+            
+    	</div>
+    </div>
+</header>
+    <nav class="main-navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="navbar-header"><span class="nav-toggle-button collapsed pull-right" data-toggle="collapse" data-target="#main-menu" id="mnav">
+                    <span class="sr-only"></span>
+                        <i class="fa fa-bars"></i>
+                    </span>
+                    <a class="navbar-brand" href="https://sunny0715.github.io">rainbowhorse&#39;s blog</a>
+                </div>
+                <div class="collapse navbar-collapse" id="main-menu">
+                    <ul class="menu">
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/"><i class="fa "></i>Home</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/categories/technology/"><i class="fa "></i>技术</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/about/"><i class="fa "></i>关于我</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/archives/"><i class="fa "></i>时间轴</a>
+                            </li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+    <section class="content-wrap">
+        <div class="container">
+            <div class="row">
+                <main class="col-md-8 main-content m-post">
+                    <p id="process"></p>
+<article class="post">
+    <div class="post-head">
+        <h1 id="Apache-Commons-Email发送邮件">
+            
+	            Apache-Commons-Email发送邮件
+            
+        </h1>
+        <div class="post-meta">
+    
+    
+    <span class="categories-meta fa-wrap">
+        <i class="fa fa-folder-open-o"></i>
+        <a href="/categories/technology">
+            technology
+        </a>
+    </span>
+    
+
+    
+    <span class="fa-wrap">
+        <i class="fa fa-tags"></i>
+        <span class="tags-meta">
+            
+                
+                    <a href="/tags/java" title="java">
+                        java
+                    </a>
+                
+                    <a href="/tags/tips" title="tips">
+                        tips
+                    </a>
+                
+            
+        </span>
+    </span>
+    
+
+    
+        
+        <span class="fa-wrap">
+            <i class="fa fa-clock-o"></i>
+            <span class="date-meta">2018/03/28</span>
+        </span>
+        
+            <span class="fa-wrap">
+                <i class="fa fa-eye"></i>
+                <span id="busuanzi_value_page_pv"></span>
+            </span>
+        
+    
+</div>
+
+            
+            
+    </div>
+    
+    <div class="post-body post-content">
+        <h1 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h1><p>使用Apache-Commons-Email发送邮件</p>
+<div align="center"><img width="700" height="200" src="../../../../images/2018-3/java-email/index.jpg" algin="center"></div>
+
+<a id="more"></a>
+<h1 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h1><p>Maven的pom.xml 文件中引入依赖</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.commons<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>commons-email<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.5<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h1 id="一个简单的纯文本邮件"><a href="#一个简单的纯文本邮件" class="headerlink" title="一个简单的纯文本邮件"></a>一个简单的纯文本邮件</h1><h2 id="HTTP模式下"><a href="#HTTP模式下" class="headerlink" title="HTTP模式下"></a>HTTP模式下</h2><p>第一个例子是创建一个简单的email。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.apache.commons.mail.EmailException;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.mail.SimpleEmail;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 类名: TestSimpleEmail.java &lt;br/&gt;</span></span><br><span class="line"><span class="comment">* 详细描述: 一个简单的纯文本邮件   &lt;br/&gt;</span></span><br><span class="line"><span class="comment">* 发布版本： V1.0  &lt;br/&gt;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestSimpleEmail</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">		   SimpleEmail email = <span class="keyword">new</span> SimpleEmail();</span><br><span class="line">	        <span class="comment">//设置发送主机的服务器地址(如果不设置，默认是"mail.host")</span></span><br><span class="line">	        email.setHostName (<span class="string">"smtp.163.com"</span>);</span><br><span class="line">        	<span class="comment">// 开启debug模式</span></span><br><span class="line">        	email.setDebug(<span class="keyword">true</span>);</span><br><span class="line">	        <span class="comment">//设置端口号</span></span><br><span class="line">	        email.setSmtpPort(<span class="number">25</span>);<span class="comment">//默认也是25</span></span><br><span class="line">	        <span class="comment">//如果要求身份验证，设置用户名、密码，分别为发件人在邮件服务器上注册的用户名和密码</span></span><br><span class="line">	        email.setAuthentication ( <span class="string">"from@163.com"</span>, <span class="string">"password"</span> );</span><br><span class="line">	        <span class="keyword">try</span> &#123;</span><br><span class="line">	        	<span class="comment">//设置收件人邮箱以及名称</span></span><br><span class="line">	        	email.addTo (<span class="string">"to@qq.com"</span>, <span class="string">"收件人名称"</span>);</span><br><span class="line">	        	<span class="comment">//发件人邮箱以及名称</span></span><br><span class="line">		        <span class="comment">//email.setFrom ("from@163.com", "发件人名称");</span></span><br><span class="line">	        	<span class="comment">//发件人邮箱以及名称，邮件编码格式</span></span><br><span class="line">		        email.setFrom(<span class="string">"from@163.com"</span>, <span class="string">"发件人名称"</span>, <span class="string">"UTF-8"</span>);</span><br><span class="line">		        <span class="comment">//设置邮件的主题</span></span><br><span class="line">		        email.setSubject (<span class="string">"这是邮件主题内容"</span>);</span><br><span class="line">		        <span class="comment">//邮件正文消息</span></span><br><span class="line">		        email.setMsg (<span class="string">"这是邮件内容！"</span>);</span><br><span class="line">		        <span class="comment">// 发送</span></span><br><span class="line">		        email.send ();</span><br><span class="line">		        System.out.println (<span class="string">"Send email successful!"</span>);</span><br><span class="line">			&#125; <span class="keyword">catch</span> (EmailException e) &#123;</span><br><span class="line">				e.printStackTrace();</span><br><span class="line">			&#125;       </span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果遇到乱码情况可以通过以下方案解决：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//设置主题的字符集为UTF-8</span></span><br><span class="line">email.setCharset(<span class="string">"UTF-8"</span>);</span><br><span class="line"><span class="comment">//设置内容的字符集为UTF-8,先buildMimeMessage才能设置内容文本</span></span><br><span class="line">email.getMimeMessage().setText(<span class="string">"测试邮件内容"</span>,<span class="string">"UTF-8"</span>);</span><br></pre></td></tr></table></figure>
+<h2 id="开启了HTTPS"><a href="#开启了HTTPS" class="headerlink" title="开启了HTTPS"></a>开启了HTTPS</h2><p>需要添加ssl端口，以及开启SSLOnConnect。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.apache.commons.mail.EmailException;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.mail.SimpleEmail;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 类名: TestSimpleSSLEmail.java &lt;br/&gt;</span></span><br><span class="line"><span class="comment">* 详细描述: 一个简单的纯文本邮件 --开启了https的情况下   &lt;br/&gt;</span></span><br><span class="line"><span class="comment">* 发布版本： V1.0  &lt;br/&gt;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestSimpleSSLEmail</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">		    SimpleEmail email = <span class="keyword">new</span> SimpleEmail ();</span><br><span class="line">	        <span class="comment">// smtp host</span></span><br><span class="line">	        email.setHostName (<span class="string">"smtp.qq.com"</span>);</span><br><span class="line">	        <span class="comment">//端口号</span></span><br><span class="line">	        email.setSslSmtpPort(<span class="string">"465"</span>);</span><br><span class="line">	        <span class="comment">// 登陆邮件服务器的用户名和密码</span></span><br><span class="line">	        email.setAuthentication (<span class="string">"from@qq.com"</span>, <span class="string">"password"</span>);<span class="comment">//注意qq邮箱需要授权，在设置那里生成一个随机码，然后填写到密码框。</span></span><br><span class="line">	        <span class="comment">// 接收人</span></span><br><span class="line">	        email.setSSLOnConnect(<span class="keyword">true</span>);</span><br><span class="line">	        <span class="keyword">try</span> &#123;</span><br><span class="line">	        	<span class="comment">//设置收件人邮箱以及名称</span></span><br><span class="line">				email.addTo (<span class="string">"to@qq.com"</span>, <span class="string">"to"</span>);</span><br><span class="line">				<span class="comment">// 发送人</span></span><br><span class="line">		        <span class="comment">//email.setFrom ("from@163.com", "from");</span></span><br><span class="line">		        email.setFrom(<span class="string">"from@qq.com"</span>, <span class="string">"from"</span>, <span class="string">"UTF-8"</span>);</span><br><span class="line">		        <span class="comment">//设置邮件的主题</span></span><br><span class="line">		        email.setSubject (<span class="string">"这是邮件主题内容"</span>);</span><br><span class="line">		        <span class="comment">//邮件正文消息</span></span><br><span class="line">		        email.setMsg (<span class="string">"这是邮件内容！--一个简单的纯文本邮件 --开启了https的情况下  "</span>);</span><br><span class="line">		        <span class="comment">// 发送</span></span><br><span class="line">		        email.send ();</span><br><span class="line">		        System.out.println (<span class="string">"Send email successful!"</span>);</span><br><span class="line">			&#125; <span class="keyword">catch</span> (EmailException e) &#123;</span><br><span class="line">				e.printStackTrace();</span><br><span class="line">			&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>特别要注意的是qq邮箱进行了加密，所以需要到qq账户设置里面拿到开启stmp发信客户端的密码。</p>
+<div align="center"><img width="700" height="200" src="../../../../images/2018-3/java-email/QQ-1.png" algin="center"></div>
+
+<div align="center"><img width="500" height="200" src="../../../../images/2018-3/java-email/QQ-2.png" algin="center"></div>
+
+<p>取到一串字符串，然后填写到密码处。不然会报以下的错误。而不是填写QQ账号密码到密码认证处。详细也可以参照<a href="http://service.mail.qq.com/cgi-bin/help?subtype=1&amp;&amp;id=28&amp;&amp;no=331" target="_blank" rel="noopener"><strong><em>QQ客户端说明文档</em></strong></a>。</p>
+<div align="center"><img width="700" height="200" src="../../../../images/2018-3/java-email/QQ-Exception.png" algin="center"></div>
+
+<h1 id="发送带附件的邮件"><a href="#发送带附件的邮件" class="headerlink" title="发送带附件的邮件"></a>发送带附件的邮件</h1><p>发送带附件的邮件得用MultiPartEmail 类来给邮件添加附件。除过覆盖attach()方法来给邮件添加附件外，这个类就和SimpleEmail类差不多。对于内联或是加入附件的个数是没有限制的。但附件必须是MIME编码。最简单的添加附件的方式是用 EmailAttachment类。</p>
+<h2 id="本地附件"><a href="#本地附件" class="headerlink" title="本地附件"></a>本地附件</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.apache.commons.mail.EmailAttachment;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.mail.EmailException;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.mail.MultiPartEmail;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 类名: TestEmailAttachment.java &lt;br/&gt;</span></span><br><span class="line"><span class="comment">* 详细描述:发送带附件的邮件--读取本地路径的文件  &lt;br/&gt;</span></span><br><span class="line"><span class="comment">* 发布版本： V1.0  &lt;br/&gt;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestEmailAttachment</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		</span><br><span class="line">		  <span class="comment">// 创建一个Email附件</span></span><br><span class="line">		  EmailAttachment attachment = <span class="keyword">new</span> EmailAttachment();</span><br><span class="line">           <span class="comment">// 本地资源需要存在</span></span><br><span class="line">		  attachment.setPath(<span class="string">"E:\\qrcode.jpg"</span>);</span><br><span class="line">		  attachment.setDisposition(EmailAttachment.ATTACHMENT);</span><br><span class="line">		  attachment.setDescription(<span class="string">"图片"</span>);</span><br><span class="line">           <span class="comment">// 自定义文件名，并且格式要一致，不然附近收到的话，有可能读不出来。</span></span><br><span class="line">		  attachment.setName(<span class="string">"qrcode.jpg"</span>);</span><br><span class="line">		 </span><br><span class="line">		  <span class="comment">// Create the email message</span></span><br><span class="line">		  MultiPartEmail email = <span class="keyword">new</span> MultiPartEmail();</span><br><span class="line">		  <span class="comment">// smtp host</span></span><br><span class="line">	      email.setHostName (<span class="string">"smtp.163.com"</span>);</span><br><span class="line">	      <span class="comment">//设置端口号</span></span><br><span class="line">	      email.setSmtpPort(<span class="number">25</span>);<span class="comment">//默认也是25</span></span><br><span class="line">	      <span class="comment">// 登陆邮件服务器的用户名和密码</span></span><br><span class="line">	      email.setAuthentication (<span class="string">"from@163.com"</span>,<span class="string">"password"</span>);</span><br><span class="line">		  <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="comment">//设置收件人邮箱以及名称</span></span><br><span class="line">                email.addTo (<span class="string">"to@qq.com"</span>, <span class="string">"收件人名称"</span>);</span><br><span class="line">                <span class="comment">//发件人邮箱以及名称</span></span><br><span class="line">                <span class="comment">//email.setFrom ("from@163.com", "发件人名称");</span></span><br><span class="line">                <span class="comment">//发件人邮箱以及名称，邮件编码格式</span></span><br><span class="line">                email.setFrom(<span class="string">"from@163.com"</span>, <span class="string">"发件人名称"</span>, <span class="string">"UTF-8"</span>);</span><br><span class="line">                <span class="comment">//设置邮件的主题</span></span><br><span class="line">                email.setSubject (<span class="string">"这是邮件主题内容"</span>);</span><br><span class="line">                <span class="comment">//邮件正文消息</span></span><br><span class="line">                email.setMsg (<span class="string">"这是邮件内容！"</span>);</span><br><span class="line"></span><br><span class="line">                <span class="comment">// add the attachment</span></span><br><span class="line">                email.attach(attachment);</span><br><span class="line">                <span class="comment">// send the email</span></span><br><span class="line">                email.send();</span><br><span class="line">                System.out.println (<span class="string">"Send email successful!"</span>);</span><br><span class="line">		&#125; <span class="keyword">catch</span> (EmailException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;	  </span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="远程附件"><a href="#远程附件" class="headerlink" title="远程附件"></a>远程附件</h2><p>如果没有本地文件，可以用 EmailAttachment 添加任何可用的URL。当邮件发送后，文件会自动加载并加入到邮件内容。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.net.MalformedURLException;</span><br><span class="line"><span class="keyword">import</span> java.net.URL;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> org.apache.commons.mail.EmailAttachment;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.mail.EmailException;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.mail.MultiPartEmail;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 类名: TestEmailAttachment.java &lt;br/&gt;</span></span><br><span class="line"><span class="comment">* 详细描述:发送带附件的邮件--读取本地路径的文件  &lt;br/&gt;</span></span><br><span class="line"><span class="comment">* 发布版本： V1.0  &lt;br/&gt;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestEmailAttachment2</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> MalformedURLException </span>&#123;</span><br><span class="line">		</span><br><span class="line">		  <span class="comment">// 创建一个Email附件</span></span><br><span class="line">		  EmailAttachment attachment = <span class="keyword">new</span> EmailAttachment();</span><br><span class="line">		  attachment.setURL(<span class="keyword">new</span> URL(<span class="string">"http://www.apache.org/images/asf_logo_wide.gif"</span>));</span><br><span class="line">		  attachment.setDisposition(EmailAttachment.ATTACHMENT);</span><br><span class="line">		  attachment.setDescription(<span class="string">"Apache logo"</span>);</span><br><span class="line">           <span class="comment">// 自定义文件名，并且格式要一致，不然附近收到的话，有可能读不出来</span></span><br><span class="line">		  attachment.setName(<span class="string">"asf_logo_wide.gif"</span>);</span><br><span class="line">		 </span><br><span class="line">		  <span class="comment">// Create the email message</span></span><br><span class="line">		  MultiPartEmail email = <span class="keyword">new</span> MultiPartEmail();</span><br><span class="line">		  <span class="comment">// smtp host</span></span><br><span class="line">	      email.setHostName (<span class="string">"smtp.163.com"</span>);</span><br><span class="line">	      <span class="comment">//设置端口号(默认25)</span></span><br><span class="line">	      email.setSmtpPort(<span class="number">25</span>);</span><br><span class="line">	      <span class="comment">// 登陆邮件服务器的用户名和密码</span></span><br><span class="line">	      email.setAuthentication (<span class="string">"from@163.com"</span>,<span class="string">"password"</span>);</span><br><span class="line">		  </span><br><span class="line">		  <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="comment">// 设置收件人邮箱以及名称</span></span><br><span class="line">                email.addTo (<span class="string">"to@qq.com"</span>, <span class="string">"收件人名称"</span>);</span><br><span class="line">                <span class="comment">// 发件人邮箱以及名称</span></span><br><span class="line">                <span class="comment">// email.setFrom ("from@163.com", "发件人名称");</span></span><br><span class="line">                <span class="comment">// 发件人邮箱以及名称，邮件编码格式</span></span><br><span class="line">                email.setFrom(<span class="string">"from@163.com"</span>, <span class="string">"发件人名称"</span>, <span class="string">"UTF-8"</span>);</span><br><span class="line">                <span class="comment">// 设置邮件的主题</span></span><br><span class="line">                email.setSubject (<span class="string">"这是邮件主题内容"</span>);</span><br><span class="line">                <span class="comment">// 邮件正文消息</span></span><br><span class="line">                email.setMsg (<span class="string">"这是邮件内容！"</span>);</span><br><span class="line"></span><br><span class="line">                <span class="comment">// 添加附件</span></span><br><span class="line">                email.attach(attachment);</span><br><span class="line">                <span class="comment">// 发送邮件</span></span><br><span class="line">                email.send();</span><br><span class="line">                System.out.println (<span class="string">"Send email successful!"</span>);</span><br><span class="line">		&#125; <span class="keyword">catch</span> (EmailException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;	  </span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="发送带HTML格式的邮件"><a href="#发送带HTML格式的邮件" class="headerlink" title="发送带HTML格式的邮件"></a>发送带HTML格式的邮件</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.net.MalformedURLException;</span><br><span class="line"><span class="keyword">import</span> java.net.URL;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> org.apache.commons.mail.EmailException;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.mail.HtmlEmail;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 类名: TestHtmlEmail.java &lt;br/&gt;</span></span><br><span class="line"><span class="comment">* 详细描述: 发送带HTML格式的邮件&lt;br/&gt;</span></span><br><span class="line"><span class="comment">* 发布版本： V1.0  &lt;br/&gt;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestHtmlEmail</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		<span class="comment">// 创建HTML邮件</span></span><br><span class="line">		HtmlEmail email = <span class="keyword">new</span> HtmlEmail();</span><br><span class="line">	    <span class="comment">// 设置发送主机的服务器地址</span></span><br><span class="line">        email.setHostName (<span class="string">"smtp.163.com"</span>);</span><br><span class="line">        <span class="comment">// 设置端口号(默认25)</span></span><br><span class="line">        email.setSmtpPort(<span class="number">25</span>);</span><br><span class="line">        <span class="comment">// 如果要求身份验证，设置用户名、密码，分别为发件人在邮件服务器上注册的用户名和密码</span></span><br><span class="line">        email.setAuthentication (<span class="string">"from@163.com"</span>, <span class="string">"password"</span> );</span><br><span class="line">		  <span class="keyword">try</span> &#123;</span><br><span class="line">			  URL url = <span class="keyword">new</span> URL(<span class="string">"http://www.apache.org/images/asf_logo_wide.gif"</span>);</span><br><span class="line">			  String cid = email.embed(url, <span class="string">"Apache logo"</span>);</span><br><span class="line">			  </span><br><span class="line">			  <span class="comment">//设置收件人邮箱以及名称</span></span><br><span class="line">	          email.addTo (<span class="string">"to@qq.com"</span>, <span class="string">"收件人名称"</span>);</span><br><span class="line">	          <span class="comment">//发件人邮箱以及名称</span></span><br><span class="line">		      <span class="comment">//email.setFrom ("from@163.com", "发件人名称");</span></span><br><span class="line">	          <span class="comment">//发件人邮箱以及名称，邮件编码格式</span></span><br><span class="line">		      email.setFrom(<span class="string">"from@163.com"</span>, <span class="string">"发件人名称"</span>, <span class="string">"UTF-8"</span>);</span><br><span class="line">		      <span class="comment">//设置邮件的主题</span></span><br><span class="line">		      email.setSubject (<span class="string">"这是邮件主题内容-发送带HTML格式的邮件"</span>);</span><br><span class="line">			 </span><br><span class="line">		      <span class="comment">// HTML信息</span></span><br><span class="line">			  email.setHtmlMsg(<span class="string">"&lt;html&gt;The apache logo - &lt;img src=\"cid:"</span> + cid + <span class="string">"\"&gt;&lt;/html&gt;"</span>);</span><br><span class="line">			  <span class="comment">// set the alternative message</span></span><br><span class="line">			  email.setTextMsg(<span class="string">"Your email client does not support HTML messages"</span>);</span><br><span class="line">			  <span class="comment">// 发送邮件</span></span><br><span class="line">			  email.send();</span><br><span class="line">			  System.out.println (<span class="string">"Send email successful!"</span>);</span><br><span class="line">		&#125; <span class="keyword">catch</span> (EmailException | MalformedURLException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意：</p>
+<ul>
+<li>embed()方法返回一个字符串。该字符串是一个随机生成的标识符，必须在图像标记中引用图像的图像。</li>
+<li>没有调用setmsg()这个例子。因为如果HTML内容里有内联图片的话，这个方法是不能用的。这样我们可以用setHtmlMsg和setTextMsg方法。</li>
+</ul>
+<h1 id="发送带嵌入图片的HTML文本"><a href="#发送带嵌入图片的HTML文本" class="headerlink" title="发送带嵌入图片的HTML文本"></a>发送带嵌入图片的HTML文本</h1><p>前面说的是创建带嵌入图片的HTML邮件，但是用HTML邮件模板来处理图片是很麻烦的。ImageHtmlEmail类能解决这个问题，它能很方便的将所有外部图片转化为内联图片。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.net.MalformedURLException;</span><br><span class="line"><span class="keyword">import</span> java.net.URL;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.mail.EmailException;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.mail.ImageHtmlEmail;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.mail.resolver.DataSourceUrlResolver;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 类名: TestHtmlEmail.java &lt;br/&gt;</span></span><br><span class="line"><span class="comment">* 详细描述: 发送带HTML格式的邮件--嵌入图片的HTML文本 &lt;br/&gt;</span></span><br><span class="line"><span class="comment">* 发布版本： V1.0  &lt;br/&gt;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestHtmlEmail2</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">		<span class="comment">// create the email message</span></span><br><span class="line">	    ImageHtmlEmail email = <span class="keyword">new</span> ImageHtmlEmail();</span><br><span class="line">		<span class="comment">// 设置发送主机的服务器地址</span></span><br><span class="line">	    email.setHostName (<span class="string">"smtp.163.com"</span>);</span><br><span class="line">	    <span class="comment">// 设置端口号(默认25)</span></span><br><span class="line">        email.setSmtpPort(<span class="number">25</span>);</span><br><span class="line">        <span class="comment">// 如果要求身份验证，设置用户名、密码，分别为发件人在邮件服务器上注册的用户名和密码</span></span><br><span class="line">        email.setAuthentication ( <span class="string">"from@163.com"</span>, <span class="string">"password"</span> );</span><br><span class="line">		<span class="comment">// load your HTML email template</span></span><br><span class="line">		 String htmlEmailTemplate = <span class="string">"嵌入图片的HTML文本:&lt;img src=\"http://www.apache.org/images/feather.gif\"&gt; ...."</span>;</span><br><span class="line"> </span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			URL url = <span class="keyword">new</span> URL(<span class="string">"http://www.apache.org"</span>);</span><br><span class="line">			email.setDataSourceResolver(<span class="keyword">new</span> DataSourceUrlResolver(url));</span><br><span class="line">			<span class="comment">// 设置收件人邮箱以及名称</span></span><br><span class="line">			email.addTo(<span class="string">"to@sina.com"</span>, <span class="string">"收件人名称"</span>);</span><br><span class="line">			<span class="comment">// 发件人邮箱以及名称</span></span><br><span class="line">			<span class="comment">// 发件人邮箱以及名称，邮件编码格式</span></span><br><span class="line">			email.setFrom(<span class="string">"from@qq.com"</span>, <span class="string">"发件人名称"</span>, <span class="string">"UTF-8"</span>);</span><br><span class="line">			<span class="comment">// 设置邮件的主题</span></span><br><span class="line">			email.setSubject(<span class="string">"这是邮件主题内容"</span>);</span><br><span class="line"></span><br><span class="line">			<span class="comment">// set the html message</span></span><br><span class="line">			email.setHtmlMsg(htmlEmailTemplate);</span><br><span class="line">			email.setCharset(<span class="string">"UTF-8"</span>);</span><br><span class="line"></span><br><span class="line">			<span class="comment">// set the alternative message</span></span><br><span class="line">			email.setTextMsg(<span class="string">"Your email client does not support HTML messages"</span>);</span><br><span class="line"></span><br><span class="line">			<span class="comment">// 发送邮件</span></span><br><span class="line">			email.send();</span><br><span class="line">			System.out.println(<span class="string">"Send email successful!"</span>);</span><br><span class="line">		&#125; <span class="keyword">catch</span> (MalformedURLException | EmailException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="调试"><a href="#调试" class="headerlink" title="调试"></a>调试</h1><p>JavaMail API支持调试选项，通过调用setDebug(true)来开启调试。调试信息会通过System.out打印出来。</p>
+<p>commons-email的安全设置的特性。可以用EmailLiveTest和EmailConfiguration类在真正的SMTP服务器上测试commons-email。</p>
+<h1 id="认证"><a href="#认证" class="headerlink" title="认证"></a>认证</h1><p>如果要对SMTP服务器进行认证，可以在发邮件前调用setAuthentication(userName,password)方法测试。这将会在JavaMail API发送邮件时创建DefaultAuthenticator实例，要支持此方法得让你的服务器支持RFC255协议。</p>
+<p>可以用javax.mail.Authenticator的子类来完成更加复杂的认证，如弹出个对话框等。当想收集并处理用户信息时，必须覆盖getPasswordAuthentication()方法。用Email.setAuthenticator方法可以创建新的Authenticator类。</p>
+<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><strong><em><a href="http://commons.apache.org/proper/commons-email/userguide.html" target="_blank" rel="noopener">http://commons.apache.org/proper/commons-email/userguide.html</a></em></strong></p>
+<p><a href="http://www.souvc.com/?p=499" target="_blank" rel="noopener"><strong><em>Apache Commons Email 发送邮件的用法介绍以及实战练习</em></strong> </a></p>
+
+    </div>
+    
+        <div class="reward">
+    <div class="reward-wrap">赏
+        <div class="reward-box">
+            
+            
+                <span class="reward-type">
+                    <img class="wechat" src="../img/reward-wepay.jpg"><b>微信打赏</b>
+                </span>
+            
+        </div>
+    </div>
+    <p class="reward-tip">赞赏是不耍流氓的鼓励</p>
+</div>
+
+
+    
+    <div class="post-footer">
+        <div>
+            
+        </div>
+        <div>
+            
+        </div>
+    </div>
+</article>
+
+<div class="article-nav prev-next-wrap clearfix">
+    
+        <a href="/Spring之动态代理/" class="pre-post btn btn-default" title="Spring之动态代理">
+            <i class="fa fa-angle-left fa-fw"></i><span class="hidden-lg">上一篇</span>
+            <span class="hidden-xs">Spring之动态代理</span>
+        </a>
+    
+    
+        <a href="/Mybatis之缓存/" class="next-post btn btn-default" title="Mybatis之缓存">
+            <span class="hidden-lg">下一篇</span>
+            <span class="hidden-xs">Mybatis之缓存</span><i class="fa fa-angle-right fa-fw"></i>
+        </a>
+    
+</div>
+
+
+    <div id="comments">
+        
+    
+    <div id="vcomments" class="valine"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="/assets/valine.min.js"></script>
+
+    <script>
+        new Valine({
+            av: AV,
+            el: '#vcomments',
+            appId: '8rKac39CM1EjFl9q7i97aDSu-gzGzoHsz',
+            appKey: '5wiSIVcjJCXPwgEwOqK8GaoJ',
+            placeholder: '说点什么吧',
+            notify: false,
+            verify: false,
+            avatar: 'mm',
+            meta: 'nick,mail'.split(','),
+            pageSize: '10',
+            path: window.location.pathname,
+            lang: 'zh-Hans'.toLowerCase()
+        })
+    </script>
+
+
+    </div>
+
+
+
+
+
+                </main>
+                
+                    <aside id="article-toc" role="navigation" class="col-md-4">
+    <div class="widget">
+        <h3 class="title">Table of Contents</h3>
+        
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#引言"><span class="toc-text">引言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#环境准备"><span class="toc-text">环境准备</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#一个简单的纯文本邮件"><span class="toc-text">一个简单的纯文本邮件</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#HTTP模式下"><span class="toc-text">HTTP模式下</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#开启了HTTPS"><span class="toc-text">开启了HTTPS</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#发送带附件的邮件"><span class="toc-text">发送带附件的邮件</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#本地附件"><span class="toc-text">本地附件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#远程附件"><span class="toc-text">远程附件</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#发送带HTML格式的邮件"><span class="toc-text">发送带HTML格式的邮件</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#发送带嵌入图片的HTML文本"><span class="toc-text">发送带嵌入图片的HTML文本</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#调试"><span class="toc-text">调试</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#认证"><span class="toc-text">认证</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#参考文章"><span class="toc-text">参考文章</span></a></li></ol>
+        
+    </div>
+</aside>
+
+                
+            </div>
+        </div>
+    </section>
+    <footer class="main-footer">
+    <div class="container">
+        <div class="row">
+        </div>
+    </div>
+</footer>
+
+<a id="back-to-top" class="icon-btn hide">
+	<i class="fa fa-chevron-up"></i>
+</a>
+
+
+
+
+    <div class="copyright">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="busuanzi">
+    
+        Total:
+        <strong id="busuanzi_value_site_pv">
+            <i class="fa fa-spinner fa-spin"></i>
+        </strong>
+        &nbsp; | &nbsp;
+        Visitors:
+        <strong id="busuanzi_value_site_uv">
+            <i class="fa fa-spinner fa-spin"></i>
+        </strong>
+    
+</div>
+
+            </div>
+            <div class="col-sm-12">
+                <span>Copyright &copy; 2018
+                </span> |
+                <span>
+                    Powered by <a href="//hexo.io" class="copyright-links" target="_blank" rel="nofollow">Hexo</a>
+                </span> |
+                <span>
+                       <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=44030502003606"><img src="/img/beian.png"><p style="display: inline;">粤公网安备 44030502003606号</p></a>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+<script src="/js/app.js?rev=@@hash"></script>
+
+</body>
+</html>

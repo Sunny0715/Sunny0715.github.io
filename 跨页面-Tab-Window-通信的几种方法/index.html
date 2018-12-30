@@ -1,0 +1,397 @@
+<!DOCTYPE HTML>
+<html lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!--Setting-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta http-equiv="Cache-Control" content="no-transform">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="apple-mobile-web-app-capable" content="rainbowhorse&#39;s blog">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    <meta name="browsermode" content="application">
+    <meta name="screen-orientation" content="portrait">
+    <link rel="dns-prefetch" href="https://sunny0715.github.io">
+    <!--SEO-->
+
+<meta name="description" content="总结个人心得，记录个人知识">
+
+
+
+
+
+<meta name="robots" content="all">
+<meta name="google" content="all">
+<meta name="googlebot" content="all">
+<meta name="verify" content="all">
+    <!--Title-->
+
+
+<title>跨页面(Tab/Window)通信的几种方法 | rainbowhorse&#39;s blog</title>
+
+
+    <link rel="alternate" href="/atom.xml" title="rainbowhorse&#39;s blog" type="application/atom+xml">
+
+
+    <link rel="icon" href="/favicon.ico">
+
+    
+
+
+
+<link rel="stylesheet" href="/css/bootstrap.min.css?rev=3.3.7">
+<link rel="stylesheet" href="/css/font-awesome.min.css?rev=4.5.0">
+<link rel="stylesheet" href="/css/style.css?rev=@@hash">
+
+
+
+
+    
+	<div class="hide">
+		<script type="text/javascript">
+			var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan class='cnzz_stat_icon_1263868967 hide' %3E%3Cscript%20src%3D%22https%3A%2F%2Fs95.cnzz.com%2Fz_stat.php%3Fweb_id%3D1272564536%22%3E%3C%2Fscript%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s19.cnzz.com/z_stat.php%3Fid%3D1263868967%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));
+		</script>
+	</div>
+
+
+
+
+
+
+    
+
+    <script>
+        (function(){
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+            }
+            else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        })();
+    </script>
+
+</head>
+
+</html>
+<!--[if lte IE 8]>
+<style>
+    html{ font-size: 1em }
+</style>
+<![endif]-->
+<!--[if lte IE 9]>
+<div style="ie">你使用的浏览器版本过低，为了你更好的阅读体验，请更新浏览器的版本或者使用其他现代浏览器，比如Chrome、Firefox、Safari等。</div>
+<![endif]-->
+
+<body>
+    <header class="main-header" style="background-image:url(http://snippet.shenliyang.com/img/banner.jpg)">
+    <div class="main-header-box">
+        <a class="header-avatar" href="/" title="rainbowhorse">
+            <img src="/img/avatar.jpg" alt="logo头像" class="img-responsive center-block">
+        </a>
+        <div class="branding">
+        	<!--<h2 class="text-hide">Snippet主题,从未如此简单有趣</h2>-->
+            
+                <h2> 不忘初心 方得始终 </h2>
+            
+    	</div>
+    </div>
+</header>
+    <nav class="main-navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="navbar-header"><span class="nav-toggle-button collapsed pull-right" data-toggle="collapse" data-target="#main-menu" id="mnav">
+                    <span class="sr-only"></span>
+                        <i class="fa fa-bars"></i>
+                    </span>
+                    <a class="navbar-brand" href="https://sunny0715.github.io">rainbowhorse&#39;s blog</a>
+                </div>
+                <div class="collapse navbar-collapse" id="main-menu">
+                    <ul class="menu">
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/"><i class="fa "></i>Home</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/categories/technology/"><i class="fa "></i>技术</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/about/"><i class="fa "></i>关于我</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/archives/"><i class="fa "></i>时间轴</a>
+                            </li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+    <section class="content-wrap">
+        <div class="container">
+            <div class="row">
+                <main class="col-md-8 main-content m-post">
+                    <p id="process"></p>
+<article class="post">
+    <div class="post-head">
+        <h1 id="跨页面(Tab/Window)通信的几种方法">
+            
+	            跨页面(Tab/Window)通信的几种方法
+            
+        </h1>
+        <div class="post-meta">
+    
+    
+    <span class="categories-meta fa-wrap">
+        <i class="fa fa-folder-open-o"></i>
+        <a href="/categories/technology">
+            technology
+        </a>
+    </span>
+    
+
+    
+    <span class="fa-wrap">
+        <i class="fa fa-tags"></i>
+        <span class="tags-meta">
+            
+                
+                    <a href="/tags/tips" title="tips">
+                        tips
+                    </a>
+                
+                    <a href="/tags/前端" title="前端">
+                        前端
+                    </a>
+                
+            
+        </span>
+    </span>
+    
+
+    
+        
+        <span class="fa-wrap">
+            <i class="fa fa-clock-o"></i>
+            <span class="date-meta">2017/09/01</span>
+        </span>
+        
+            <span class="fa-wrap">
+                <i class="fa fa-eye"></i>
+                <span id="busuanzi_value_page_pv"></span>
+            </span>
+        
+    
+</div>
+
+            
+            
+    </div>
+    
+    <div class="post-body post-content">
+        <p>​    今天开发一个功能遇到一个需求，在A页面点击查看详情后打开B页面进行修改或删除，删除后B页面关闭，然后刷新A页面里面的数据。相当于就是两个页面之间进行通讯，作为后端的我第一想法是利用<code>webSocket</code> 进行通讯，之后通过谷歌和百度找出了更为简便的方法。</p>
+<p><div align="center"><img width="450" height="200" src="../../../../images/2017-9-13/additional/html%E9%A1%B5%E9%9D%A2%E4%BC%A0%E5%80%BC.png" algin="center"></div><a id="more"></a></p>
+<h1 id="利用webSocket进行通讯"><a href="#利用webSocket进行通讯" class="headerlink" title="利用webSocket进行通讯"></a>利用webSocket进行通讯</h1><p>​    第一想法是这个，但是这样的话工作量巨大而且还需要后端支持，太麻烦了，对于我这种懒人直接就放弃了，去寻找有没有更简便的方法。</p>
+<h1 id="定时器不断检查cookies变化"><a href="#定时器不断检查cookies变化" class="headerlink" title="定时器不断检查cookies变化"></a>定时器不断检查cookies变化</h1><p>在<a href="https://stackoverflow.com/" target="_blank" rel="noopener">stackoverflow</a>上看到一个方案，大致思路是：</p>
+<ol>
+<li>在页面A设置一个使用 <code>setInterval</code> 定时器不断刷新，检查 <code>Cookies</code> 的值是否发生变化，如果变化就进行刷新的操作。</li>
+<li>由于 <code>Cookies</code> 是在同域可读的，所以在页面 B 审核的时候改变 <code>Cookies</code> 的值，页面 A 自然是可以拿到的。<br>这样做确实可以实现我想要的功能，但是这样的方法相当浪费资源。虽然在这个性能过盛的时代，浪费不浪费也感觉不出来，但是这种实现方案，确实不够优(zhuāng)雅（bī）。</li>
+</ol>
+<h1 id="localStorage的事件"><a href="#localStorage的事件" class="headerlink" title="localStorage的事件"></a>localStorage的事件</h1><p>功夫不负有心人，后来发现 window 有一个 <a href="https://developer.mozilla.org/zh-CN/docs/Web/API/StorageEvent" target="_blank" rel="noopener">StorageEvent</a> ，每当 <code>localStorage</code> 改变的时候可以触发这个事件。（这个原理就像你给一个<code>DOM</code> 绑定了 <code>click</code> 事件，当你点击它的时候，就会自动触发。）也就是说，我给 <code>window</code> 绑定这个事件后，每当我改变 <code>localStorage</code> 的时候，他都会触发这个事件。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">window.addEventListener(&apos;storage&apos;, function (event) &#123;</span><br><span class="line">  console.log(event);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>这个回调中的<code>event</code>与普通的<a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Event#Properties" target="_blank" rel="noopener">EVNET</a>,基本差不多，但是它比其他的<code>event</code>多了如下几个属性:</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>key</td>
+<td>受影响的 <code>localStorage</code> 的 <code>key</code></td>
+</tr>
+<tr>
+<td>newValue</td>
+<td>新的值</td>
+</tr>
+<tr>
+<td>oldValue</td>
+<td>旧的值</td>
+</tr>
+<tr>
+<td>url</td>
+<td>触发此事件的url</td>
+</tr>
+</tbody>
+</table>
+<p>每当一个页面改变了 <code>localStorage</code> 的值，都会触发这个事件。也就是说可以很容易的通过改变 <code>localStorage</code> 的值，来实现浏览器中跨页面( tab / window )之间的通讯。记住这个事件只有在 <code>localStorage</code> 发生<strong>改变</strong>的时候才会被触发，如果没改变则<strong>不会触发</strong>此事件。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">localStorage.setItem(&apos;delete&apos;,1); //触发</span><br><span class="line">localStorage.setItem(&apos;delete&apos;,1); //不触发</span><br><span class="line">localStorage.setItem(&apos;delete&apos;,2); //触发</span><br></pre></td></tr></table></figure>
+<p>在使用的时候务必注意这一点。<br>最终实现代码:</p>
+<p><strong>页面A：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">//页面 A</span><br><span class="line">window.addEventListener(&apos;storage&apos;, function (event) &#123;</span><br><span class="line">    if(event.key === &apos;delete_verify_list&apos;)&#123;</span><br><span class="line">        //页面操作</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p><strong>页面B：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">//页面 B</span><br><span class="line">/**</span><br><span class="line"> *  获取一个随机id</span><br><span class="line"> * @return &#123;String&#125; - 返回一个5位的随机字符串</span><br><span class="line"> */</span><br><span class="line">function randomId() &#123;</span><br><span class="line">    return (Math.random() * 1E18).toString(36).slice(0, 5).toUpperCase();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//每当需要页面A更新时 执行此方法</span><br><span class="line">if (localStorage) &#123;</span><br><span class="line">	//为保证每次页面A都执行，此处我设置里一个随机字符串</span><br><span class="line">    localStorage.setItem(&apos;delete_verify_list&apos;, randomId());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>参考：<a href="https://ponyfoo.com/articles/cross-tab-communication" target="_blank" rel="noopener">https://ponyfoo.com/articles/cross-tab-communication</a></p>
+
+    </div>
+    
+        <div class="reward">
+    <div class="reward-wrap">赏
+        <div class="reward-box">
+            
+            
+                <span class="reward-type">
+                    <img class="wechat" src="../img/reward-wepay.jpg"><b>微信打赏</b>
+                </span>
+            
+        </div>
+    </div>
+    <p class="reward-tip">赞赏是不耍流氓的鼓励</p>
+</div>
+
+
+    
+    <div class="post-footer">
+        <div>
+            
+        </div>
+        <div>
+            
+        </div>
+    </div>
+</article>
+
+<div class="article-nav prev-next-wrap clearfix">
+    
+        <a href="/spring-aop两种配置方式/" class="pre-post btn btn-default" title="Spring-AOP两种配置方式">
+            <i class="fa fa-angle-left fa-fw"></i><span class="hidden-lg">上一篇</span>
+            <span class="hidden-xs">Spring-AOP两种配置方式</span>
+        </a>
+    
+    
+        <a href="/JAVA实现HTML转PDF/" class="next-post btn btn-default" title="JAVA实现HTML转PDF">
+            <span class="hidden-lg">下一篇</span>
+            <span class="hidden-xs">JAVA实现HTML转PDF</span><i class="fa fa-angle-right fa-fw"></i>
+        </a>
+    
+</div>
+
+
+    <div id="comments">
+        
+    
+    <div id="vcomments" class="valine"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="/assets/valine.min.js"></script>
+
+    <script>
+        new Valine({
+            av: AV,
+            el: '#vcomments',
+            appId: '8rKac39CM1EjFl9q7i97aDSu-gzGzoHsz',
+            appKey: '5wiSIVcjJCXPwgEwOqK8GaoJ',
+            placeholder: '说点什么吧',
+            notify: false,
+            verify: false,
+            avatar: 'mm',
+            meta: 'nick,mail'.split(','),
+            pageSize: '10',
+            path: window.location.pathname,
+            lang: 'zh-Hans'.toLowerCase()
+        })
+    </script>
+
+
+    </div>
+
+
+
+
+
+                </main>
+                
+                    <aside id="article-toc" role="navigation" class="col-md-4">
+    <div class="widget">
+        <h3 class="title">Table of Contents</h3>
+        
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#利用webSocket进行通讯"><span class="toc-text">利用webSocket进行通讯</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#定时器不断检查cookies变化"><span class="toc-text">定时器不断检查cookies变化</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#localStorage的事件"><span class="toc-text">localStorage的事件</span></a></li></ol>
+        
+    </div>
+</aside>
+
+                
+            </div>
+        </div>
+    </section>
+    <footer class="main-footer">
+    <div class="container">
+        <div class="row">
+        </div>
+    </div>
+</footer>
+
+<a id="back-to-top" class="icon-btn hide">
+	<i class="fa fa-chevron-up"></i>
+</a>
+
+
+
+
+    <div class="copyright">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="busuanzi">
+    
+        Total:
+        <strong id="busuanzi_value_site_pv">
+            <i class="fa fa-spinner fa-spin"></i>
+        </strong>
+        &nbsp; | &nbsp;
+        Visitors:
+        <strong id="busuanzi_value_site_uv">
+            <i class="fa fa-spinner fa-spin"></i>
+        </strong>
+    
+</div>
+
+            </div>
+            <div class="col-sm-12">
+                <span>Copyright &copy; 2018
+                </span> |
+                <span>
+                    Powered by <a href="//hexo.io" class="copyright-links" target="_blank" rel="nofollow">Hexo</a>
+                </span> |
+                <span>
+                       <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=44030502003606"><img src="/img/beian.png"><p style="display: inline;">粤公网安备 44030502003606号</p></a>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+<script src="/js/app.js?rev=@@hash"></script>
+
+</body>
+</html>

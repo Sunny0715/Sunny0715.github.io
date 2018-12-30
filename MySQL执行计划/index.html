@@ -1,0 +1,437 @@
+<!DOCTYPE HTML>
+<html lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!--Setting-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta http-equiv="Cache-Control" content="no-transform">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="apple-mobile-web-app-capable" content="rainbowhorse&#39;s blog">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    <meta name="browsermode" content="application">
+    <meta name="screen-orientation" content="portrait">
+    <link rel="dns-prefetch" href="https://sunny0715.github.io">
+    <!--SEO-->
+
+<meta name="description" content="总结个人心得，记录个人知识">
+
+
+
+
+
+<meta name="robots" content="all">
+<meta name="google" content="all">
+<meta name="googlebot" content="all">
+<meta name="verify" content="all">
+    <!--Title-->
+
+
+<title>MySQL执行计划 | rainbowhorse&#39;s blog</title>
+
+
+    <link rel="alternate" href="/atom.xml" title="rainbowhorse&#39;s blog" type="application/atom+xml">
+
+
+    <link rel="icon" href="/favicon.ico">
+
+    
+
+
+
+<link rel="stylesheet" href="/css/bootstrap.min.css?rev=3.3.7">
+<link rel="stylesheet" href="/css/font-awesome.min.css?rev=4.5.0">
+<link rel="stylesheet" href="/css/style.css?rev=@@hash">
+
+
+
+
+    
+	<div class="hide">
+		<script type="text/javascript">
+			var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan class='cnzz_stat_icon_1263868967 hide' %3E%3Cscript%20src%3D%22https%3A%2F%2Fs95.cnzz.com%2Fz_stat.php%3Fweb_id%3D1272564536%22%3E%3C%2Fscript%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s19.cnzz.com/z_stat.php%3Fid%3D1263868967%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));
+		</script>
+	</div>
+
+
+
+
+
+
+    
+
+    <script>
+        (function(){
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+            }
+            else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        })();
+    </script>
+
+</head>
+
+</html>
+<!--[if lte IE 8]>
+<style>
+    html{ font-size: 1em }
+</style>
+<![endif]-->
+<!--[if lte IE 9]>
+<div style="ie">你使用的浏览器版本过低，为了你更好的阅读体验，请更新浏览器的版本或者使用其他现代浏览器，比如Chrome、Firefox、Safari等。</div>
+<![endif]-->
+
+<body>
+    <header class="main-header" style="background-image:url(http://snippet.shenliyang.com/img/banner.jpg)">
+    <div class="main-header-box">
+        <a class="header-avatar" href="/" title="rainbowhorse">
+            <img src="/img/avatar.jpg" alt="logo头像" class="img-responsive center-block">
+        </a>
+        <div class="branding">
+        	<!--<h2 class="text-hide">Snippet主题,从未如此简单有趣</h2>-->
+            
+                <h2> 不忘初心 方得始终 </h2>
+            
+    	</div>
+    </div>
+</header>
+    <nav class="main-navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="navbar-header"><span class="nav-toggle-button collapsed pull-right" data-toggle="collapse" data-target="#main-menu" id="mnav">
+                    <span class="sr-only"></span>
+                        <i class="fa fa-bars"></i>
+                    </span>
+                    <a class="navbar-brand" href="https://sunny0715.github.io">rainbowhorse&#39;s blog</a>
+                </div>
+                <div class="collapse navbar-collapse" id="main-menu">
+                    <ul class="menu">
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/"><i class="fa "></i>Home</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/categories/technology/"><i class="fa "></i>技术</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/about/"><i class="fa "></i>关于我</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/archives/"><i class="fa "></i>时间轴</a>
+                            </li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+    <section class="content-wrap">
+        <div class="container">
+            <div class="row">
+                <main class="col-md-8 main-content m-post">
+                    <p id="process"></p>
+<article class="post">
+    <div class="post-head">
+        <h1 id="MySQL执行计划">
+            
+	            MySQL执行计划
+            
+        </h1>
+        <div class="post-meta">
+    
+    
+    <span class="categories-meta fa-wrap">
+        <i class="fa fa-folder-open-o"></i>
+        <a href="/categories/technology">
+            technology
+        </a>
+    </span>
+    
+
+    
+    <span class="fa-wrap">
+        <i class="fa fa-tags"></i>
+        <span class="tags-meta">
+            
+                
+                    <a href="/tags/mysql" title="mysql">
+                        mysql
+                    </a>
+                
+            
+        </span>
+    </span>
+    
+
+    
+        
+        <span class="fa-wrap">
+            <i class="fa fa-clock-o"></i>
+            <span class="date-meta">2018/04/27</span>
+        </span>
+        
+            <span class="fa-wrap">
+                <i class="fa fa-eye"></i>
+                <span id="busuanzi_value_page_pv"></span>
+            </span>
+        
+    
+</div>
+
+            
+            
+    </div>
+    
+    <div class="post-body post-content">
+        <h1 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h1><p>MySQL执行计划，简单的来说，是SQL在数据库中执行时的表现情况，通常用于SQL性能分析，优化等场景。在MySQL使用 <strong>explain</strong> 关键字来查看SQL的执行计划。<div align="center"><img width="800" height="300" src="../../../../images/2018-4/MySQL_explain/mysql-explain.png" algin="center"></div></p>
+<p><a id="more"></a></p>
+<h1 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h1><p>适用于 <strong><em>select</em></strong>、<strong><em>update</em></strong>、<strong><em>insert</em></strong>、<strong><em>replace</em></strong>、<strong><em>delete</em></strong>语句，在需要分析的语句前加<em>EXPLAIN</em>，即可。</p>
+<h1 id="EXPLAIN可得到的信息"><a href="#EXPLAIN可得到的信息" class="headerlink" title="EXPLAIN可得到的信息"></a>EXPLAIN可得到的信息</h1><ul>
+<li>SQL如何使用索引</li>
+<li>关联查询的执行顺序</li>
+<li>查询扫描的数据行数</li>
+</ul>
+<h1 id="读懂执行计划"><a href="#读懂执行计划" class="headerlink" title="读懂执行计划"></a>读懂执行计划</h1><p>例如以下关联查询：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">EXPLAIN</span> <span class="keyword">SELECT</span> * <span class="keyword">FROM</span> tb_item <span class="keyword">JOIN</span> tb_item_desc <span class="keyword">ON</span> tb_item.id=tb_item_desc.item_id <span class="keyword">WHERE</span> <span class="keyword">id</span>=<span class="string">'679533'</span>;</span><br></pre></td></tr></table></figure>
+<p><div align="center"><img width="900" height="300" src="../../../../images/2018-4/MySQL_explain/eg.png" algin="center"></div></p>
+<p>根据上图可得到执行计划的列信息，下面分析一下每列所表示的信息。</p>
+<h2 id="ID"><a href="#ID" class="headerlink" title="ID"></a>ID</h2><ul>
+<li>ID列中的数据为一组数字，表示执行Select语句的顺序。</li>
+<li>ID值相同时，执行顺序由上至下。</li>
+<li>ID值越大优先级越高，越先被执行。</li>
+</ul>
+<h2 id="SELECT-TYPE"><a href="#SELECT-TYPE" class="headerlink" title="SELECT_TYPE"></a>SELECT_TYPE</h2><p>表示查询中每个Select子句的类型（简单 OR 复杂）。</p>
+<ul>
+<li><strong>SIMPLE</strong>：不包含子查询或是<em>UNION</em>操作的查询。</li>
+<li><strong>PRIMARY</strong>：查询中如果包含任何子查询，那么最外层的查询则被标记为<em>PRIMARY</em>。</li>
+<li><strong>SUBQUERY</strong>：<em>SELECT</em> 列表中的子查询。</li>
+<li><strong>DEPENDENT SUBQUERY</strong>：被别的查询所依赖的子查询。</li>
+<li><strong>UNION</strong>：<em>union</em>操作的第二个或是之后的查询的值为<em>union</em>。</li>
+<li><strong>DEPENDENT UNION</strong>：当<em>union</em>作为子查询时，第二或者是第二个后的查询的值。</li>
+<li><strong>UNION RESULT</strong>：<em>union</em>产生的结果集。</li>
+<li><strong>DERIVED</strong>：出现在<em>from</em>子句中的子查询。</li>
+</ul>
+<h2 id="TABLE"><a href="#TABLE" class="headerlink" title="TABLE"></a>TABLE</h2><p>输出数据行所在的表的名称或别名。</p>
+<ul>
+<li><strong><code>&lt;unionM,N&gt;</code></strong>：由ID为M,N查询<em>union</em>产生的结果集。</li>
+<li><strong><code>&lt;derivedN&gt;/&lt;subqueryN&gt;</code></strong>：由ID为N的查询产生的结果。</li>
+</ul>
+<h2 id="PARTITIONS"><a href="#PARTITIONS" class="headerlink" title="PARTITIONS"></a>PARTITIONS</h2><ul>
+<li>对于分区表，显示查询的分区ID。</li>
+<li>对于非分区表，显示为NULL。</li>
+</ul>
+<h2 id="TYPE（类型性能是依次降低）"><a href="#TYPE（类型性能是依次降低）" class="headerlink" title="TYPE（类型性能是依次降低）"></a>TYPE（类型性能是依次降低）</h2><p>该属性表示访问类型,有很多种访问类型。</p>
+<ul>
+<li><strong>system</strong>：这是const连接类型的一个特例，当查询的表只有一行时使用。</li>
+<li><strong>const</strong>：表中有且只有一个匹配的行时使用，如对主键或是唯一索引的查询，这是效率最高的联接方式。</li>
+<li><strong>eq_ref</strong>：唯一索引或者是主键索引查找，对于每个索引键，表中只有一条记录与之匹配</li>
+<li><strong>ref</strong>：非唯一索引查找，返回匹配某个单独值的所有行。</li>
+<li><strong>ref_or_null</strong>：类似于ref类型的查询，但是附加了对NULL值列的查询。</li>
+<li><strong>index_merge</strong>：该联接类型表示使用了索引合并优化方法。</li>
+<li><strong>range</strong>：索引范围扫描，常见于<em>between</em>、&gt;、&lt;、这样的查询条件。</li>
+<li><strong>index</strong>：<em>full index scan</em> 全索引扫描，同ALL的区别是，遍历的是索引树。</li>
+<li><strong>all</strong>：<em>full table scan</em> 全表扫描，这是效率最差的联接方式。</li>
+</ul>
+<h2 id="POSSIBLE-KEYS"><a href="#POSSIBLE-KEYS" class="headerlink" title="POSSIBLE_KEYS"></a>POSSIBLE_KEYS</h2><p>指出MySQL能使用那些索引来优化查询，<strong>查询列所涉及到的列上的索引都会被列出，但不一定会被使用</strong>。</p>
+<h2 id="KEY"><a href="#KEY" class="headerlink" title="KEY"></a>KEY</h2><p>显示MySQL在查询中实际使用的索引，若没有使用索引，显示为NULL。</p>
+<blockquote>
+<p>TIPS：查询中若使用了覆盖索引，则该索引仅出现在key列表中。</p>
+</blockquote>
+<h2 id="KEY-LEN"><a href="#KEY-LEN" class="headerlink" title="KEY_LEN"></a>KEY_LEN</h2><ul>
+<li>表示索引字段的最大可能长度。</li>
+</ul>
+<ul>
+<li>此值的长度有字段定义计算而来，并非数据的实际长度。</li>
+</ul>
+<h2 id="REF"><a href="#REF" class="headerlink" title="REF"></a>REF</h2><p>表示表的连接匹配条件，即哪些列或常量被用于查找索引列上的值。</p>
+<h2 id="ROWS"><a href="#ROWS" class="headerlink" title="ROWS"></a>ROWS</h2><p>表示MySQL通过索引统计的信息，估算出的所需读取的行数。是一个不十分准确的值。</p>
+<h2 id="FILTERED"><a href="#FILTERED" class="headerlink" title="FILTERED"></a>FILTERED</h2><p>表示返回结果的行数占需读取行数的百分比，越大越好，也并不十分准确。</p>
+<h2 id="EXTRA"><a href="#EXTRA" class="headerlink" title="EXTRA"></a>EXTRA</h2><p>1、<strong>Using index</strong></p>
+<p>该值表示相应的<em>Select</em>操作中使用了<strong><em>覆盖索引(Covering Index)</em></strong>。</p>
+<blockquote>
+<p>TIPS：覆盖索引（Covering Index）</p>
+<p>MySQL可以利用索引返回select列表中的字段，而不必根据索引再次读取数据文件包含所有满足查询需要的数据的索引称为 <strong>覆盖索引</strong>（Covering Index）</p>
+</blockquote>
+<p>注意：如果要使用覆盖索引，一定要注意<em>Select</em>列表中只取出需要的列，不可Select *，因为如果将所有字段一起做索引会导致索引文件过大，查询性能下降。</p>
+<p>2、<strong>Using where</strong></p>
+<p>表示MySQL服务器在存储引擎受到记录后进行“后过滤”（Post-filter），如果查询未能使用索引，<em>Using where</em>的作用只是提醒我们MySQL将用<em>where</em>子句来过滤结果集。</p>
+<p>3、<strong>Using temporary</strong></p>
+<p>表示MySQL需要使用临时表来存储结果集，常见于排序和分组查询。</p>
+<p>4、<strong>Using filesort</strong></p>
+<p>MySQL中无法利用索引完成的排序操作称为“文件排序”。</p>
+<p>5、<strong>distinct</strong></p>
+<p>优化distinct操作，在找到第一匹配的元组后即停止找同样值的动作。</p>
+<p>6、<strong>not exists</strong></p>
+<p>使用<em>not exists</em>来优化查询。</p>
+<p>7、<strong>select tables optimized away</strong></p>
+<p>直接通过索引来获得数据，不用访问表。</p>
+<h1 id="执行计划的局限性"><a href="#执行计划的局限性" class="headerlink" title="执行计划的局限性"></a>执行计划的局限性</h1><ul>
+<li>EXPLAIN无法展示关于触发器、存储过程的信息或用户自定义函数对查询的影响情况。</li>
+<li>EXPLAIN不考虑各种Cache。</li>
+<li>EXPLAIN不能显示MySQL在执行查询时所作的优化工作。</li>
+<li>部分统计信息是估算的，并非精确值。</li>
+<li>早期版本的MySQL只支持对<em>Select</em>语句进行分析。</li>
+</ul>
+
+    </div>
+    
+        <div class="reward">
+    <div class="reward-wrap">赏
+        <div class="reward-box">
+            
+            
+                <span class="reward-type">
+                    <img class="wechat" src="../img/reward-wepay.jpg"><b>微信打赏</b>
+                </span>
+            
+        </div>
+    </div>
+    <p class="reward-tip">赞赏是不耍流氓的鼓励</p>
+</div>
+
+
+    
+    <div class="post-footer">
+        <div>
+            
+        </div>
+        <div>
+            
+        </div>
+    </div>
+</article>
+
+<div class="article-nav prev-next-wrap clearfix">
+    
+        <a href="/Spring下MySQL读写分离/" class="pre-post btn btn-default" title="Spring下MySQL读写分离">
+            <i class="fa fa-angle-left fa-fw"></i><span class="hidden-lg">上一篇</span>
+            <span class="hidden-xs">Spring下MySQL读写分离</span>
+        </a>
+    
+    
+        <a href="/MySQL主从复制/" class="next-post btn btn-default" title="MySQL主从/主主复制">
+            <span class="hidden-lg">下一篇</span>
+            <span class="hidden-xs">MySQL主从/主主复制</span><i class="fa fa-angle-right fa-fw"></i>
+        </a>
+    
+</div>
+
+
+    <div id="comments">
+        
+    
+    <div id="vcomments" class="valine"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="/assets/valine.min.js"></script>
+
+    <script>
+        new Valine({
+            av: AV,
+            el: '#vcomments',
+            appId: '8rKac39CM1EjFl9q7i97aDSu-gzGzoHsz',
+            appKey: '5wiSIVcjJCXPwgEwOqK8GaoJ',
+            placeholder: '说点什么吧',
+            notify: false,
+            verify: false,
+            avatar: 'mm',
+            meta: 'nick,mail'.split(','),
+            pageSize: '10',
+            path: window.location.pathname,
+            lang: 'zh-Hans'.toLowerCase()
+        })
+    </script>
+
+
+    </div>
+
+
+
+
+
+                </main>
+                
+                    <aside id="article-toc" role="navigation" class="col-md-4">
+    <div class="widget">
+        <h3 class="title">Table of Contents</h3>
+        
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#引言"><span class="toc-text">引言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#适用场景"><span class="toc-text">适用场景</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#EXPLAIN可得到的信息"><span class="toc-text">EXPLAIN可得到的信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#读懂执行计划"><span class="toc-text">读懂执行计划</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#ID"><span class="toc-text">ID</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SELECT-TYPE"><span class="toc-text">SELECT_TYPE</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TABLE"><span class="toc-text">TABLE</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PARTITIONS"><span class="toc-text">PARTITIONS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TYPE（类型性能是依次降低）"><span class="toc-text">TYPE（类型性能是依次降低）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#POSSIBLE-KEYS"><span class="toc-text">POSSIBLE_KEYS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#KEY"><span class="toc-text">KEY</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#KEY-LEN"><span class="toc-text">KEY_LEN</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#REF"><span class="toc-text">REF</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ROWS"><span class="toc-text">ROWS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#FILTERED"><span class="toc-text">FILTERED</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#EXTRA"><span class="toc-text">EXTRA</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#执行计划的局限性"><span class="toc-text">执行计划的局限性</span></a></li></ol>
+        
+    </div>
+</aside>
+
+                
+            </div>
+        </div>
+    </section>
+    <footer class="main-footer">
+    <div class="container">
+        <div class="row">
+        </div>
+    </div>
+</footer>
+
+<a id="back-to-top" class="icon-btn hide">
+	<i class="fa fa-chevron-up"></i>
+</a>
+
+
+
+
+    <div class="copyright">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="busuanzi">
+    
+        Total:
+        <strong id="busuanzi_value_site_pv">
+            <i class="fa fa-spinner fa-spin"></i>
+        </strong>
+        &nbsp; | &nbsp;
+        Visitors:
+        <strong id="busuanzi_value_site_uv">
+            <i class="fa fa-spinner fa-spin"></i>
+        </strong>
+    
+</div>
+
+            </div>
+            <div class="col-sm-12">
+                <span>Copyright &copy; 2018
+                </span> |
+                <span>
+                    Powered by <a href="//hexo.io" class="copyright-links" target="_blank" rel="nofollow">Hexo</a>
+                </span> |
+                <span>
+                       <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=44030502003606"><img src="/img/beian.png"><p style="display: inline;">粤公网安备 44030502003606号</p></a>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+<script src="/js/app.js?rev=@@hash"></script>
+
+</body>
+</html>

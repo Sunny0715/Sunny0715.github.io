@@ -1,0 +1,393 @@
+<!DOCTYPE HTML>
+<html lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!--Setting-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta http-equiv="Cache-Control" content="no-transform">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="apple-mobile-web-app-capable" content="rainbowhorse&#39;s blog">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    <meta name="browsermode" content="application">
+    <meta name="screen-orientation" content="portrait">
+    <link rel="dns-prefetch" href="https://sunny0715.github.io">
+    <!--SEO-->
+
+<meta name="description" content="总结个人心得，记录个人知识">
+
+
+
+
+
+<meta name="robots" content="all">
+<meta name="google" content="all">
+<meta name="googlebot" content="all">
+<meta name="verify" content="all">
+    <!--Title-->
+
+
+<title>浅谈共享单车 | rainbowhorse&#39;s blog</title>
+
+
+    <link rel="alternate" href="/atom.xml" title="rainbowhorse&#39;s blog" type="application/atom+xml">
+
+
+    <link rel="icon" href="/favicon.ico">
+
+    
+
+
+
+<link rel="stylesheet" href="/css/bootstrap.min.css?rev=3.3.7">
+<link rel="stylesheet" href="/css/font-awesome.min.css?rev=4.5.0">
+<link rel="stylesheet" href="/css/style.css?rev=@@hash">
+
+
+
+
+    
+	<div class="hide">
+		<script type="text/javascript">
+			var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan class='cnzz_stat_icon_1263868967 hide' %3E%3Cscript%20src%3D%22https%3A%2F%2Fs95.cnzz.com%2Fz_stat.php%3Fweb_id%3D1272564536%22%3E%3C%2Fscript%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s19.cnzz.com/z_stat.php%3Fid%3D1263868967%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));
+		</script>
+	</div>
+
+
+
+
+
+
+    
+
+    <script>
+        (function(){
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+            }
+            else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        })();
+    </script>
+
+</head>
+
+</html>
+<!--[if lte IE 8]>
+<style>
+    html{ font-size: 1em }
+</style>
+<![endif]-->
+<!--[if lte IE 9]>
+<div style="ie">你使用的浏览器版本过低，为了你更好的阅读体验，请更新浏览器的版本或者使用其他现代浏览器，比如Chrome、Firefox、Safari等。</div>
+<![endif]-->
+
+<body>
+    <header class="main-header" style="background-image:url(http://snippet.shenliyang.com/img/banner.jpg)">
+    <div class="main-header-box">
+        <a class="header-avatar" href="/" title="rainbowhorse">
+            <img src="/img/avatar.jpg" alt="logo头像" class="img-responsive center-block">
+        </a>
+        <div class="branding">
+        	<!--<h2 class="text-hide">Snippet主题,从未如此简单有趣</h2>-->
+            
+                <h2> 不忘初心 方得始终 </h2>
+            
+    	</div>
+    </div>
+</header>
+    <nav class="main-navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="navbar-header"><span class="nav-toggle-button collapsed pull-right" data-toggle="collapse" data-target="#main-menu" id="mnav">
+                    <span class="sr-only"></span>
+                        <i class="fa fa-bars"></i>
+                    </span>
+                    <a class="navbar-brand" href="https://sunny0715.github.io">rainbowhorse&#39;s blog</a>
+                </div>
+                <div class="collapse navbar-collapse" id="main-menu">
+                    <ul class="menu">
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/"><i class="fa "></i>Home</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/categories/technology/"><i class="fa "></i>技术</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/about/"><i class="fa "></i>关于我</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/archives/"><i class="fa "></i>时间轴</a>
+                            </li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+    <section class="content-wrap">
+        <div class="container">
+            <div class="row">
+                <main class="col-md-8 main-content m-post">
+                    <p id="process"></p>
+<article class="post">
+    <div class="post-head">
+        <h1 id="浅谈共享单车">
+            
+	            浅谈共享单车
+            
+        </h1>
+        <div class="post-meta">
+    
+    
+    <span class="categories-meta fa-wrap">
+        <i class="fa fa-folder-open-o"></i>
+        <a href="/categories/society">
+            society
+        </a>
+    </span>
+    
+
+    
+    <span class="fa-wrap">
+        <i class="fa fa-tags"></i>
+        <span class="tags-meta">
+            
+                
+                    <a href="/tags/随笔" title="随笔">
+                        随笔
+                    </a>
+                
+            
+        </span>
+    </span>
+    
+
+    
+        
+        <span class="fa-wrap">
+            <i class="fa fa-clock-o"></i>
+            <span class="date-meta">2017/03/24</span>
+        </span>
+        
+            <span class="fa-wrap">
+                <i class="fa fa-eye"></i>
+                <span id="busuanzi_value_page_pv"></span>
+            </span>
+        
+    
+</div>
+
+            
+            
+    </div>
+    
+    <div class="post-body post-content">
+        <p>​    要说目前最火爆的互联网现象，当属<code>共享单车</code>。这里所谓的共享，本质上指的是需求共享。就骑车的需求，从一个地方骑到另一个地方，就是用户触点（产品投放）、产品操作（骑行过程）、付费模式（支付）的流程，从个体上来讲，这个流程是单向的。但在“共享”的模式下，扫码骑走，停车即走，把不同的人，在不同的时间和地点，相同的骑行需求，通过产品操作节点，形成需求闭环，停车点同时又是骑行出发点，这就是需求共享。</p>
+<div align="center"><img width="600" height="280" src="../../../../images/2017-3-24/cover.jpg" algin="center"></div>
+
+<a id="more"></a>
+<blockquote>
+<p>共享单车是指企业与政府合作，在地铁、学校、公交站点、居民区、商业区、公共服务区等提供自行车单车共享服务，是共享经济的一种新形态。</p>
+</blockquote>
+<p>​    2016年底以来，国内共享单车突然就火爆了起来，而在街头，仿佛一夜之间，共享单车已经到了“泛滥”的地步，各大城市路边排满各种颜色的共享单车。</p>
+<h2 id="场景分析"><a href="#场景分析" class="headerlink" title="场景分析"></a>场景分析</h2><p>​    我们站在用户角度，无非就是找车，然后骑车，交钱。</p>
+<p><img src="../../../../images/2017-3-24/%E5%9C%BA%E6%99%AF%E5%88%86%E6%9E%90.jpg" alt="场景分析"></p>
+<p>在“<code>寻车-用车-骑车-还车</code>”的场景闭环中，需要考虑的问题有很多，列举以下若干种：</p>
+<ul>
+<li>什么样的寻车方式更符合大众的日常行为？</li>
+</ul>
+<ul>
+<li>用户与单车之间如何建立一一对应的联系？</li>
+</ul>
+<ul>
+<li>使用何种开锁构件实现远程开锁和上锁？</li>
+</ul>
+<ul>
+<li>计费方式及费用节点、价格、操作流程分别采取什么方案？</li>
+</ul>
+<ul>
+<li>如何对车辆进行远程管理？</li>
+</ul>
+<ul>
+<li>如何防止逃费、盗窃、破坏等衍生问题？</li>
+</ul>
+<p>场景分析的过程，就是解决以上若干问题的过程，针对这些问题，分别提出不同的业务流程和技术方案。</p>
+<h2 id="业务逻辑分析"><a href="#业务逻辑分析" class="headerlink" title="业务逻辑分析"></a>业务逻辑分析</h2><p>以<code>摩拜单车</code>为例，用户-管理平台-单车 之间的关系如下图:</p>
+<p><img src="../../../../images/2017-3-24/%E6%B5%81%E7%A8%8B.jpg" alt="流程"></p>
+<h2 id="技术实现方案"><a href="#技术实现方案" class="headerlink" title="技术实现方案"></a>技术实现方案</h2><p>​    现在共享单车最火的要数<em><a href="http://mobike.com/cn/" target="_blank" rel="noopener">摩拜单车</a></em>和<em><a href="http://www.ofo.so/?utm_source=baidu&amp;utm_medium=pz" target="_blank" rel="noopener">OFO小黄车</a></em>了，摩拜采用<strong>智能锁</strong>而ofo采用的是<strong>机械锁</strong>。</p>
+<h3 id="1-机械锁"><a href="#1-机械锁" class="headerlink" title="1  机械锁"></a>1  机械锁</h3><p>​    原理：机械锁的原理很简单，只需要打开软件，输入对应的车牌号就可以了，其实就是后台查询数据库，判断单车是否处于正常状态，返回给用户开锁密码，用户拿着开锁密码开锁。</p>
+<p><img src="../../../../images/2017-3-24/ofo%E5%8E%9F%E7%90%86.jpg" alt="机械锁"></p>
+<h3 id="2-智能锁"><a href="#2-智能锁" class="headerlink" title="2  智能锁"></a>2  智能锁</h3><p>​    原理：对于单车的远程开锁机制，采用远程通信控制机械构件的电磁运动来实现。远程通信可采用传统的SIM卡通信的方式。</p>
+<p>一、手机扫描自行车，获得自行车唯一的ID标志，手机接着会像服务器提交一个请求（提交信息里包含：用户信息，请求动作，车辆ID）；<br>二、服务器收到用户开锁请求，此时会根据请求信息，接着向指定ID的自行车发出开锁指令;<br>三、自行车收到服务器请求，会执行相应的开锁动作。</p>
+<p><em>智能锁是耗费电能的，所以摩拜单车车篮中装有太阳能电池板，减少人力物力维护的成本、简单、高效。</em></p>
+<p><img src="../../../../images/2017-3-24/mobike%E5%8E%9F%E7%90%86.png" alt="mobike原理"></p>
+<p>​    这是一个典型的大容量互联网O2O场景，连结用户、车辆，管理平台进行实时处理效率要求非常高，需制定可靠、高效的网络方案。根据业务流程，我们梳理出网络节点的职能，并从成本考虑使用最优方案：<img src="../../../../images/2017-3-24/%E6%96%B9%E6%A1%88.jpg" alt="方案"></p>
+<p>​    明确流程，界面，那么接下来的任务就是通过用户语言去实现产品流程了，即界面设计与开发实现，这里我们就不阐述了。</p>
+<h2 id="一点感想"><a href="#一点感想" class="headerlink" title="一点感想"></a>一点感想</h2><p>​    从2016年到现在已有近半年时间，共享单车的竞争也愈演愈烈，近几天，共享单车从免费到红包“撒钱” 导致竞争升级，共享单车方便了我们的出行，但是带来的问题也很多，政府也在不断的规范使用。现在都在处于资本投入和烧钱大战中，希望共享单车一直存货下去，同时希望大家能合理、合法使用。</p>
+<blockquote>
+<p>之前有听说过摩拜的扫一扫可以远程使用，假如我需要车又没有注册，我可以拍照给有车的朋友，让他们帮我远程扫就可以开启，<strong>亲测</strong>：不行！还是自己乖乖注册一个吧。</p>
+</blockquote>
+
+    </div>
+    
+        <div class="reward">
+    <div class="reward-wrap">赏
+        <div class="reward-box">
+            
+            
+                <span class="reward-type">
+                    <img class="wechat" src="../img/reward-wepay.jpg"><b>微信打赏</b>
+                </span>
+            
+        </div>
+    </div>
+    <p class="reward-tip">赞赏是不耍流氓的鼓励</p>
+</div>
+
+
+    
+    <div class="post-footer">
+        <div>
+            
+        </div>
+        <div>
+            
+        </div>
+    </div>
+</article>
+
+<div class="article-nav prev-next-wrap clearfix">
+    
+        <a href="/JAVA定时调度-Timer和Executors/" class="pre-post btn btn-default" title="JAVA定时调度 Timer和Executors">
+            <i class="fa fa-angle-left fa-fw"></i><span class="hidden-lg">上一篇</span>
+            <span class="hidden-xs">JAVA定时调度 Timer和Executors</span>
+        </a>
+    
+    
+        <a href="/Markdown语法/" class="next-post btn btn-default" title="Markdown语法指南">
+            <span class="hidden-lg">下一篇</span>
+            <span class="hidden-xs">Markdown语法指南</span><i class="fa fa-angle-right fa-fw"></i>
+        </a>
+    
+</div>
+
+
+    <div id="comments">
+        
+    
+    <div id="vcomments" class="valine"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="/assets/valine.min.js"></script>
+
+    <script>
+        new Valine({
+            av: AV,
+            el: '#vcomments',
+            appId: '8rKac39CM1EjFl9q7i97aDSu-gzGzoHsz',
+            appKey: '5wiSIVcjJCXPwgEwOqK8GaoJ',
+            placeholder: '说点什么吧',
+            notify: false,
+            verify: false,
+            avatar: 'mm',
+            meta: 'nick,mail'.split(','),
+            pageSize: '10',
+            path: window.location.pathname,
+            lang: 'zh-Hans'.toLowerCase()
+        })
+    </script>
+
+
+    </div>
+
+
+
+
+
+                </main>
+                
+                    <aside id="article-toc" role="navigation" class="col-md-4">
+    <div class="widget">
+        <h3 class="title">Table of Contents</h3>
+        
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#场景分析"><span class="toc-text">场景分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#业务逻辑分析"><span class="toc-text">业务逻辑分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#技术实现方案"><span class="toc-text">技术实现方案</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-机械锁"><span class="toc-text">1  机械锁</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-智能锁"><span class="toc-text">2  智能锁</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#一点感想"><span class="toc-text">一点感想</span></a></li></ol>
+        
+    </div>
+</aside>
+
+                
+            </div>
+        </div>
+    </section>
+    <footer class="main-footer">
+    <div class="container">
+        <div class="row">
+        </div>
+    </div>
+</footer>
+
+<a id="back-to-top" class="icon-btn hide">
+	<i class="fa fa-chevron-up"></i>
+</a>
+
+
+
+
+    <div class="copyright">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="busuanzi">
+    
+        Total:
+        <strong id="busuanzi_value_site_pv">
+            <i class="fa fa-spinner fa-spin"></i>
+        </strong>
+        &nbsp; | &nbsp;
+        Visitors:
+        <strong id="busuanzi_value_site_uv">
+            <i class="fa fa-spinner fa-spin"></i>
+        </strong>
+    
+</div>
+
+            </div>
+            <div class="col-sm-12">
+                <span>Copyright &copy; 2018
+                </span> |
+                <span>
+                    Powered by <a href="//hexo.io" class="copyright-links" target="_blank" rel="nofollow">Hexo</a>
+                </span> |
+                <span>
+                       <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=44030502003606"><img src="/img/beian.png"><p style="display: inline;">粤公网安备 44030502003606号</p></a>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+<script src="/js/app.js?rev=@@hash"></script>
+
+</body>
+</html>

@@ -1,0 +1,469 @@
+<!DOCTYPE HTML>
+<html lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!--Setting-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta http-equiv="Cache-Control" content="no-transform">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="apple-mobile-web-app-capable" content="rainbowhorse&#39;s blog">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    <meta name="browsermode" content="application">
+    <meta name="screen-orientation" content="portrait">
+    <link rel="dns-prefetch" href="https://sunny0715.github.io">
+    <!--SEO-->
+
+<meta name="description" content="总结个人心得，记录个人知识">
+
+
+
+
+
+<meta name="robots" content="all">
+<meta name="google" content="all">
+<meta name="googlebot" content="all">
+<meta name="verify" content="all">
+    <!--Title-->
+
+
+<title>Linux基本命令 | rainbowhorse&#39;s blog</title>
+
+
+    <link rel="alternate" href="/atom.xml" title="rainbowhorse&#39;s blog" type="application/atom+xml">
+
+
+    <link rel="icon" href="/favicon.ico">
+
+    
+
+
+
+<link rel="stylesheet" href="/css/bootstrap.min.css?rev=3.3.7">
+<link rel="stylesheet" href="/css/font-awesome.min.css?rev=4.5.0">
+<link rel="stylesheet" href="/css/style.css?rev=@@hash">
+
+
+
+
+    
+	<div class="hide">
+		<script type="text/javascript">
+			var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan class='cnzz_stat_icon_1263868967 hide' %3E%3Cscript%20src%3D%22https%3A%2F%2Fs95.cnzz.com%2Fz_stat.php%3Fweb_id%3D1272564536%22%3E%3C%2Fscript%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s19.cnzz.com/z_stat.php%3Fid%3D1263868967%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));
+		</script>
+	</div>
+
+
+
+
+
+
+    
+
+    <script>
+        (function(){
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+            }
+            else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        })();
+    </script>
+
+</head>
+
+</html>
+<!--[if lte IE 8]>
+<style>
+    html{ font-size: 1em }
+</style>
+<![endif]-->
+<!--[if lte IE 9]>
+<div style="ie">你使用的浏览器版本过低，为了你更好的阅读体验，请更新浏览器的版本或者使用其他现代浏览器，比如Chrome、Firefox、Safari等。</div>
+<![endif]-->
+
+<body>
+    <header class="main-header" style="background-image:url(http://snippet.shenliyang.com/img/banner.jpg)">
+    <div class="main-header-box">
+        <a class="header-avatar" href="/" title="rainbowhorse">
+            <img src="/img/avatar.jpg" alt="logo头像" class="img-responsive center-block">
+        </a>
+        <div class="branding">
+        	<!--<h2 class="text-hide">Snippet主题,从未如此简单有趣</h2>-->
+            
+                <h2> 不忘初心 方得始终 </h2>
+            
+    	</div>
+    </div>
+</header>
+    <nav class="main-navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="navbar-header"><span class="nav-toggle-button collapsed pull-right" data-toggle="collapse" data-target="#main-menu" id="mnav">
+                    <span class="sr-only"></span>
+                        <i class="fa fa-bars"></i>
+                    </span>
+                    <a class="navbar-brand" href="https://sunny0715.github.io">rainbowhorse&#39;s blog</a>
+                </div>
+                <div class="collapse navbar-collapse" id="main-menu">
+                    <ul class="menu">
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/"><i class="fa "></i>Home</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/categories/technology/"><i class="fa "></i>技术</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/about/"><i class="fa "></i>关于我</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/archives/"><i class="fa "></i>时间轴</a>
+                            </li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+    <section class="content-wrap">
+        <div class="container">
+            <div class="row">
+                <main class="col-md-8 main-content m-post">
+                    <p id="process"></p>
+<article class="post">
+    <div class="post-head">
+        <h1 id="Linux基本命令">
+            
+	            Linux基本命令
+            
+        </h1>
+        <div class="post-meta">
+    
+    
+    <span class="categories-meta fa-wrap">
+        <i class="fa fa-folder-open-o"></i>
+        <a href="/categories/technology">
+            technology
+        </a>
+    </span>
+    
+
+    
+    <span class="fa-wrap">
+        <i class="fa fa-tags"></i>
+        <span class="tags-meta">
+            
+                
+                    <a href="/tags/java" title="java">
+                        java
+                    </a>
+                
+                    <a href="/tags/tips" title="tips">
+                        tips
+                    </a>
+                
+                    <a href="/tags/linux" title="linux">
+                        linux
+                    </a>
+                
+            
+        </span>
+    </span>
+    
+
+    
+        
+        <span class="fa-wrap">
+            <i class="fa fa-clock-o"></i>
+            <span class="date-meta">2017/04/07</span>
+        </span>
+        
+            <span class="fa-wrap">
+                <i class="fa fa-eye"></i>
+                <span id="busuanzi_value_page_pv"></span>
+            </span>
+        
+    
+</div>
+
+            
+            
+    </div>
+    
+    <div class="post-body post-content">
+        <h1 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h1><p>之前的公司有用过Linux，自己也学习了一段时间，但是很久没有用了，最近又在腾讯云租了个空间把系统装成Centos系统了，所以又把Linux系统重新捡起来，重温下Linux的基本知识。<div align="center"><img width="700" height="300" src="../../../../images/2017-4-6/Linux.jpg" algin="center"></div><a id="more"></a></p>
+<h1 id="Linux简介"><a href="#Linux简介" class="headerlink" title="Linux简介"></a>Linux简介</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p><strong>Linux</strong>，免费开源，多用户多任务系统。基于Linux有多个版本的衍生。RedHat、Ubuntu、Debian</p>
+<p>安装VMware或VirtualBox虚拟机。Linux的定义和历史右转<a href="http://baike.baidu.com/link?url=ImcCu-CQii_EX-Tiet8ChTjtjNUpDHYUFagNy65U41CX-jqb7oGTOkfew0hJyLhOBPrhC6yZmwUC8Sy-6COiWK" target="_blank" rel="noopener"><em>百度百科</em></a>。具体安装步骤，找百度。</p>
+<h2 id="常用版本"><a href="#常用版本" class="headerlink" title="常用版本"></a>常用版本</h2><p>我常用的Linux版本有两个<code>Centos</code>和<code>Ubuntu</code>，全都是开源免费的,其中Ubuntu属于桌面版。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Centos是免费的企业版Linux操作系统。是RedHat企业版的优化操作系统。具体可以参照百科：http://baike.baidu.com/view/26404.htm。里面有详解。</span><br><span class="line">另附其官网:http://www.centos.org/。</span><br><span class="line">另外，它适合作为服务器用。</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Ubuntu之前有在环境中开发过项目，虽然时间不久，但还是有所体会。免费、无毒、免折腾、比较接近底层。</span><br></pre></td></tr></table></figure>
+<h1 id="基本命令"><a href="#基本命令" class="headerlink" title="基本命令"></a>基本命令</h1><h2 id="基础命令"><a href="#基础命令" class="headerlink" title="基础命令"></a>基础命令</h2><blockquote>
+<p>Linux 操作系统位数识别: <code>uname -a（uname -p）</code></p>
+<p>Linux 32位操作系统：Linux x86  <a href="http://download.oracle.com/otn-pub/java/jdk/7u45-b18/jdk-7u45-linux-i586.rpm" target="_blank" rel="noopener">i586  i386  i686 i…</a></p>
+<p>Linux 64位操作系统：Linux x64x86_64  X64 …</p>
+</blockquote>
+<ol>
+<li><code>man</code>          命令不会用了，找男人  如：man ls</li>
+<li><code>ifconfig</code>     显示系统信息</li>
+<li><code>ls 或ll</code>      查看目录文件</li>
+<li><code>pwd</code>      查看目前路径</li>
+<li><code>cat 文件名</code>     从第一个字节开始正向查看文件的内容</li>
+<li><code>head -2 file1</code>    查看一个文件的前两行 </li>
+<li><code>tail -2 file1</code> 查看一个文件的最后两行</li>
+<li><code>mv 老名 新名</code>      重命名/剪切</li>
+<li><code>cp 老文件路径+文件名 新文件路径（+文件名）</code>    复制 </li>
+<li><code>cd</code>       进入个人的主目录 </li>
+<li><code>cd 路径名</code>    进入新路径</li>
+<li><code>cd ..</code>     后退一步</li>
+<li><code>date</code>    显示系统日期</li>
+<li><code>shutdown -h now</code>    关闭系统(1) </li>
+<li><code>shutdown -r now</code>    重启(1) </li>
+<li><code>reboot</code>    重启(2) </li>
+<li><code>halt</code>          关机(推荐)</li>
+<li><code>logout</code>     注销 </li>
+<li><code>mkdir dir1</code>    创建一个叫做 ‘dir1’ 的目录’ </li>
+<li><code>rm -f file1</code>    删除一个叫做 ‘file1’ 的文件’</li>
+<li><code>rmdir dir1</code>    删除一个叫做 ‘dir1’ 的目录’</li>
+<li><code>rm -rf dir1</code>    删除一个叫做 ‘dir1’ 的目录并同时删除其内</li>
+<li><code>find / -name file1</code>     从 ‘/‘ 开始进入根文件系统搜索文件和目录 </li>
+<li><code>tar -zxvf archive.tar</code>     解压一个包</li>
+<li><code>rpm -ivh package.rpm</code>   安装一个rpm包 </li>
+</ol>
+<p>高级一点的命令，也是比较难懂、需要实践和琢磨的命令：</p>
+<ol>
+<li><p><code>chmod +权限(ugo)</code>    (u、g、o表示user、group、other)</p>
+<blockquote>
+<p>三种基本权限</p>
+<p>R           读         数值表示为4</p>
+<p>W          写         数值表示为2</p>
+<p>X           可执行  数值表示为1</p>
+</blockquote>
+<p>​    例如：chmod 777   表示user、group、other都具有RWX权限。    </p>
+</li>
+<li><p><code>grep  [options]</code>    grep命令是一种强大的文本搜索工具</p>
+<blockquote>
+<p>grep ‘test’ d*<br>显示所有以d开头的文件中包含 test的行。</p>
+</blockquote>
+</li>
+<li><p><code>ps [options]</code>      对进程进行监测和控制</p>
+<blockquote>
+<p>ps -aux|grep 8080      查看8080端口占用情况</p>
+</blockquote>
+</li>
+<li><p><code>yum yum [options][command] [package ...]</code>       工具</p>
+<blockquote>
+<p>yum list     列出当前系统中安装的所有包</p>
+</blockquote>
+</li>
+<li><p><code>wget wget [OPTION]… [URL]…</code>      wget是一个从网络上自动下载文件的自由工具</p>
+<blockquote>
+<p>wget <a href="http://example.com/file.iso" target="_blank" rel="noopener">http://example.com/file.iso</a>    从网上下载单个文件</p>
+</blockquote>
+</li>
+</ol>
+<h2 id="crontab定时任务"><a href="#crontab定时任务" class="headerlink" title="crontab定时任务"></a>crontab定时任务</h2><h3 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h3><p>通过crontab 命令，可以在固定的间隔时间执行指定的系统指令或 shell script脚本。时间间隔的单位可以是分钟、小时、日、月、周及以上的任意组合。这个命令非常适合周期性的日志分析或数据备份等工作。</p>
+<ol>
+<li><p>crontab文件格式</p>
+<p>分 时 日 月 星期 要运行的命令</p>
+</li>
+</ol>
+<ul>
+<li>第1列分钟0～59</li>
+<li>第2列小时0～23（0表示子夜）</li>
+<li>第3列日1～31</li>
+<li>第4列月1～12</li>
+<li>第5列星期0～7（0和7表示星期天）</li>
+<li>第6列要运行的命令</li>
+</ul>
+<ol>
+<li>命令</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span>列出crontab文件</span><br><span class="line"><span class="meta">$</span> crontab -l</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span>编辑crontab文件</span><br><span class="line"><span class="meta">$</span> crontab -e</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span>删除crontab文件</span><br><span class="line"><span class="meta">$</span> crontab -r</span><br></pre></td></tr></table></figure>
+<ol>
+<li>使用实例</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 每1分钟执行一次myCommand</span><br><span class="line"><span class="meta">$</span> * * * * * myCommand</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 每小时的第3和第15分钟执行</span><br><span class="line"><span class="meta">$</span> 3,15 * * * * myCommand</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 每晚的21:30重启smb</span><br><span class="line"><span class="meta">$</span> 30 21 * * * /etc/init.d/smb restart</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 每周六、周日的1 : 10重启smb</span><br><span class="line"><span class="meta">$</span> 10 1 * * 6,0 /etc/init.d/smb restart</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 每一小时重启smb</span><br><span class="line"><span class="meta">$</span> * */1 * * * /etc/init.d/smb restart</span><br></pre></td></tr></table></figure>
+<h3 id="使用实例-定时备份MySQL"><a href="#使用实例-定时备份MySQL" class="headerlink" title="使用实例(定时备份MySQL)"></a>使用实例(定时备份MySQL)</h3><ol>
+<li>在/usr/soft下新建脚本<strong>mysqlbak.sh</strong></li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span>!/bin/bash</span><br><span class="line"><span class="meta">#</span>备份路径</span><br><span class="line">BACKUP=/usr/soft/sql</span><br><span class="line"><span class="meta">#</span>当前时间</span><br><span class="line">DATETIME=$(date +%Y-%m-%d_%H%M%S)</span><br><span class="line">echo "==备份开始=="</span><br><span class="line">echo "备份文件存放于$&#123;BACKUP&#125;/$DATETIME.tar.gz"</span><br><span class="line"><span class="meta">#</span>数据库地址</span><br><span class="line">HOST=localhost</span><br><span class="line"><span class="meta">#</span>数据库用户名</span><br><span class="line">DB_USER=root</span><br><span class="line"><span class="meta">#</span>数据库密码</span><br><span class="line">DB_PW=root</span><br><span class="line"><span class="meta">#</span>创建备份目录</span><br><span class="line">[ ! -d "$&#123;BACKUP&#125;/$DATETIME" ] &amp;&amp; mkdir -p "$&#123;BACKUP&#125;/$DATETIME"</span><br><span class="line"><span class="meta">#</span>后台系统数据库</span><br><span class="line">DATABASE=test</span><br><span class="line">/usr/bin/mysqldump -u$&#123;DB_USER&#125; -p$&#123;DB_PW&#125; --host=$HOST -q -R --databases $DATABASE | gzip &gt; $&#123;BACKUP&#125;/$DATETIME/$DATABASE.sql.gz</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span>压缩成tar.gz包</span><br><span class="line">cd $BACKUP</span><br><span class="line">tar -zcvf $DATETIME.tar.gz $DATETIME</span><br><span class="line"><span class="meta">#</span>删除备份目录</span><br><span class="line">rm -rf $&#123;BACKUP&#125;/$DATETIME</span><br><span class="line"><span class="meta">#</span>删除10天前备份的数据</span><br><span class="line">find $BACKUP -mtime +10 -name "*.tar.gz" -exec rm -rf &#123;&#125; \;</span><br><span class="line">echo "===备份成功==="</span><br></pre></td></tr></table></figure>
+<ol>
+<li>赋予权限</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> chmod 777 mysqlbak.sh</span><br></pre></td></tr></table></figure>
+<ol>
+<li>添加至定时任务</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// 编辑定时任务列表</span><br><span class="line"><span class="meta">$</span> crontab -e</span><br><span class="line"></span><br><span class="line">// 加入以下内容</span><br><span class="line"><span class="meta">#</span>每隔一个小时执行一次</span><br><span class="line">00 */1 * * * /usr/soft/mysqlbak.sh</span><br></pre></td></tr></table></figure>
+<h3 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h3><ul>
+<li>新创建的cron job，不会马上执行，至少要过2分钟才执行。如果重启cron则马上执行。</li>
+<li>当crontab失效时，可以尝试<strong>service crond restart</strong>解决问题。或者查看日志看某个job有没有执行/报错<strong>tail -f /var/log/cron</strong>。</li>
+<li>千万别乱运行<strong>crontab -r</strong>。它从Crontab目录（/var/spool/cron）中删除用户的Crontab文件。删除了该用户的所有crontab都没了。</li>
+<li>在crontab中%是有特殊含义的，表示换行的意思。如果要用的话必须进行转义%，如经常用的date ‘+%Y%m%d’在crontab里是不会执行的，应该换成date ‘+%Y%m%d’。</li>
+</ul>
+<p>……………</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>Linux博大精深，有很多的命令自己使用的比较少也没有用到，用到的时候再去查资料。</p>
+<p>更多的命令可以查看<a href="http://www.cnblogs.com/skillup/articles/1877812.html" target="_blank" rel="noopener"><strong><em>http://www.cnblogs.com/skillup/articles/1877812.html</em></strong></a></p>
+
+    </div>
+    
+        <div class="reward">
+    <div class="reward-wrap">赏
+        <div class="reward-box">
+            
+            
+                <span class="reward-type">
+                    <img class="wechat" src="../img/reward-wepay.jpg"><b>微信打赏</b>
+                </span>
+            
+        </div>
+    </div>
+    <p class="reward-tip">赞赏是不耍流氓的鼓励</p>
+</div>
+
+
+    
+    <div class="post-footer">
+        <div>
+            
+        </div>
+        <div>
+            
+        </div>
+    </div>
+</article>
+
+<div class="article-nav prev-next-wrap clearfix">
+    
+        <a href="/MySQL优化/" class="pre-post btn btn-default" title="MySQL优化">
+            <i class="fa fa-angle-left fa-fw"></i><span class="hidden-lg">上一篇</span>
+            <span class="hidden-xs">MySQL优化</span>
+        </a>
+    
+    
+        <a href="/JAVA实现简单爬虫/" class="next-post btn btn-default" title="JAVA实现简单网络爬虫">
+            <span class="hidden-lg">下一篇</span>
+            <span class="hidden-xs">JAVA实现简单网络爬虫</span><i class="fa fa-angle-right fa-fw"></i>
+        </a>
+    
+</div>
+
+
+    <div id="comments">
+        
+    
+    <div id="vcomments" class="valine"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="/assets/valine.min.js"></script>
+
+    <script>
+        new Valine({
+            av: AV,
+            el: '#vcomments',
+            appId: '8rKac39CM1EjFl9q7i97aDSu-gzGzoHsz',
+            appKey: '5wiSIVcjJCXPwgEwOqK8GaoJ',
+            placeholder: '说点什么吧',
+            notify: false,
+            verify: false,
+            avatar: 'mm',
+            meta: 'nick,mail'.split(','),
+            pageSize: '10',
+            path: window.location.pathname,
+            lang: 'zh-Hans'.toLowerCase()
+        })
+    </script>
+
+
+    </div>
+
+
+
+
+
+                </main>
+                
+                    <aside id="article-toc" role="navigation" class="col-md-4">
+    <div class="widget">
+        <h3 class="title">Table of Contents</h3>
+        
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#引言"><span class="toc-text">引言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Linux简介"><span class="toc-text">Linux简介</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#简介"><span class="toc-text">简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#常用版本"><span class="toc-text">常用版本</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#基本命令"><span class="toc-text">基本命令</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#基础命令"><span class="toc-text">基础命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#crontab定时任务"><span class="toc-text">crontab定时任务</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#基本使用"><span class="toc-text">基本使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用实例-定时备份MySQL"><span class="toc-text">使用实例(定时备份MySQL)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#注意"><span class="toc-text">注意</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#总结"><span class="toc-text">总结</span></a></li></ol>
+        
+    </div>
+</aside>
+
+                
+            </div>
+        </div>
+    </section>
+    <footer class="main-footer">
+    <div class="container">
+        <div class="row">
+        </div>
+    </div>
+</footer>
+
+<a id="back-to-top" class="icon-btn hide">
+	<i class="fa fa-chevron-up"></i>
+</a>
+
+
+
+
+    <div class="copyright">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="busuanzi">
+    
+        Total:
+        <strong id="busuanzi_value_site_pv">
+            <i class="fa fa-spinner fa-spin"></i>
+        </strong>
+        &nbsp; | &nbsp;
+        Visitors:
+        <strong id="busuanzi_value_site_uv">
+            <i class="fa fa-spinner fa-spin"></i>
+        </strong>
+    
+</div>
+
+            </div>
+            <div class="col-sm-12">
+                <span>Copyright &copy; 2018
+                </span> |
+                <span>
+                    Powered by <a href="//hexo.io" class="copyright-links" target="_blank" rel="nofollow">Hexo</a>
+                </span> |
+                <span>
+                       <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=44030502003606"><img src="/img/beian.png"><p style="display: inline;">粤公网安备 44030502003606号</p></a>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+<script src="/js/app.js?rev=@@hash"></script>
+
+</body>
+</html>
