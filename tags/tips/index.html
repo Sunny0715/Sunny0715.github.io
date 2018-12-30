@@ -121,7 +121,11 @@
                             </li>
                         
                             <li role="presentation" class="text-center">
-                                <a href="/categories/technology/"><i class="fa "></i>技术</a>
+                                <a href="/categories/后端/"><i class="fa "></i>后端</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/categories/工具/"><i class="fa "></i>工具</a>
                             </li>
                         
                             <li role="presentation" class="text-center">
@@ -149,6 +153,27 @@
     
 </h3>
 
+    <article class="post">
+        
+        <div class="post-content">
+            <div class="post-head home-post-head">
+                <h1 class="post-title">
+                    <a href="/计算密集型-VS-IO密集型/">计算密集型 VS IO密集型</a>
+                </h1>
+                <div class="post-meta">  &bull;
+                    <time class="post-date" datetime="" title="">
+                        2018年05月17日
+                    </time>
+                </div>
+            </div>
+            <p class="brief">
+                
+                    引言　　在开发过程中，经常会遇到多线程的问题，解决多线程的其中一种方式就是利用线程池，其中需要开启线程的数量便成为了我们关注的焦点。JAVA中有两种并发类型：计算密集型（CUP-bound）和IO密集型（I/O-bound）。…
+                
+            </p>
+        </div>
+    </article>
+ 
     <article class="post">
         
         <div class="post-content">
@@ -240,27 +265,6 @@
         <div class="post-content">
             <div class="post-head home-post-head">
                 <h1 class="post-title">
-                    <a href="/大话数据库连接池/">大话数据库连接池</a>
-                </h1>
-                <div class="post-meta">  &bull;
-                    <time class="post-date" datetime="" title="">
-                        2018年02月06日
-                    </time>
-                </div>
-            </div>
-            <p class="brief">
-                
-                    引言数据库连接池在Java数据库相关中间件产品群中，应该算是最底层最基础的一类产品，作为企业应用开发必不可少的组件，无数开发者们贡献了一个又一个的优秀产品，它们有的随着时代发展，功成身退，有的还在不断迭代，老而弥坚，更有新生代产品，或性能无敌、或功能全面。接下来就聊一聊  “那些年，我们用过的数据库连接池。”…
-                
-            </p>
-        </div>
-    </article>
- 
-    <article class="post">
-        
-        <div class="post-content">
-            <div class="post-head home-post-head">
-                <h1 class="post-title">
                     <a href="/HttpClient后台跨域/">HttpClient后台跨域</a>
                 </h1>
                 <div class="post-meta">  &bull;
@@ -304,6 +308,48 @@ JSON和JSONP虽然只有一个字母的差别，但其实他们根本不是一�
         <div class="post-content">
             <div class="post-head home-post-head">
                 <h1 class="post-title">
+                    <a href="/Linux下安装Nginx/">Linux下安装Nginx</a>
+                </h1>
+                <div class="post-meta">  &bull;
+                    <time class="post-date" datetime="" title="">
+                        2018年01月11日
+                    </time>
+                </div>
+            </div>
+            <p class="brief">
+                
+                    …
+                
+            </p>
+        </div>
+    </article>
+ 
+    <article class="post">
+        
+        <div class="post-content">
+            <div class="post-head home-post-head">
+                <h1 class="post-title">
+                    <a href="/Linux下安装JDK与MySQL/">Linux下安装JDK与MySQL</a>
+                </h1>
+                <div class="post-meta">  &bull;
+                    <time class="post-date" datetime="" title="">
+                        2018年01月09日
+                    </time>
+                </div>
+            </div>
+            <p class="brief">
+                
+                    引言重温记录下Linux环境下JDK和MySQL的安装。…
+                
+            </p>
+        </div>
+    </article>
+ 
+    <article class="post">
+        
+        <div class="post-content">
+            <div class="post-head home-post-head">
+                <h1 class="post-title">
                     <a href="/Linux下Tomcat的安装与优化/">Linux下Tomcat的安装与优化</a>
                 </h1>
                 <div class="post-meta">  &bull;
@@ -315,49 +361,6 @@ JSON和JSONP虽然只有一个字母的差别，但其实他们根本不是一�
             <p class="brief">
                 
                     引言Linux系统已经搁置很久了，之前有在Ubuntu系统上开发过，但是Linux已经很久没有用了。现在公司把项目部署在Linux系统上，又要把Linux相关知识温习一下。这篇博客温习一下Linux下Tomcat的部署与优化，大部分的操作与在windows上相同。…
-                
-            </p>
-        </div>
-    </article>
- 
-    <article class="post">
-        
-        <div class="post-content">
-            <div class="post-head home-post-head">
-                <h1 class="post-title">
-                    <a href="/详解Tomcat连接池与连接数/">详解Tomcat连接池与连接数</a>
-                </h1>
-                <div class="post-meta">  &bull;
-                    <time class="post-date" datetime="" title="">
-                        2017年12月28日
-                    </time>
-                </div>
-            </div>
-            <p class="brief">
-                
-                    引言在使用Tomcat时，经常会遇到连接数、线程数之类的配置，然后自己就去谷歌、百度，没有真正理解Tomcat配置的作用及当前业务环境、服务器配置等情况下Tomcat最优配置。
-12345&amp;lt;Connector port=&quot;8080&quot; protocol=&quot;org.apache.coyote.http11.Http11AprProtocol&quot;              connectionTimeout=&quot;20000&quot; maxThreads=&quot;1000&quot; minSpareThreads=&quot;100&quot;		   maxSpareThreads=&quot;200&quot; acceptCount=&quot;900&quot; enableLookups=&quot;false&quot;		   compression=&quot;on&quot; compressionMinSize=&quot;1024&quot; compressableMimeType=&quot;text/html,text/xml,text/css,text/javascript&quot;              redirectPort=&quot;8443&quot; URIEncoding=&quot;UTF-8&quot; maxHttpHeaderSize=&quot;8192&quot;/&amp;gt;…
-                
-            </p>
-        </div>
-    </article>
- 
-    <article class="post">
-        
-        <div class="post-content">
-            <div class="post-head home-post-head">
-                <h1 class="post-title">
-                    <a href="/tomcat入门/">Tomcat入门</a>
-                </h1>
-                <div class="post-meta">  &bull;
-                    <time class="post-date" datetime="" title="">
-                        2017年12月20日
-                    </time>
-                </div>
-            </div>
-            <p class="brief">
-                
-                    引言Tomcat 服务器是一个免费的开放源代码的Web 应用服务器，属于轻量级应用服务器。说是经常用到，也只是熟悉，还没没有真正达到了解其中的原理和其中配置的意义，最近也找了一些书籍来看，先入门。…
                 
             </p>
         </div>
@@ -412,6 +415,34 @@ JSON和JSONP虽然只有一个字母的差别，但其实他们根本不是一�
         
         
     <div class="widget">
+        <h3 class="title">Categories</h3>
+        <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/"><i class="fa" aria-hidden="true">Linux</i></a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/前端/"><i class="fa" aria-hidden="true">前端</i></a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/后端/"><i class="fa" aria-hidden="true">后端</i></a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/"><i class="fa" aria-hidden="true">工具</i></a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/"><i class="fa" aria-hidden="true">数据库</i></a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/杂谈/"><i class="fa" aria-hidden="true">杂谈</i></a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/"><i class="fa" aria-hidden="true">生活</i></a><span class="category-list-count">2</span></li></ul>
+    </div>
+
+
+        
+        
+    <div class="widget">
+        <h3 class="title">Archives</h3>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/"><i class="fa" aria-hidden="true">2018年05月</i></a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/"><i class="fa" aria-hidden="true">2018年04月</i></a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/"><i class="fa" aria-hidden="true">2018年03月</i></a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/"><i class="fa" aria-hidden="true">2018年02月</i></a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/"><i class="fa" aria-hidden="true">2018年01月</i></a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/"><i class="fa" aria-hidden="true">2017年12月</i></a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/"><i class="fa" aria-hidden="true">2017年11月</i></a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/"><i class="fa" aria-hidden="true">2017年10月</i></a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/"><i class="fa" aria-hidden="true">2017年09月</i></a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/"><i class="fa" aria-hidden="true">2017年07月</i></a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/"><i class="fa" aria-hidden="true">2017年06月</i></a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/"><i class="fa" aria-hidden="true">2017年04月</i></a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/"><i class="fa" aria-hidden="true">2017年03月</i></a><span class="archive-list-count">4</span></li></ul>
+    </div>
+
+
+        
+        
+  <div class="widget">
+    <h3 class="title">Tag Cloud</h3>
+    <div class="content tag-cloud">
+        
+            <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/jvm/" style="font-size: 11.43px;">jvm</a> <a href="/tags/mybatis/" style="font-size: 11.43px;">mybatis</a> <a href="/tags/mysql/" style="font-size: 17.14px;">mysql</a> <a href="/tags/nginx/" style="font-size: 11.43px;">nginx</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/spring/" style="font-size: 15.71px;">spring</a> <a href="/tags/sql/" style="font-size: 11.43px;">sql</a> <a href="/tags/tips/" style="font-size: 18.57px;">tips</a> <a href="/tags/tomcat/" style="font-size: 12.86px;">tomcat</a> <a href="/tags/tools/" style="font-size: 14.29px;">tools</a> <a href="/tags/开发/" style="font-size: 10px;">开发</a> <a href="/tags/移动端/" style="font-size: 10px;">移动端</a> <a href="/tags/随笔/" style="font-size: 12.86px;">随笔</a>
+        
+    </div>
+  </div>
+
+
+        
+        
+    <div class="widget">
       <h3 class="title">Social</h3> 
         <div class="content social">
             
@@ -434,44 +465,16 @@ JSON和JSONP虽然只有一个字母的差别，但其实他们根本不是一�
         
         
     <div class="widget">
-        <h3 class="title">Categories</h3>
-        <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/life/"><i class="fa" aria-hidden="true">life</i></a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/society/"><i class="fa" aria-hidden="true">society</i></a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/technology/"><i class="fa" aria-hidden="true">technology</i></a><span class="category-list-count">44</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/tool/"><i class="fa" aria-hidden="true">tool</i></a><span class="category-list-count">1</span></li></ul>
-    </div>
-
-
-        
-        
-    <div class="widget">
-        <h3 class="title">Archives</h3>
-        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/"><i class="fa" aria-hidden="true">2018年05月</i></a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/"><i class="fa" aria-hidden="true">2018年04月</i></a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/"><i class="fa" aria-hidden="true">2018年03月</i></a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/"><i class="fa" aria-hidden="true">2018年02月</i></a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/"><i class="fa" aria-hidden="true">2018年01月</i></a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/"><i class="fa" aria-hidden="true">2017年12月</i></a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/"><i class="fa" aria-hidden="true">2017年11月</i></a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/"><i class="fa" aria-hidden="true">2017年10月</i></a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/"><i class="fa" aria-hidden="true">2017年09月</i></a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/"><i class="fa" aria-hidden="true">2017年07月</i></a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/"><i class="fa" aria-hidden="true">2017年06月</i></a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/"><i class="fa" aria-hidden="true">2017年04月</i></a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/"><i class="fa" aria-hidden="true">2017年03月</i></a><span class="archive-list-count">4</span></li></ul>
-    </div>
-
-
-        
-        
-  <div class="widget">
-    <h3 class="title">Tag Cloud</h3>
-    <div class="content tag-cloud">
-        
-            <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/jvm/" style="font-size: 11.43px;">jvm</a> <a href="/tags/linux/" style="font-size: 14.29px;">linux</a> <a href="/tags/mybatis/" style="font-size: 11.43px;">mybatis</a> <a href="/tags/mysql/" style="font-size: 17.14px;">mysql</a> <a href="/tags/nginx/" style="font-size: 11.43px;">nginx</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/spring/" style="font-size: 15.71px;">spring</a> <a href="/tags/tips/" style="font-size: 18.57px;">tips</a> <a href="/tags/tomcat/" style="font-size: 12.86px;">tomcat</a> <a href="/tags/tool/" style="font-size: 14.29px;">tool</a> <a href="/tags/前端/" style="font-size: 14.29px;">前端</a> <a href="/tags/移动端/" style="font-size: 10px;">移动端</a> <a href="/tags/随笔/" style="font-size: 14.29px;">随笔</a>
-        
-    </div>
-  </div>
-
-
-        
-        
-    <div class="widget">
         <h3 class="title">Friends</h3>
         <div class="content friends-link">
         
-            <a href="http://www.importnew.com/" class="fa" target="_blank">爪哇ImportNew</a>
+            <a href="http://tool.oschina.net/" class="fa" target="_blank">在线工具</a><br>
         
-            <a href="http://www.open-open.com" class="fa" target="_blank">深度开源open-open</a>
+            <a href="http://www.importnew.com/" class="fa" target="_blank">爪哇ImportNew</a><br>
         
-            <a href="http://tool.oschina.net/" class="fa" target="_blank">在线工具</a>
+            <a href="http://www.pythontab.com/" class="fa" target="_blank">Python中文社区</a><br>
         
-            <a href="http://www.pythontab.com/" class="fa" target="_blank">Python中文社区</a>
+            <a href="http://www.open-open.com" class="fa" target="_blank">深度开源open-open</a><br>
         
         </div>
     </div>
