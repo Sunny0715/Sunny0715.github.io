@@ -212,7 +212,7 @@
 <li>安装完成后进入${home}/bin目录下有两个exe文件，通过名称就可以辨别<code>wkhtmltoimage.exe</code>是将HTML转化为image，<code>wkhtmltopdf.exe</code>是将HTML转化为PDF文件，这正是我们想要的。</li>
 </ol>
 <p><img src="../../../../images/2017-8-27/HtmlToPdf/HtmlToPdf.png" alt="path"></p>
-<ol>
+<ol start="3">
 <li>进入${home}/bin目录下打开cmd输入以下命令验证 </li>
 </ol>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wkhtmltopdf HTML路径 保存路径</span><br><span class="line">如： wkhtmltopdf www.baidu.com d:\test.pdf</span><br></pre></td></tr></table></figure>
@@ -285,27 +285,19 @@
 
     <div id="comments">
         
-    
-    <div id="vcomments" class="valine"></div>
-    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
-<script src="/assets/valine.min.js"></script>
-
-    <script>
-        new Valine({
-            av: AV,
-            el: "#vcomments",
-            appId: "8rKac39CM1EjFl9q7i97aDSu-gzGzoHsz",
-            appKey: "5wiSIVcjJCXPwgEwOqK8GaoJ",
-            placeholder: "说点什么吧",
-            notify: false,
-            verify: false,
-            avatar: "mm",
-            meta: "nick,mail".split(","),
-            pageSize: "10",
-            path: window.location.pathname,
-            lang: "zh-Hans".toLowerCase()
-        })
-    </script>
+	
+<div id="lv-container" data-id="city" data-uid="MTAyMC8zNDc4MS8xMTMxOA==">
+  <script type="text/javascript">
+     (function(d, s) {
+         var j, e = d.getElementsByTagName(s)[0];
+         if (typeof LivereTower === 'function') { return; }
+         j = d.createElement(s);
+         j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+         j.async = true;
+         e.parentNode.insertBefore(j, e);
+     })(document, 'script');
+  </script>
+</div>
 
 
     </div>

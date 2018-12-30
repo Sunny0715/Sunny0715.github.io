@@ -225,7 +225,7 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">InvocationHandler</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 参数说明：</span></span><br><span class="line">    <span class="comment">// Object proxy：指被代理的对象</span></span><br><span class="line">    <span class="comment">// Method method：所要调用被代理对象的某个方法的Method对象</span></span><br><span class="line">    <span class="comment">// Object[] args：被代理对象某个方法调用时所需要的参数</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">invoke</span><span class="params">(Object proxy, Method method, Object[] args)</span> <span class="keyword">throws</span> Throwable</span>;   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>可以将InvocationHandler接口的子类想象成一个代理的最终操作类。</p>
 <p>说明：<strong>每一个动态代理对象都必须要实现InvocationHandler这个接口</strong>，并且每个代理类（Proxy）的实例都关联到了一个handle，当我们通过代理对象调用一个方法的时候，这个方法的调用就会被转发为InvocationHandler这个接口的invoke方法来进行调用。同时在invoke的方法里，可以对被代理对象的方法调用做增强处理(如添加事务、日志、权限认证等操作)。</p>
-<ol>
+<ol start="2">
 <li>Proxy类</li>
 </ol>
 <p>Proxy类是专门完成代理的操作类，可以通过此类为一个或多个接口动态地生成实现类，该类常用的调用方法为<strong>newProxyInstance</strong></p>
@@ -284,7 +284,7 @@
 <ul>
 <li>如果要被代理的对象<strong>不是个实现类</strong>，那么Spring会<strong>强制使用CGLib来实现动态代理</strong>。</li>
 </ul>
-<h2 id="Spring中配置动态代理方式"><a href="#Spring中配置动态代理方式" class="headerlink" title="Spring中配置动态代理方式"></a>Spring中配置动态代理方式</h2><p>通过配置Spring的中<strong><aop:config></aop:config></strong>标签来显示的指定使用动态代理机制 <strong>proxy-target-class=true表示使用CGLib代理，如果为false就是默认使用JDK动态代理</strong>。</p>
+<h2 id="Spring中配置动态代理方式"><a href="#Spring中配置动态代理方式" class="headerlink" title="Spring中配置动态代理方式"></a>Spring中配置动态代理方式</h2><p>通过配置Spring的中<strong><a href="aop:config" target="_blank" rel="noopener">aop:config</a></strong>标签来显示的指定使用动态代理机制 <strong>proxy-target-class=true表示使用CGLib代理，如果为false就是默认使用JDK动态代理</strong>。</p>
 
     </div>
     
@@ -332,27 +332,19 @@
 
     <div id="comments">
         
-    
-    <div id="vcomments" class="valine"></div>
-    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
-<script src="/assets/valine.min.js"></script>
-
-    <script>
-        new Valine({
-            av: AV,
-            el: "#vcomments",
-            appId: "8rKac39CM1EjFl9q7i97aDSu-gzGzoHsz",
-            appKey: "5wiSIVcjJCXPwgEwOqK8GaoJ",
-            placeholder: "说点什么吧",
-            notify: false,
-            verify: false,
-            avatar: "mm",
-            meta: "nick,mail".split(","),
-            pageSize: "10",
-            path: window.location.pathname,
-            lang: "zh-Hans".toLowerCase()
-        })
-    </script>
+	
+<div id="lv-container" data-id="city" data-uid="MTAyMC8zNDc4MS8xMTMxOA==">
+  <script type="text/javascript">
+     (function(d, s) {
+         var j, e = d.getElementsByTagName(s)[0];
+         if (typeof LivereTower === 'function') { return; }
+         j = d.createElement(s);
+         j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+         j.async = true;
+         e.parentNode.insertBefore(j, e);
+     })(document, 'script');
+  </script>
+</div>
 
 
     </div>

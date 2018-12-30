@@ -288,11 +288,11 @@
 <li>第5列星期0～7（0和7表示星期天）</li>
 <li>第6列要运行的命令</li>
 </ul>
-<ol>
+<ol start="2">
 <li>命令</li>
 </ol>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span>列出crontab文件</span><br><span class="line"><span class="meta">$</span> crontab -l</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span>编辑crontab文件</span><br><span class="line"><span class="meta">$</span> crontab -e</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span>删除crontab文件</span><br><span class="line"><span class="meta">$</span> crontab -r</span><br></pre></td></tr></table></figure>
-<ol>
+<ol start="3">
 <li>使用实例</li>
 </ol>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 每1分钟执行一次myCommand</span><br><span class="line"><span class="meta">$</span> * * * * * myCommand</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 每小时的第3和第15分钟执行</span><br><span class="line"><span class="meta">$</span> 3,15 * * * * myCommand</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 每晚的21:30重启smb</span><br><span class="line"><span class="meta">$</span> 30 21 * * * /etc/init.d/smb restart</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 每周六、周日的1 : 10重启smb</span><br><span class="line"><span class="meta">$</span> 10 1 * * 6,0 /etc/init.d/smb restart</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 每一小时重启smb</span><br><span class="line"><span class="meta">$</span> * */1 * * * /etc/init.d/smb restart</span><br></pre></td></tr></table></figure>
@@ -300,11 +300,11 @@
 <li>在/usr/soft下新建脚本<strong>mysqlbak.sh</strong></li>
 </ol>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span>!/bin/bash</span><br><span class="line"><span class="meta">#</span>备份路径</span><br><span class="line">BACKUP=/usr/soft/sql</span><br><span class="line"><span class="meta">#</span>当前时间</span><br><span class="line">DATETIME=$(date +%Y-%m-%d_%H%M%S)</span><br><span class="line">echo "==备份开始=="</span><br><span class="line">echo "备份文件存放于$&#123;BACKUP&#125;/$DATETIME.tar.gz"</span><br><span class="line"><span class="meta">#</span>数据库地址</span><br><span class="line">HOST=localhost</span><br><span class="line"><span class="meta">#</span>数据库用户名</span><br><span class="line">DB_USER=root</span><br><span class="line"><span class="meta">#</span>数据库密码</span><br><span class="line">DB_PW=root</span><br><span class="line"><span class="meta">#</span>创建备份目录</span><br><span class="line">[ ! -d "$&#123;BACKUP&#125;/$DATETIME" ] &amp;&amp; mkdir -p "$&#123;BACKUP&#125;/$DATETIME"</span><br><span class="line"><span class="meta">#</span>后台系统数据库</span><br><span class="line">DATABASE=test</span><br><span class="line">/usr/bin/mysqldump -u$&#123;DB_USER&#125; -p$&#123;DB_PW&#125; --host=$HOST -q -R --databases $DATABASE | gzip &gt; $&#123;BACKUP&#125;/$DATETIME/$DATABASE.sql.gz</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span>压缩成tar.gz包</span><br><span class="line">cd $BACKUP</span><br><span class="line">tar -zcvf $DATETIME.tar.gz $DATETIME</span><br><span class="line"><span class="meta">#</span>删除备份目录</span><br><span class="line">rm -rf $&#123;BACKUP&#125;/$DATETIME</span><br><span class="line"><span class="meta">#</span>删除10天前备份的数据</span><br><span class="line">find $BACKUP -mtime +10 -name "*.tar.gz" -exec rm -rf &#123;&#125; \;</span><br><span class="line">echo "===备份成功==="</span><br></pre></td></tr></table></figure>
-<ol>
+<ol start="2">
 <li>赋予权限</li>
 </ol>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> chmod 777 mysqlbak.sh</span><br></pre></td></tr></table></figure>
-<ol>
+<ol start="3">
 <li>添加至定时任务</li>
 </ol>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// 编辑定时任务列表</span><br><span class="line"><span class="meta">$</span> crontab -e</span><br><span class="line"></span><br><span class="line">// 加入以下内容</span><br><span class="line"><span class="meta">#</span>每隔一个小时执行一次</span><br><span class="line">00 */1 * * * /usr/soft/mysqlbak.sh</span><br></pre></td></tr></table></figure>
@@ -364,27 +364,19 @@
 
     <div id="comments">
         
-    
-    <div id="vcomments" class="valine"></div>
-    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
-<script src="/assets/valine.min.js"></script>
-
-    <script>
-        new Valine({
-            av: AV,
-            el: "#vcomments",
-            appId: "8rKac39CM1EjFl9q7i97aDSu-gzGzoHsz",
-            appKey: "5wiSIVcjJCXPwgEwOqK8GaoJ",
-            placeholder: "说点什么吧",
-            notify: false,
-            verify: false,
-            avatar: "mm",
-            meta: "nick,mail".split(","),
-            pageSize: "10",
-            path: window.location.pathname,
-            lang: "zh-Hans".toLowerCase()
-        })
-    </script>
+	
+<div id="lv-container" data-id="city" data-uid="MTAyMC8zNDc4MS8xMTMxOA==">
+  <script type="text/javascript">
+     (function(d, s) {
+         var j, e = d.getElementsByTagName(s)[0];
+         if (typeof LivereTower === 'function') { return; }
+         j = d.createElement(s);
+         j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+         j.async = true;
+         e.parentNode.insertBefore(j, e);
+     })(document, 'script');
+  </script>
+</div>
 
 
     </div>

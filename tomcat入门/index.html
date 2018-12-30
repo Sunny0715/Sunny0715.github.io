@@ -260,7 +260,7 @@
 <p>Host是Engine的子容器。Engine组件中可以内嵌1个或多个Host组件，每个Host组件代表Engine中的一个虚拟主机。Host组件至少有一个，且其中一个的name必须与Engine组件的defaultHost属性相匹配。</p>
 <p>（2）Host的作用</p>
 <p>Host虚拟主机的作用，是运行多个Web应用（一个Context代表一个Web应用），并负责安装、展开、启动和结束每个Web应用。</p>
-<p>Host组件代表的虚拟主机，对应了服务器中一个网络名实体(如”www.test.com”，或IP地址”116.25.25.25”)；为了使用户可以通过网络名连接Tomcat服务器，这个名字应该在DNS服务器上注册。</p>
+<p>Host组件代表的虚拟主机，对应了服务器中一个网络名实体(如”<a href="http://www.test.com”，或IP地址”116.25.25.25”)；为了使用户可以通过网络名连接Tomcat服务器，这个名字应该在DNS服务器上注册。" target="_blank" rel="noopener">www.test.com”，或IP地址”116.25.25.25”)；为了使用户可以通过网络名连接Tomcat服务器，这个名字应该在DNS服务器上注册。</a></p>
 <p>客户端通常使用主机名来标识它们希望连接的服务器；该主机名也会包含在HTTP请求头中。Tomcat从HTTP头中提取出主机名，寻找名称匹配的主机。如果没有匹配，请求将发送至默认主机。因此默认主机不需要是在DNS服务器中注册的网络名，因为任何与所有Host名称不匹配的请求，都会路由至默认主机。</p>
 <p>（3）Host的配置</p>
 <p>在第一部分的例子中，Host的配置如下：</p>
@@ -447,27 +447,19 @@
 
     <div id="comments">
         
-    
-    <div id="vcomments" class="valine"></div>
-    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
-<script src="/assets/valine.min.js"></script>
-
-    <script>
-        new Valine({
-            av: AV,
-            el: "#vcomments",
-            appId: "8rKac39CM1EjFl9q7i97aDSu-gzGzoHsz",
-            appKey: "5wiSIVcjJCXPwgEwOqK8GaoJ",
-            placeholder: "说点什么吧",
-            notify: false,
-            verify: false,
-            avatar: "mm",
-            meta: "nick,mail".split(","),
-            pageSize: "10",
-            path: window.location.pathname,
-            lang: "zh-Hans".toLowerCase()
-        })
-    </script>
+	
+<div id="lv-container" data-id="city" data-uid="MTAyMC8zNDc4MS8xMTMxOA==">
+  <script type="text/javascript">
+     (function(d, s) {
+         var j, e = d.getElementsByTagName(s)[0];
+         if (typeof LivereTower === 'function') { return; }
+         j = d.createElement(s);
+         j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+         j.async = true;
+         e.parentNode.insertBefore(j, e);
+     })(document, 'script');
+  </script>
+</div>
 
 
     </div>

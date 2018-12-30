@@ -171,12 +171,12 @@
                         tips
                     </a>
                 
-                    <a href="/tags/linux" title="linux">
-                        linux
-                    </a>
-                
                     <a href="/tags/tomcat" title="tomcat">
                         tomcat
+                    </a>
+                
+                    <a href="/tags/linux" title="linux">
+                        linux
                     </a>
                 
             
@@ -226,15 +226,15 @@
 <li>编辑tomcat目录下文件bin/catalina.sh<strong>加载apr</strong>，在任意地方加入下面一行</li>
 </ol>
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CATALINA_OPTS="$CATALINA_OPTS -Djava.library.path=/usr/local/apr/lib"</span><br></pre></td></tr></table></figure>
-<ol>
+<ol start="2">
 <li>编辑bin/catalina.sh<strong>配置JVM运行参数</strong>，注意引号不要忘记。</li>
 </ol>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">JAVA_OPTS=&quot;-server -Xmx4g -Xms4g -Xmn1g -XX:PermSize=512M -XX:MaxPermSize=521M -XX:+DisableExplicitGC -XX:SurvivorRatio=3 -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/usr/soft/apache-tomcat-7.0.82 -XX:+UseConcMarkSweepGC -XX:+UseParNewGC -XX:CMSInitiatingOccupancyFraction=65 -XX:+UseCMSInitiatingOccupancyOnly -XX:SoftRefLRUPolicyMSPerMB=0 -XX:+UseCMSCompactAtFullCollection -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintHeapAtGC -Xloggc:/usr/soft/jdk1.8.0_152/log/gc.log -Djava.awt.headless=true&quot;</span><br></pre></td></tr></table></figure>
-<ol>
+<ol start="3">
 <li>编辑conf/server.xml<strong>使用apr运行模式</strong></li>
 </ol>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;Connector port=&quot;8080&quot; protocol=&quot;org.apache.coyote.http11.Http11AprProtocol&quot;</span><br><span class="line">               connectionTimeout=&quot;20000&quot; maxThreads=&quot;1000&quot; minSpareThreads=&quot;100&quot;</span><br><span class="line">			   maxSpareThreads=&quot;200&quot; acceptCount=&quot;900&quot; enableLookups=&quot;false&quot;</span><br><span class="line">			   compression=&quot;on&quot; compressionMinSize=&quot;1024&quot; compressableMimeType=&quot;text/html,text/xml,text/css,text/javascript&quot;</span><br><span class="line">               redirectPort=&quot;8443&quot; URIEncoding=&quot;UTF-8&quot; maxHttpHeaderSize=&quot;8192&quot;/&gt;</span><br></pre></td></tr></table></figure>
-<ol>
+<ol start="4">
 <li>启动Tomcat</li>
 </ol>
 <p>启动tomcat，查看tomcat日志文件，若出现如下信息则表明安装配置成功。</p>
@@ -287,27 +287,19 @@
 
     <div id="comments">
         
-    
-    <div id="vcomments" class="valine"></div>
-    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
-<script src="/assets/valine.min.js"></script>
-
-    <script>
-        new Valine({
-            av: AV,
-            el: "#vcomments",
-            appId: "8rKac39CM1EjFl9q7i97aDSu-gzGzoHsz",
-            appKey: "5wiSIVcjJCXPwgEwOqK8GaoJ",
-            placeholder: "说点什么吧",
-            notify: false,
-            verify: false,
-            avatar: "mm",
-            meta: "nick,mail".split(","),
-            pageSize: "10",
-            path: window.location.pathname,
-            lang: "zh-Hans".toLowerCase()
-        })
-    </script>
+	
+<div id="lv-container" data-id="city" data-uid="MTAyMC8zNDc4MS8xMTMxOA==">
+  <script type="text/javascript">
+     (function(d, s) {
+         var j, e = d.getElementsByTagName(s)[0];
+         if (typeof LivereTower === 'function') { return; }
+         j = d.createElement(s);
+         j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+         j.async = true;
+         e.parentNode.insertBefore(j, e);
+     })(document, 'script');
+  </script>
+</div>
 
 
     </div>

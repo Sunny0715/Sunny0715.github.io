@@ -238,14 +238,14 @@
 <p>如果是要起一个新段落，只需要空出一行即可。</p>
 <h3 id="9-分隔符"><a href="#9-分隔符" class="headerlink" title="9  分隔符"></a>9  分隔符</h3><p>如果你有写分割线的习惯，可以新起一行输入三个减号<code>-</code>。当前后都有段落时，请空出一行：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">前面的段落</span><br><span class="line"></span><br><span class="line">---</span><br><span class="line"></span><br><span class="line">后面的段落</span><br></pre></td></tr></table></figure>
-<h2 id="高级技巧"><a href="#高级技巧" class="headerlink" title="高级技巧"></a>高级技巧</h2><h3 id="1-行内-HTML-元素"><a href="#1-行内-HTML-元素" class="headerlink" title="1 行内 HTML 元素"></a>1 行内 HTML 元素</h3><p>目前只支持部分段内 HTML 元素效果，包括 <code> </code> ，如</p>
+<h2 id="高级技巧"><a href="#高级技巧" class="headerlink" title="高级技巧"></a>高级技巧</h2><h3 id="1-行内-HTML-元素"><a href="#1-行内-HTML-元素" class="headerlink" title="1 行内 HTML 元素"></a>1 行内 HTML 元素</h3><p>目前只支持部分段内 HTML 元素效果，包括 <code></code> ，如</p>
 <p>键位显示</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">使用 &lt;kbd&gt;Ctrl&lt;<span class="regexp">/kbd&gt;+&lt;kbd&gt;Alt&lt;/</span>kbd&gt;+<span class="xml"><span class="tag">&lt;<span class="name">kbd</span>&gt;</span>Del<span class="tag">&lt;/<span class="name">kbd</span>&gt;</span></span> 重启电脑</span><br></pre></td></tr></table></figure>
 <p>代码块</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">使用 &lt;pre&gt;<span class="xml"><span class="tag">&lt;/<span class="name">pre</span>&gt;</span></span> 元素同样可以形成代码块</span><br></pre></td></tr></table></figure>
 <p>粗斜体</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;b&gt; Markdown 在此处同样适用，如 *加粗* <span class="xml"><span class="tag">&lt;/<span class="name">b</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
-<h3 id="2-符号转义"><a href="#2-符号转义" class="headerlink" title="2  符号转义"></a>2  符号转义</h3><p>如果你的描述中需要用到 markdown 的符号，比如 <code>_</code> <code>#</code> <code>*</code> 等，但又不想它被转义，这时候可以在这些符号前加反斜杠，如 <code>\_</code> <code>\#``\*</code> 进行避免。</p>
+<h3 id="2-符号转义"><a href="#2-符号转义" class="headerlink" title="2  符号转义"></a>2  符号转义</h3><p>如果你的描述中需要用到 markdown 的符号，比如 <code>_</code> <code>#</code> <code>*</code> 等，但又不想它被转义，这时候可以在这些符号前加反斜杠，如 <code>\_</code> <code>\#`</code>*` 进行避免。</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">\_不想这里的文本变斜体\_</span><br><span class="line">\*\*不想这里的文本被加粗\*\*</span><br></pre></td></tr></table></figure>
 <h3 id="3-扩展"><a href="#3-扩展" class="headerlink" title="3  扩展"></a>3  扩展</h3><p>支持<strong> jsfiddle、gist、runjs、优酷视频</strong>，直接填写 url，在其之后会自动添加预览点击会展开相关内容。</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">http:<span class="comment">//&#123;url_of_the_fiddle&#125;/embedded/[&#123;tabs&#125;/[&#123;style&#125;]]/</span></span><br><span class="line">https:<span class="comment">//gist.github.com/&#123;gist_id&#125;</span></span><br><span class="line">http:<span class="comment">//runjs.cn/detail/&#123;id&#125;</span></span><br><span class="line">http:<span class="comment">//v.youku.com/v_show/id_&#123;video_id&#125;.html</span></span><br></pre></td></tr></table></figure>
@@ -301,27 +301,19 @@
 
     <div id="comments">
         
-    
-    <div id="vcomments" class="valine"></div>
-    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
-<script src="/assets/valine.min.js"></script>
-
-    <script>
-        new Valine({
-            av: AV,
-            el: "#vcomments",
-            appId: "8rKac39CM1EjFl9q7i97aDSu-gzGzoHsz",
-            appKey: "5wiSIVcjJCXPwgEwOqK8GaoJ",
-            placeholder: "说点什么吧",
-            notify: false,
-            verify: false,
-            avatar: "mm",
-            meta: "nick,mail".split(","),
-            pageSize: "10",
-            path: window.location.pathname,
-            lang: "zh-Hans".toLowerCase()
-        })
-    </script>
+	
+<div id="lv-container" data-id="city" data-uid="MTAyMC8zNDc4MS8xMTMxOA==">
+  <script type="text/javascript">
+     (function(d, s) {
+         var j, e = d.getElementsByTagName(s)[0];
+         if (typeof LivereTower === 'function') { return; }
+         j = d.createElement(s);
+         j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+         j.async = true;
+         e.parentNode.insertBefore(j, e);
+     })(document, 'script');
+  </script>
+</div>
 
 
     </div>
