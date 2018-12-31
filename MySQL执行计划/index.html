@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="zh-Hans">
+<html lang="zh-CN">
 <head><meta name="generator" content="Hexo 3.8.0">
     <!--Setting-->
     <meta charset="UTF-8">
@@ -117,7 +117,7 @@
                     <ul class="menu">
                         
                             <li role="presentation" class="text-center">
-                                <a href="/"><i class="fa "></i>Home</a>
+                                <a href="/"><i class="fa "></i>首页</a>
                             </li>
                         
                             <li role="presentation" class="text-center">
@@ -336,19 +336,27 @@
 
     <div id="comments">
         
-	
-<div id="lv-container" data-id="city" data-uid="MTAyMC8zNDc4MS8xMTMxOA==">
-  <script type="text/javascript">
-     (function(d, s) {
-         var j, e = d.getElementsByTagName(s)[0];
-         if (typeof LivereTower === 'function') { return; }
-         j = d.createElement(s);
-         j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
-         j.async = true;
-         e.parentNode.insertBefore(j, e);
-     })(document, 'script');
-  </script>
-</div>
+    
+    <div id="vcomments" class="valine"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="/assets/valine.min.js"></script>
+
+    <script>
+        new Valine({
+            av: AV,
+            el: "#vcomments",
+            appId: "8rKac39CM1EjFl9q7i97aDSu-gzGzoHsz",
+            appKey: "5wiSIVcjJCXPwgEwOqK8GaoJ",
+            placeholder: "说点什么吧",
+            notify: false,
+            verify: false,
+            avatar: "mm",
+            meta: "nick,mail".split(","),
+            pageSize: "10",
+            path: window.location.pathname,
+            lang: "zh-CN".toLowerCase()
+        })
+    </script>
 
 
     </div>
@@ -361,7 +369,7 @@
                 
                     <aside id="article-toc" role="navigation" class="col-md-4">
     <div class="widget">
-        <h3 class="title">Table of Contents</h3>
+        <h3 class="title">文章目录</h3>
         
             <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#引言"><span class="toc-text">引言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#适用场景"><span class="toc-text">适用场景</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#EXPLAIN可得到的信息"><span class="toc-text">EXPLAIN可得到的信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#读懂执行计划"><span class="toc-text">读懂执行计划</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#ID"><span class="toc-text">ID</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SELECT-TYPE"><span class="toc-text">SELECT_TYPE</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TABLE"><span class="toc-text">TABLE</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PARTITIONS"><span class="toc-text">PARTITIONS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TYPE（类型性能是依次降低）"><span class="toc-text">TYPE（类型性能是依次降低）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#POSSIBLE-KEYS"><span class="toc-text">POSSIBLE_KEYS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#KEY"><span class="toc-text">KEY</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#KEY-LEN"><span class="toc-text">KEY_LEN</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#REF"><span class="toc-text">REF</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ROWS"><span class="toc-text">ROWS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#FILTERED"><span class="toc-text">FILTERED</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#EXTRA"><span class="toc-text">EXTRA</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#执行计划的局限性"><span class="toc-text">执行计划的局限性</span></a></li></ol>
         
@@ -392,12 +400,12 @@
             <div class="col-sm-12">
                 <div class="busuanzi">
     
-        Total:
+        访问量:
         <strong id="busuanzi_value_site_pv">
             <i class="fa fa-spinner fa-spin"></i>
         </strong>
         &nbsp; | &nbsp;
-        Visitors:
+        访客数:
         <strong id="busuanzi_value_site_uv">
             <i class="fa fa-spinner fa-spin"></i>
         </strong>
@@ -406,7 +414,7 @@
 
             </div>
             <div class="col-sm-12">
-                <span>Copyright &copy; 2018
+                <span>Copyright &copy; 2017-2018
                 </span> |
                 <span>
                     Powered by <a href="//hexo.io" class="copyright-links" target="_blank" rel="nofollow">Hexo</a>
