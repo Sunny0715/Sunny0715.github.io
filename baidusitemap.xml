@@ -4,6 +4,46 @@
 
     
   <url>
+    <loc>https://sunny0715.github.io/bug%E7%AE%80%E8%AE%B0/</loc>
+    <lastmod>2019-01-20T15:29:04.561Z</lastmod>
+    <data>
+        <display>
+        <title>bug简记</title>
+        <pubTime>2018-10-01T14:39:56.000Z</pubTime>
+        
+        <tag>java</tag>
+         
+         
+           
+             
+              <breadCrumb title="bug" url="https://sunny0715.github.io/categories/bug/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://sunny0715.github.io/logback%E6%8E%A8%E8%8D%90%E9%85%8D%E7%BD%AE/</loc>
+    <lastmod>2019-01-20T15:16:54.435Z</lastmod>
+    <data>
+        <display>
+        <title>logback推荐配置</title>
+        <pubTime>2018-08-18T07:51:53.000Z</pubTime>
+        
+        <tag>tips</tag>
+         
+         
+           
+             
+              <breadCrumb title="工具" url="https://sunny0715.github.io/categories/%E5%B7%A5%E5%85%B7/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>https://sunny0715.github.io/%E5%9F%BA%E4%BA%8ERedis%E7%9A%84%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/</loc>
     <lastmod>2019-01-01T15:36:15.023Z</lastmod>
     <data>
@@ -19,26 +59,6 @@
            
              
               <breadCrumb title="数据库" url="https://sunny0715.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>https://sunny0715.github.io/logback%E6%8E%A8%E8%8D%90%E9%85%8D%E7%BD%AE/</loc>
-    <lastmod>2018-12-31T08:39:07.503Z</lastmod>
-    <data>
-        <display>
-        <title>logback推荐配置</title>
-        <pubTime>2018-08-18T07:51:53.000Z</pubTime>
-        
-        <tag>tips</tag>
-         
-         
-           
-             
-              <breadCrumb title="工具" url="https://sunny0715.github.io/categories/%E5%B7%A5%E5%85%B7/"/>
           
         </display>
     </data>

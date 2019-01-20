@@ -152,6 +152,27 @@
         <div class="post-content">
             <div class="post-head home-post-head">
                 <h1 class="post-title">
+                    <a href="/线程池之ThreadPoolExecutor/">线程池之ThreadPoolExecutor</a>
+                </h1>
+                <div class="post-meta">  &bull;
+                    <time class="post-date" datetime="" title="">
+                        2018年03月17日
+                    </time>
+                </div>
+            </div>
+            <p class="brief">
+                
+                    引言JAVA对于多线程的封装非常丰富，提供了多种适用于不同场景的多并发实现。但如果并发的线程数量很多，并且每个线程都是执行一个时间很短的任务就结束了，这样频繁创建线程就会大大降低系统的效率，因为频繁创建线程和销毁线程需要时间。这里就引入了线程池来管理线程，其中最基础、最核心的线程池要属ThreadPoolExecutor类了。…
+                
+            </p>
+        </div>
+    </article>
+ 
+    <article class="post">
+        
+        <div class="post-content">
+            <div class="post-head home-post-head">
+                <h1 class="post-title">
                     <a href="/Spring-webSocket/">Spring+webSocket</a>
                 </h1>
                 <div class="post-meta">  &bull;
@@ -348,28 +369,6 @@ intern()方法设计的初衷，就是重用String对象，以节省内存消耗
         </div>
     </article>
  
-    <article class="post">
-        
-        <div class="post-content">
-            <div class="post-head home-post-head">
-                <h1 class="post-title">
-                    <a href="/系统中功能点的版本控制/">系统中功能点的版本控制</a>
-                </h1>
-                <div class="post-meta">  &bull;
-                    <time class="post-date" datetime="" title="">
-                        2017年09月21日
-                    </time>
-                </div>
-            </div>
-            <p class="brief">
-                
-                    引言​    开发过程中我们会使用版本控制工具，如SVN、Git等。但是我们一样会遇到一种情形：在一套试题系统中，有新建题目、编辑题目、删除题目等功能，且题目可以被多个人修改，每人修改一次即是一个版本。现在的需求就是需要记录每一次修改的详细信息，每次版本之间的差异，甚至还可以版本回滚。
-​    例如题目编号为20170919170800000061的题目被A创建，依次被B、C、D各修改了一次，此时需要比较B和A间的差异、C和B间的差异、D和C间的差异，到最后审核阶段如果B 的版本比较符合，则需要把试题版本内容回滚到B版本作为最后的版本。…
-                
-            </p>
-        </div>
-    </article>
- 
 
 
     <nav class="pagination" role="navigation">
@@ -420,7 +419,7 @@ intern()方法设计的初衷，就是重用String对象，以节省内存消耗
         
     <div class="widget">
         <h3 class="title">分类</h3>
-        <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/"><i class="fa" aria-hidden="true">Linux</i></a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/前端/"><i class="fa" aria-hidden="true">前端</i></a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/后端/"><i class="fa" aria-hidden="true">后端</i></a><span class="category-list-count">27</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/"><i class="fa" aria-hidden="true">工具</i></a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/"><i class="fa" aria-hidden="true">数据库</i></a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/杂谈/"><i class="fa" aria-hidden="true">杂谈</i></a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/"><i class="fa" aria-hidden="true">生活</i></a><span class="category-list-count">2</span></li></ul>
+        <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/"><i class="fa" aria-hidden="true">Linux</i></a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/bug/"><i class="fa" aria-hidden="true">bug</i></a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/前端/"><i class="fa" aria-hidden="true">前端</i></a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/后端/"><i class="fa" aria-hidden="true">后端</i></a><span class="category-list-count">27</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/"><i class="fa" aria-hidden="true">工具</i></a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/"><i class="fa" aria-hidden="true">数据库</i></a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/杂谈/"><i class="fa" aria-hidden="true">杂谈</i></a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/"><i class="fa" aria-hidden="true">生活</i></a><span class="category-list-count">2</span></li></ul>
     </div>
 
 
@@ -428,7 +427,7 @@ intern()方法设计的初衷，就是重用String对象，以节省内存消耗
         
     <div class="widget">
         <h3 class="title">归档</h3>
-        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/"><i class="fa" aria-hidden="true">2018年09月</i></a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/"><i class="fa" aria-hidden="true">2018年08月</i></a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/"><i class="fa" aria-hidden="true">2018年07月</i></a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/"><i class="fa" aria-hidden="true">2018年05月</i></a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/"><i class="fa" aria-hidden="true">2018年04月</i></a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/"><i class="fa" aria-hidden="true">2018年03月</i></a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/"><i class="fa" aria-hidden="true">2018年02月</i></a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/"><i class="fa" aria-hidden="true">2018年01月</i></a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/"><i class="fa" aria-hidden="true">2017年12月</i></a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/"><i class="fa" aria-hidden="true">2017年11月</i></a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/"><i class="fa" aria-hidden="true">2017年10月</i></a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/"><i class="fa" aria-hidden="true">2017年09月</i></a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/"><i class="fa" aria-hidden="true">2017年07月</i></a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/"><i class="fa" aria-hidden="true">2017年06月</i></a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/"><i class="fa" aria-hidden="true">2017年04月</i></a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/"><i class="fa" aria-hidden="true">2017年03月</i></a><span class="archive-list-count">5</span></li></ul>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/"><i class="fa" aria-hidden="true">2018年10月</i></a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/"><i class="fa" aria-hidden="true">2018年09月</i></a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/"><i class="fa" aria-hidden="true">2018年08月</i></a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/"><i class="fa" aria-hidden="true">2018年07月</i></a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/"><i class="fa" aria-hidden="true">2018年05月</i></a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/"><i class="fa" aria-hidden="true">2018年04月</i></a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/"><i class="fa" aria-hidden="true">2018年03月</i></a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/"><i class="fa" aria-hidden="true">2018年02月</i></a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/"><i class="fa" aria-hidden="true">2018年01月</i></a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/"><i class="fa" aria-hidden="true">2017年12月</i></a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/"><i class="fa" aria-hidden="true">2017年11月</i></a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/"><i class="fa" aria-hidden="true">2017年10月</i></a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/"><i class="fa" aria-hidden="true">2017年09月</i></a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/"><i class="fa" aria-hidden="true">2017年07月</i></a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/"><i class="fa" aria-hidden="true">2017年06月</i></a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/"><i class="fa" aria-hidden="true">2017年04月</i></a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/"><i class="fa" aria-hidden="true">2017年03月</i></a><span class="archive-list-count">5</span></li></ul>
     </div>
 
 
