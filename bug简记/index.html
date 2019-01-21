@@ -194,7 +194,7 @@
     </div>
     
     <div class="post-body post-content">
-        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在开发过程中会遇到这种各样的bug，也是自己吃过的亏。以后在这里会把自己遇到的bug记录下来，吸取教训，避免犯同样的错误。</p>
+        <h1 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h1><p>在开发过程中会遇到这种各样的bug，也是自己吃过的亏。以后在这里会把自己遇到的bug记录下来，吸取教训，避免犯同样的错误。</p>
 <p><div align="center"><img width="220" height="160" src="../../../../images/2018-8/bug.jpg" algin="center"></div><a id="more"></a></p>
 <h1 id="采坑记录"><a href="#采坑记录" class="headerlink" title="采坑记录"></a>采坑记录</h1><p>在与第三方对接的接口中，对方推送消息接口定义如果接收成功返回<em>success</em>，反之返回其他字符串，如果不是<em>success</em>字符串就会再重复推送三次。自己在代码中为：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(value = <span class="string">""</span>, method = RequestMethod.POST)</span><br><span class="line"><span class="meta">@ResponseBody</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">callBack</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">//...something</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">"success"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -284,7 +284,7 @@
     <div class="widget">
         <h3 class="title">文章目录</h3>
         
-            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#前言"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#采坑记录"><span class="toc-text">采坑记录</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#原因"><span class="toc-text">原因</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#解决方法"><span class="toc-text">解决方法</span></a></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#引言"><span class="toc-text">引言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#采坑记录"><span class="toc-text">采坑记录</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#原因"><span class="toc-text">原因</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#解决方法"><span class="toc-text">解决方法</span></a></li></ol>
         
     </div>
 </aside>
