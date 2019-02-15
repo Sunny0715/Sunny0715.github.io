@@ -238,11 +238,14 @@ logback优点
 <tbody>
 <tr>
 <td style="text-align:center">src/main/resources/logback.xml</td>
-<td style="text-align:center">异步打印到按天轮转的日志文件中。</td>
+<td style="text-align:center">异步打印到按天轮转的日志文件中。jar包不要配置，避免污染业务配置。</td>
+</tr>
+<tr>
+<td style="text-align:center">src/test/resources/logback-test.xml</td>
+<td style="text-align:center">测试时候使用，打印到stdout</td>
 </tr>
 </tbody>
 </table>
-<p>jar包不要配置，避免污染业务配置。 |<br>| src/test/resources/logback-test.xml |                  测试时候使用，打印到stdout                  |</p>
 <ol>
 <li>线上和开发环境的配置要分离，对于java项目：<ol>
 <li>src/main/resources 目录下的东西都是正式环境使用的</li>
