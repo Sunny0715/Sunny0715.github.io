@@ -16,9 +16,13 @@
     <link rel="dns-prefetch" href="https://sunny0715.github.io">
     <!--SEO-->
 
-<meta name="description" content="总结个人心得，记录个人知识">
+    <meta name="keywords" content="tips">
 
 
+    <meta name="description" content="引言大约从16年，不管是我参与别人已搭建好的项目还是自己单独搭建的项目，日志框架基本都换成了logback。
+
+logback优点
+内核重写、测试充分、初始化内存加载更小，这一切让logback...">
 
 
 
@@ -26,6 +30,7 @@
 <meta name="google" content="all">
 <meta name="googlebot" content="all">
 <meta name="verify" content="all">
+
     <!--Title-->
 
 
@@ -195,7 +200,50 @@
 <li>logback当配置文件修改了，支持自动重新加载配置文件，扫描过程快且安全，它并不需要另外创建一个扫描线程</li>
 <li>支持自动去除旧的日志文件，可以控制已经产生日志文件的最大数量</li>
 </ul>
-<h1 id="配置的正确姿势"><a href="#配置的正确姿势" class="headerlink" title="配置的正确姿势"></a>配置的正确姿势</h1><ol>
+<h1 id="配置的正确姿势"><a href="#配置的正确姿势" class="headerlink" title="配置的正确姿势"></a>配置的正确姿势</h1><p>我们大部分Java后台都是Maven工程，标准目录如下：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">包路径</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">src/main/java</td>
+<td style="text-align:center">java源代码文件，编译到target/classes</td>
+</tr>
+<tr>
+<td style="text-align:center">src/main/resource</td>
+<td style="text-align:center">正式包资源库，编译时会复制到target/classes</td>
+</tr>
+<tr>
+<td style="text-align:center">src/test/java</td>
+<td style="text-align:center">测试java源代码文件，编译到target/test-classes</td>
+</tr>
+<tr>
+<td style="text-align:center">src/test/resource</td>
+<td style="text-align:center">测试时资源库，编译时复制到target/test-classes</td>
+</tr>
+</tbody>
+</table>
+<p>建议配置2个logback配置文件：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">路径</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">src/main/resources/logback.xml</td>
+<td style="text-align:center">异步打印到按天轮转的日志文件中。</td>
+</tr>
+</tbody>
+</table>
+<p>jar包不要配置，避免污染业务配置。 |<br>| src/test/resources/logback-test.xml |                  测试时候使用，打印到stdout                  |</p>
+<ol>
 <li>线上和开发环境的配置要分离，对于java项目：<ol>
 <li>src/main/resources 目录下的东西都是正式环境使用的</li>
 <li>src/test/resources 目录下的东西才是本机开发环境使用的</li>
