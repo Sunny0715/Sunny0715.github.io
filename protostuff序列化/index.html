@@ -1,0 +1,347 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!--Setting-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta http-equiv="Cache-Control" content="no-transform">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="apple-mobile-web-app-capable" content="rainbowhorse&#39;s blog">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    <meta name="browsermode" content="application">
+    <meta name="screen-orientation" content="portrait">
+    <link rel="dns-prefetch" href="https://sunny0715.github.io">
+    <!--SEO-->
+
+    <meta name="keywords" content="tips">
+
+
+    <meta name="description" content="引言HTTP通信离不开对象的序列化和反序列化。通过序列化技术，可以跨语言实现数据的传输，将对象转换为字节序列，然后在网络上传送；通过反序列化，可以将字节序列转换为对象。 基本原理和网络通信是一致...">
+
+
+
+<meta name="robots" content="all">
+<meta name="google" content="all">
+<meta name="googlebot" content="all">
+<meta name="verify" content="all">
+
+    <!--Title-->
+
+
+<title>protostuff序列化 | rainbowhorse&#39;s blog</title>
+
+
+    <link rel="alternate" href="/atom.xml" title="rainbowhorse&#39;s blog" type="application/atom+xml">
+
+
+    <link rel="icon" href="/favicon.ico">
+
+    
+
+
+
+<link rel="stylesheet" href="/css/bootstrap.min.css?rev=3.3.7">
+<link rel="stylesheet" href="/css/font-awesome.min.css?rev=4.5.0">
+<link rel="stylesheet" href="/css/style.css?rev=@@hash">
+
+
+
+
+    
+
+
+
+
+
+    
+
+    <script>
+        (function(){
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+            }
+            else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        })();
+    </script>
+
+</head>
+
+</html>
+<!--[if lte IE 8]>
+<style>
+    html{ font-size: 1em }
+</style>
+<![endif]-->
+<!--[if lte IE 9]>
+<div style="ie">你使用的浏览器版本过低，为了你更好的阅读体验，请更新浏览器的版本或者使用其他现代浏览器，比如Chrome、Firefox、Safari等。</div>
+<![endif]-->
+
+<body>
+    <header class="main-header" style="background-image:url(http://snippet.shenliyang.com/img/banner.jpg)">
+    <div class="main-header-box">
+        <a class="header-avatar" href="/" title="rainbowhorse">
+            <img src="/img/avatar.jpg" alt="logo头像" class="img-responsive center-block">
+        </a>
+        <div class="branding">
+        	<!--<h2 class="text-hide">Snippet主题,从未如此简单有趣</h2>-->
+            
+                <h2> 不忘初心 方得始终 </h2>
+            
+    	</div>
+    </div>
+</header>
+    <nav class="main-navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="navbar-header"><span class="nav-toggle-button collapsed pull-right" data-toggle="collapse" data-target="#main-menu" id="mnav">
+                    <span class="sr-only"></span>
+                        <i class="fa fa-bars"></i>
+                    </span>
+                    <a class="navbar-brand" href="https://sunny0715.github.io">rainbowhorse&#39;s blog</a>
+                </div>
+                <div class="collapse navbar-collapse" id="main-menu">
+                    <ul class="menu">
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/"><i class="fa "></i>首页</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/categories/后端/"><i class="fa "></i>后端</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/categories/工具/"><i class="fa "></i>工具</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/about/"><i class="fa "></i>关于我</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/archives/"><i class="fa "></i>时间轴</a>
+                            </li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+    <section class="content-wrap">
+        <div class="container">
+            <div class="row">
+                <main class="col-md-8 main-content m-post">
+                    <p id="process"></p>
+<article class="post">
+    <div class="post-head">
+        <h1 id="protostuff序列化">
+            
+	            protostuff序列化
+            
+        </h1>
+        <div class="post-meta">
+    
+        <span class="categories-meta fa-wrap">
+            <i class="fa fa-folder-open-o"></i>
+            <a class="category-link" href="/categories/工具/">工具</a>
+        </span>
+    
+
+    
+        <span class="fa-wrap">
+            <i class="fa fa-tags"></i>
+            <span class="tags-meta">
+                
+                    <a class="tag-link" href="/tags/tips/">tips</a>
+                
+            </span>
+        </span>
+    
+
+    
+        
+        <span class="fa-wrap">
+            <i class="fa fa-clock-o"></i>
+            <span class="date-meta">2019/01/17</span>
+        </span>
+        
+            <span class="fa-wrap">
+                <i class="fa fa-eye"></i>
+                <span id="busuanzi_value_page_pv"></span>
+            </span>
+        
+    
+</div>
+            
+            
+    </div>
+    
+    <div class="post-body post-content">
+        <h1 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h1><p>HTTP通信离不开对象的序列化和反序列化。通过序列化技术，可以跨语言实现数据的传输，将对象转换为字节序列，然后在网络上传送；通过反序列化，可以将字节序列转换为对象。<a id="more"></a> 基本原理和网络通信是一致的，通过特殊的编码方式，写入数据将对象以及其内部数据编码，存在在数组或者文件里面然后发送到目的地后，在进行解码，读出数据。</p>
+<div align="center"><img width="250" height="220" src="../../../../images/2019/1-3/protostuff.png" algin="center"><br></div>
+
+<h1 id="protostuff"><a href="#protostuff" class="headerlink" title="protostuff"></a>protostuff</h1><p>protostuff是一个效率很高的对普通的javabean进行序列化、反序列化的产品。详细效率对比可参考：<a href="https://www.cnblogs.com/xiaoMzjm/p/4555209.html" target="_blank" rel="noopener">java序列化/反序列化之xstream、protobuf、protostuff 的比较与使用例子</a></p>
+<h2 id="maven依赖"><a href="#maven依赖" class="headerlink" title="maven依赖"></a>maven依赖</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>io.protostuff<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>protostuff-runtime<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.6.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>io.protostuff<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>protostuff-core<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.6.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="ProtostuffUtil工具类"><a href="#ProtostuffUtil工具类" class="headerlink" title="ProtostuffUtil工具类"></a>ProtostuffUtil工具类</h2><p>ProtostuffUtil.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> io.protostuff.LinkedBuffer;</span><br><span class="line"><span class="keyword">import</span> io.protostuff.ProtobufIOUtil;</span><br><span class="line"><span class="keyword">import</span> io.protostuff.ProtostuffIOUtil;</span><br><span class="line"><span class="keyword">import</span> io.protostuff.Schema;</span><br><span class="line"><span class="keyword">import</span> io.protostuff.runtime.RuntimeSchema;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ProtostuffUtil</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ProtostuffUtil</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; <span class="keyword">byte</span>[] serializer(T o) &#123;</span><br><span class="line">        Schema schema = RuntimeSchema.getSchema(o.getClass());</span><br><span class="line">        <span class="keyword">return</span> ProtobufIOUtil.toByteArray(o, schema, LinkedBuffer.allocate(<span class="number">256</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; <span class="function">T <span class="title">deserializer</span><span class="params">(<span class="keyword">byte</span>[] bytes, Class&lt;T&gt; clazz)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        T obj = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            obj = clazz.newInstance();</span><br><span class="line">            Schema schema = RuntimeSchema.getSchema(obj.getClass());</span><br><span class="line">            ProtostuffIOUtil.mergeFrom(bytes, obj, schema);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InstantiationException | IllegalAccessException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> obj;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="测试bean"><a href="#测试bean" class="headerlink" title="测试bean"></a>测试bean</h2><p>Student.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> io.protostuff.Tag;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Student</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 关于@Tag,要么所有属性都有@Tag注解,要么都没有,不能一个类中只有部分属性有@Tag注解</span></span><br><span class="line">    <span class="meta">@Tag</span>(<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="meta">@Tag</span>(<span class="number">2</span>)</span><br><span class="line">    <span class="keyword">private</span> String studentNo;</span><br><span class="line">    <span class="meta">@Tag</span>(<span class="number">3</span>)</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> age;</span><br><span class="line">    <span class="meta">@Tag</span>(<span class="number">4</span>)</span><br><span class="line">    <span class="keyword">private</span> String schoolName;</span><br><span class="line">    <span class="meta">@Tag</span>(<span class="number">5</span>)</span><br><span class="line">    <span class="keyword">private</span> Gender gender;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getStudentNo</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> studentNo;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setStudentNo</span><span class="params">(String studentNo)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.studentNo = studentNo;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getAge</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> age;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setAge</span><span class="params">(<span class="keyword">int</span> age)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.age = age;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getSchoolName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> schoolName;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setSchoolName</span><span class="params">(String schoolName)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.schoolName = schoolName;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Gender <span class="title">getGender</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> gender;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setGender</span><span class="params">(Gender gender)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.gender = gender;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Student&#123;"</span> +</span><br><span class="line">                <span class="string">"name='"</span> + name + <span class="string">'\''</span> +</span><br><span class="line">                <span class="string">", studentNo='"</span> + studentNo + <span class="string">'\''</span> +</span><br><span class="line">                <span class="string">", age="</span> + age +</span><br><span class="line">                <span class="string">", schoolName='"</span> + schoolName + <span class="string">'\''</span> +</span><br><span class="line">                <span class="string">", gender="</span> + gender +</span><br><span class="line">                <span class="string">'&#125;'</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">enum</span> Gender &#123;</span><br><span class="line">    MAIL(<span class="number">1</span>, <span class="string">"MAIL"</span>),</span><br><span class="line">    FEMAIL(<span class="number">2</span>, <span class="string">"FEMAIL"</span>);</span><br><span class="line">    <span class="keyword">private</span> Integer order;</span><br><span class="line">    <span class="keyword">private</span> String gender;</span><br><span class="line"></span><br><span class="line">    Gender(<span class="keyword">int</span> order, String gender) &#123;</span><br><span class="line">        <span class="keyword">this</span>.order = order;</span><br><span class="line">        <span class="keyword">this</span>.gender = gender;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Integer <span class="title">getOrder</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> order;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getGender</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> gender;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Gender&#123;"</span> +</span><br><span class="line">                <span class="string">"order="</span> + order +</span><br><span class="line">                <span class="string">", gender='"</span> + gender + <span class="string">'\''</span> +</span><br><span class="line">                <span class="string">'&#125;'</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="test类"><a href="#test类" class="headerlink" title="test类"></a>test类</h2><p>ProtostuffUtilTest.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.Arrays;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ProtostuffUtilTest</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Student student = <span class="keyword">new</span> Student();</span><br><span class="line">        student.setName(<span class="string">"rainbowhorse"</span>);</span><br><span class="line">        student.setAge(<span class="number">24</span>);</span><br><span class="line">        student.setStudentNo(<span class="string">"20112214010"</span>);</span><br><span class="line">        student.setSchoolName(<span class="string">"ZNMZDX"</span>);</span><br><span class="line">        student.setGender(Gender.MAIL);</span><br><span class="line">        <span class="keyword">byte</span>[] serializerResult = ProtostuffUtil.serializer(student);</span><br><span class="line">        System.out.println(<span class="string">"serializer result:"</span> + Arrays.toString(serializerResult));</span><br><span class="line">        Student deSerializerResult = ProtostuffUtil.deserializer(serializerResult, Student.class);</span><br><span class="line">        System.out.println(<span class="string">"deSerializerResult:"</span> + deSerializerResult.toString());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="输出"><a href="#输出" class="headerlink" title="输出"></a>输出</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">serializer result:[<span class="number">10</span>, <span class="number">12</span>, <span class="number">114</span>, <span class="number">97</span>, <span class="number">105</span>, <span class="number">110</span>, <span class="number">98</span>, <span class="number">111</span>, <span class="number">119</span>, <span class="number">104</span>, <span class="number">111</span>, <span class="number">114</span>, <span class="number">115</span>, <span class="number">101</span>, <span class="number">18</span>, <span class="number">11</span>, <span class="number">50</span>, <span class="number">48</span>, <span class="number">49</span>, <span class="number">49</span>, <span class="number">50</span>, <span class="number">50</span>, <span class="number">49</span>, <span class="number">52</span>, <span class="number">48</span>, <span class="number">49</span>, <span class="number">48</span>, <span class="number">24</span>, <span class="number">24</span>, <span class="number">34</span>, <span class="number">6</span>, <span class="number">90</span>, <span class="number">78</span>, <span class="number">77</span>, <span class="number">90</span>, <span class="number">68</span>, <span class="number">88</span>, <span class="number">40</span>, <span class="number">0</span>]</span><br><span class="line">deSerializerResult:Student&#123;name=<span class="string">'rainbowhorse'</span>, studentNo=<span class="string">'20112214010'</span>, age=<span class="number">24</span>, schoolName=<span class="string">'ZNMZDX'</span>, gender=Gender&#123;order=<span class="number">1</span>, gender=<span class="string">'MAIL'</span>&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+    
+        <div class="reward" ontouchstart="">
+    <div class="reward-wrap">赏
+        <div class="reward-box">
+            
+            
+                <span class="reward-type">
+                    <img class="wechat" src="../img/reward-wepay.jpg"><b>微信打赏</b>
+                </span>
+            
+        </div>
+    </div>
+    <p class="reward-tip">赞赏是不耍流氓的鼓励</p>
+</div>
+
+
+    
+    <div class="post-footer">
+        <div>
+            
+        </div>
+        <div>
+            
+        </div>
+    </div>
+</article>
+
+<div class="article-nav prev-next-wrap clearfix">
+    
+    
+        <a href="/谈谈日志/" class="next-post btn btn-default" title="谈谈日志">
+            <span class="hidden-lg">下一篇</span>
+            <span class="hidden-xs">谈谈日志</span><i class="fa fa-angle-right fa-fw"></i>
+        </a>
+    
+</div>
+
+
+    <div id="comments">
+        
+	
+    <div id="vcomments" class="valine"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="/assets/valine.min.js"></script>
+
+    <script>
+        new Valine({
+            av: AV,
+            el: "#vcomments",
+            appId: "8rKac39CM1EjFl9q7i97aDSu-gzGzoHsz",
+            appKey: "5wiSIVcjJCXPwgEwOqK8GaoJ",
+            placeholder: "说点什么吧",
+            notify: false,
+            verify: false,
+            avatar: "robohash",
+            meta: "nick,mail".split(","),
+            pageSize: "10",
+            path: window.location.pathname,
+            lang: "zh-CN".toLowerCase()
+        })
+    </script>
+
+
+    </div>
+
+
+
+
+
+                </main>
+                
+                    <aside id="article-toc" role="navigation" class="col-md-4">
+    <div class="widget">
+        <h3 class="title">文章目录</h3>
+        
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#引言"><span class="toc-text">引言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#protostuff"><span class="toc-text">protostuff</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#maven依赖"><span class="toc-text">maven依赖</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ProtostuffUtil工具类"><span class="toc-text">ProtostuffUtil工具类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#测试bean"><span class="toc-text">测试bean</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#test类"><span class="toc-text">test类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#输出"><span class="toc-text">输出</span></a></li></ol></li></ol>
+        
+    </div>
+</aside>
+
+                
+            </div>
+        </div>
+    </section>
+    <footer class="main-footer">
+    <div class="container">
+        <div class="row">
+        </div>
+    </div>
+</footer>
+
+<a id="back-to-top" class="icon-btn hide">
+	<i class="fa fa-chevron-up"></i>
+</a>
+
+
+
+
+    <div class="copyright">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="busuanzi">
+    
+        访问量:
+        <strong id="busuanzi_value_site_pv">
+            <i class="fa fa-spinner fa-spin"></i>
+        </strong>
+        &nbsp; | &nbsp;
+        访客数:
+        <strong id="busuanzi_value_site_uv">
+            <i class="fa fa-spinner fa-spin"></i>
+        </strong>
+    
+</div>
+
+            </div>
+            <div class="col-sm-12">
+                <span>Copyright &copy; 2017-2019
+                </span> |
+                <span>
+                    Powered by <a href="//hexo.io" class="copyright-links" target="_blank" rel="nofollow">Hexo</a>
+                </span> |
+                <span>
+                       <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=44030502003606"><img src="/img/beian.png"><p style="display: inline;">粤公网安备 44030502003606号</p></a>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+<script src="/js/app.js?rev=@@hash"></script>
+
+</body>
+</html>
