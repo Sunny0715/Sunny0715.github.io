@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://sunny0715.github.io/Spring%E4%B9%8BFactoryBean/</loc>
+    
+    <lastmod>2019-03-16T14:33:02.839Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://sunny0715.github.io/MongoDB%E4%B8%AD%E7%9A%84%E7%B4%A2%E5%BC%95/</loc>
     
     <lastmod>2019-03-09T03:51:56.908Z</lastmod>
@@ -429,14 +436,14 @@
   </url>
   
   <url>
-    <loc>https://sunny0715.github.io/About/</loc>
+    <loc>https://sunny0715.github.io/categories/index.html</loc>
     
     <lastmod>2018-10-23T15:32:00.194Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://sunny0715.github.io/categories/index.html</loc>
+    <loc>https://sunny0715.github.io/About/</loc>
     
     <lastmod>2018-10-23T15:32:00.194Z</lastmod>
     
