@@ -1,0 +1,351 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!--Setting-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta http-equiv="Cache-Control" content="no-transform">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="apple-mobile-web-app-capable" content="rainbowhorse&#39;s blog">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    <meta name="browsermode" content="application">
+    <meta name="screen-orientation" content="portrait">
+    <link rel="dns-prefetch" href="https://sunny0715.github.io">
+    <!--SEO-->
+
+    <meta name="keywords" content="tips">
+
+
+    <meta name="description" content="引言在平时的开发调试工作或线上中，有时会遇到程序执行效率非常慢，通过一般的经验只能判断出部分逻辑有问题，但判断并不直观且效率较低，不知道方法中哪个阶段比较耗时。目前spring-framewor...">
+
+
+
+<meta name="robots" content="all">
+<meta name="google" content="all">
+<meta name="googlebot" content="all">
+<meta name="verify" content="all">
+
+    <!--Title-->
+
+
+<title>自定义StopWatch | rainbowhorse&#39;s blog</title>
+
+
+    <link rel="alternate" href="/atom.xml" title="rainbowhorse&#39;s blog" type="application/atom+xml">
+
+
+    <link rel="icon" href="/favicon.ico">
+
+    
+
+
+
+<link rel="stylesheet" href="/css/bootstrap.min.css?rev=3.3.7">
+<link rel="stylesheet" href="/css/font-awesome.min.css?rev=4.5.0">
+<link rel="stylesheet" href="/css/style.css?rev=@@hash">
+
+
+
+
+    
+
+
+
+
+
+    
+
+    <script>
+        (function(){
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+            }
+            else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        })();
+    </script>
+
+</head>
+
+</html>
+<!--[if lte IE 8]>
+<style>
+    html{ font-size: 1em }
+</style>
+<![endif]-->
+<!--[if lte IE 9]>
+<div style="ie">你使用的浏览器版本过低，为了你更好的阅读体验，请更新浏览器的版本或者使用其他现代浏览器，比如Chrome、Firefox、Safari等。</div>
+<![endif]-->
+
+<body>
+    <header class="main-header" style="background-image:url(http://snippet.shenliyang.com/img/banner.jpg)">
+    <div class="main-header-box">
+        <a class="header-avatar" href="/" title="rainbowhorse">
+            <img src="/img/avatar.jpg" alt="logo头像" class="img-responsive center-block">
+        </a>
+        <div class="branding">
+        	<!--<h2 class="text-hide">Snippet主题,从未如此简单有趣</h2>-->
+            
+                <h2> 不忘初心 方得始终 </h2>
+            
+    	</div>
+    </div>
+</header>
+    <nav class="main-navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="navbar-header"><span class="nav-toggle-button collapsed pull-right" data-toggle="collapse" data-target="#main-menu" id="mnav">
+                    <span class="sr-only"></span>
+                        <i class="fa fa-bars"></i>
+                    </span>
+                    <a class="navbar-brand" href="https://sunny0715.github.io">rainbowhorse&#39;s blog</a>
+                </div>
+                <div class="collapse navbar-collapse" id="main-menu">
+                    <ul class="menu">
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/"><i class="fa "></i>首页</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/categories/后端/"><i class="fa "></i>后端</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/categories/工具/"><i class="fa "></i>工具</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/about/"><i class="fa "></i>关于我</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/archives/"><i class="fa "></i>时间轴</a>
+                            </li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+    <section class="content-wrap">
+        <div class="container">
+            <div class="row">
+                <main class="col-md-8 main-content m-post">
+                    <p id="process"></p>
+<article class="post">
+    <div class="post-head">
+        <h1 id="自定义StopWatch">
+            
+	            自定义StopWatch
+            
+        </h1>
+        <div class="post-meta">
+    
+        <span class="categories-meta fa-wrap">
+            <i class="fa fa-folder-open-o"></i>
+            <a class="category-link" href="/categories/工具/">工具</a>
+        </span>
+    
+
+    
+        <span class="fa-wrap">
+            <i class="fa fa-tags"></i>
+            <span class="tags-meta">
+                
+                    <a class="tag-link" href="/tags/tips/">tips</a>
+                
+            </span>
+        </span>
+    
+
+    
+        
+        <span class="fa-wrap">
+            <i class="fa fa-clock-o"></i>
+            <span class="date-meta">2019/03/02</span>
+        </span>
+        
+            <span class="fa-wrap">
+                <i class="fa fa-eye"></i>
+                <span id="busuanzi_value_page_pv"></span>
+            </span>
+        
+    
+</div>
+            
+            
+    </div>
+    
+    <div class="post-body post-content">
+        <h1 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h1><p>在平时的开发调试工作或线上中，有时会遇到程序执行效率非常慢，通过一般的经验只能判断出部分逻辑有问题，但判断并不直观且效率较低，不知道方法中哪个阶段比较耗时。<a id="more"></a>目前spring-framework提供了一个StopWatch类可以做类似任务执行时间控制，于是利用此思想重新实现了一套自己的逻辑。<div align="center"><img width="220" height="220" src="../../../../images/2019/1-3/StopWatch.jpg" algin="center"></div></p>
+<h1 id="Spring中StopWatch"><a href="#Spring中StopWatch" class="headerlink" title="Spring中StopWatch"></a>Spring中StopWatch</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Slf</span>4j</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestStopWatch</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        StopWatch sw = <span class="keyword">new</span> StopWatch();</span><br><span class="line"></span><br><span class="line">        sw.start(<span class="string">"起床"</span>);</span><br><span class="line">        Thread.sleep(<span class="number">1000</span>);</span><br><span class="line">        sw.stop();</span><br><span class="line"></span><br><span class="line">        sw.start(<span class="string">"洗漱"</span>);</span><br><span class="line">        Thread.sleep(<span class="number">2000</span>);</span><br><span class="line">        sw.stop();</span><br><span class="line"></span><br><span class="line">        sw.start(<span class="string">"锁门"</span>);</span><br><span class="line">        Thread.sleep(<span class="number">500</span>);</span><br><span class="line">        sw.stop();</span><br><span class="line"></span><br><span class="line">        log.warn(<span class="string">"prettyPrint = &#123;&#125;"</span>, sw.prettyPrint());</span><br><span class="line">        log.info(<span class="string">"totalTimeMillis = &#123;&#125;"</span>, sw.getTotalTimeMillis());</span><br><span class="line">        log.warn(<span class="string">"lastTaskName = &#123;&#125;"</span>, sw.getLastTaskName());</span><br><span class="line">        log.info(<span class="string">"lastTaskInfo = &#123;&#125;"</span>, sw.getLastTaskInfo());</span><br><span class="line">        log.warn(<span class="string">"taskCount = &#123;&#125;"</span>, sw.getTaskCount());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        TestStopWatch testStopWatch = <span class="keyword">new</span> TestStopWatch();</span><br><span class="line">        testStopWatch.test();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">03</span>-<span class="number">18</span> <span class="number">21</span>:<span class="number">43</span>:<span class="number">49.468</span> WARN  c.f.o.d.TestStopWatch - prettyPrint = StopWatch <span class="string">''</span>: <span class="function">running <span class="title">time</span> <span class="params">(millis)</span> </span>= <span class="number">3505</span></span><br><span class="line">-----------------------------------------</span><br><span class="line">ms     %     Task name</span><br><span class="line">-----------------------------------------</span><br><span class="line"><span class="number">01004</span>  <span class="number">029</span>%  起床</span><br><span class="line"><span class="number">02001</span>  <span class="number">057</span>%  洗漱</span><br><span class="line"><span class="number">00500</span>  <span class="number">014</span>%  锁门</span><br><span class="line"></span><br><span class="line"><span class="number">03</span>-<span class="number">18</span> <span class="number">21</span>:<span class="number">43</span>:<span class="number">49.476</span> INFO  c.f.o.d.TestStopWatch - totalTimeMillis = <span class="number">3505</span></span><br><span class="line"><span class="number">03</span>-<span class="number">18</span> <span class="number">21</span>:<span class="number">43</span>:<span class="number">49.476</span> WARN  c.f.o.d.TestStopWatch - lastTaskName = 锁门</span><br><span class="line"><span class="number">03</span>-<span class="number">18</span> <span class="number">21</span>:<span class="number">43</span>:<span class="number">49.477</span> INFO  c.f.o.d.TestStopWatch - lastTaskInfo = org.springframework.util.StopWatch$TaskInfo@<span class="number">5</span>bd03f44</span><br><span class="line"><span class="number">03</span>-<span class="number">18</span> <span class="number">21</span>:<span class="number">43</span>:<span class="number">49.477</span> WARN  c.f.o.d.TestStopWatch - taskCount = <span class="number">3</span></span><br></pre></td></tr></table></figure>
+<p>可以看到，Spring中的StopWatch可以方便的排查程序执行效率，但是结果并不直观且代码侵入性太大。</p>
+<h1 id="自定义StopWatch"><a href="#自定义StopWatch" class="headerlink" title="自定义StopWatch"></a>自定义StopWatch</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line">@Slf4j</span><br><span class="line">public class StopWatch &#123;</span><br><span class="line">    private long startTime;</span><br><span class="line"></span><br><span class="line">    private long lapStartTime;</span><br><span class="line"></span><br><span class="line">    private String tagName;</span><br><span class="line"></span><br><span class="line">    private List&lt;String&gt; steps = new ArrayList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    private StopWatch(String tagName) &#123;</span><br><span class="line">        this.tagName = tagName;</span><br><span class="line"></span><br><span class="line">        long start = System.nanoTime();</span><br><span class="line"></span><br><span class="line">        this.startTime = start;</span><br><span class="line">        this.lapStartTime = start;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static StopWatch create(String tagName) &#123;</span><br><span class="line"></span><br><span class="line">        return new StopWatch(tagName);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void lap(String stepName) &#123;</span><br><span class="line"></span><br><span class="line">        long elapsedTime = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - lapStartTime);</span><br><span class="line">        int index = steps.size() + 1;</span><br><span class="line">        String step = String.format(&quot;T%d(%s)/%d&quot;, index, stepName, elapsedTime);</span><br><span class="line">        steps.add(step);</span><br><span class="line"></span><br><span class="line">        //reset</span><br><span class="line">        this.lapStartTime = System.nanoTime();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void log() &#123;</span><br><span class="line">        StringBuilder stringBuilder = createLog();</span><br><span class="line"></span><br><span class="line">        log.warn(stringBuilder.toString());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void logSlow(long slow) &#123;</span><br><span class="line"></span><br><span class="line">        long totalElapsedTime = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startTime);</span><br><span class="line">        if (totalElapsedTime &gt; slow) &#123;</span><br><span class="line">            StringBuilder stringBuilder = createLog();</span><br><span class="line">            log.warn(stringBuilder.toString());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private StringBuilder createLog() &#123;</span><br><span class="line">        long totalElapsedTime = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startTime);</span><br><span class="line"></span><br><span class="line">        StringBuilder stringBuilder = new StringBuilder(tagName);</span><br><span class="line">        stringBuilder.append(&apos; &apos;);</span><br><span class="line">        stringBuilder.append(&quot; Total/&quot;);</span><br><span class="line">        stringBuilder.append(totalElapsedTime);</span><br><span class="line">        stringBuilder.append(&apos; &apos;);</span><br><span class="line"></span><br><span class="line">        for (String step : steps) &#123;</span><br><span class="line">            stringBuilder.append(step);</span><br><span class="line">            stringBuilder.append(&apos; &apos;);</span><br><span class="line">        &#125;</span><br><span class="line">        return stringBuilder;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>测试：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Slf</span>4j</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestStopWatch</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        StopWatch stopWatch = StopWatch.create(<span class="string">"test"</span>);</span><br><span class="line"></span><br><span class="line">        Thread.sleep(<span class="number">1000</span>);</span><br><span class="line">        stopWatch.lap(<span class="string">"起床"</span>);</span><br><span class="line"></span><br><span class="line">        Thread.sleep(<span class="number">2000</span>);</span><br><span class="line">        stopWatch.lap(<span class="string">"洗漱"</span>);</span><br><span class="line"></span><br><span class="line">        Thread.sleep(<span class="number">500</span>);</span><br><span class="line">        stopWatch.lap(<span class="string">"锁门"</span>);</span><br><span class="line">      </span><br><span class="line">        stopWatch.log();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        TestStopWatch testStopWatch = <span class="keyword">new</span> TestStopWatch();</span><br><span class="line">        testStopWatch.test();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>结果：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">03</span>-<span class="number">18</span> <span class="number">21</span>:<span class="number">53</span>:<span class="number">32.696</span> WARN  c.f.o.r.c.StopWatch - test  Total/<span class="number">3509</span> T1(起床)/<span class="number">1001</span> T2(洗漱)/<span class="number">2005</span> T3(锁门)/<span class="number">500</span></span><br></pre></td></tr></table></figure>
+<p>通过对比，可以发现自实现的StopWatch类更为简洁，同时也包含了必要的信息，但是功能不如Spring自带的强大。可针对不同的场景使用。</p>
+
+    </div>
+    
+        <div class="reward" ontouchstart="">
+    <div class="reward-wrap">赏
+        <div class="reward-box">
+            
+            
+                <span class="reward-type">
+                    <img class="wechat" src="../img/reward-wepay.jpg"><b>微信打赏</b>
+                </span>
+            
+        </div>
+    </div>
+    <p class="reward-tip">赞赏是不耍流氓的鼓励</p>
+</div>
+
+
+    
+    <div class="post-footer">
+        <div>
+            
+        </div>
+        <div>
+            
+        </div>
+    </div>
+</article>
+
+<div class="article-nav prev-next-wrap clearfix">
+    
+        <a href="/Spring之FactoryBean/" class="pre-post btn btn-default" title="Spring之FactoryBean">
+            <i class="fa fa-angle-left fa-fw"></i><span class="hidden-lg">上一篇</span>
+            <span class="hidden-xs">Spring之FactoryBean</span>
+        </a>
+    
+    
+        <a href="/MongoDB中的索引/" class="next-post btn btn-default" title="MongoDB中的索引">
+            <span class="hidden-lg">下一篇</span>
+            <span class="hidden-xs">MongoDB中的索引</span><i class="fa fa-angle-right fa-fw"></i>
+        </a>
+    
+</div>
+
+
+    <div id="comments">
+        
+	
+    <div id="vcomments" class="valine"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="/assets/valine.min.js"></script>
+
+    <script>
+        new Valine({
+            av: AV,
+            el: "#vcomments",
+            appId: "8rKac39CM1EjFl9q7i97aDSu-gzGzoHsz",
+            appKey: "5wiSIVcjJCXPwgEwOqK8GaoJ",
+            placeholder: "说点什么吧",
+            notify: false,
+            verify: false,
+            avatar: "robohash",
+            meta: "nick,mail".split(","),
+            pageSize: "10",
+            path: window.location.pathname,
+            lang: "zh-CN".toLowerCase()
+        })
+    </script>
+
+
+    </div>
+
+
+
+
+
+                </main>
+                
+                    <aside id="article-toc" role="navigation" class="col-md-4">
+    <div class="widget">
+        <h3 class="title">文章目录</h3>
+        
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#引言"><span class="toc-text">引言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Spring中StopWatch"><span class="toc-text">Spring中StopWatch</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#自定义StopWatch"><span class="toc-text">自定义StopWatch</span></a></li></ol>
+        
+    </div>
+</aside>
+
+                
+            </div>
+        </div>
+    </section>
+    <footer class="main-footer">
+    <div class="container">
+        <div class="row">
+        </div>
+    </div>
+</footer>
+
+<a id="back-to-top" class="icon-btn hide">
+	<i class="fa fa-chevron-up"></i>
+</a>
+
+
+
+
+    <div class="copyright">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="busuanzi">
+    
+        访问量:
+        <strong id="busuanzi_value_site_pv">
+            <i class="fa fa-spinner fa-spin"></i>
+        </strong>
+        &nbsp; | &nbsp;
+        访客数:
+        <strong id="busuanzi_value_site_uv">
+            <i class="fa fa-spinner fa-spin"></i>
+        </strong>
+    
+</div>
+
+            </div>
+            <div class="col-sm-12">
+                <span>Copyright &copy; 2017-2019
+                </span> |
+                <span>
+                    Powered by <a href="//hexo.io" class="copyright-links" target="_blank" rel="nofollow">Hexo</a>
+                </span> |
+                <span>
+                       <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=44030502003606"><img src="/img/beian.png"><p style="display: inline;">粤公网安备 44030502003606号</p></a>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+<script src="/js/app.js?rev=@@hash"></script>
+
+</body>
+</html>
