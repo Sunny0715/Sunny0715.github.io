@@ -4,6 +4,26 @@
 
     
   <url>
+    <loc>https://sunny0715.github.io/%E8%87%AA%E5%AE%9A%E4%B9%89rest%E4%BB%A3%E7%90%86/</loc>
+    <lastmod>2019-03-24T02:18:19.895Z</lastmod>
+    <data>
+        <display>
+        <title>自定义rest代理</title>
+        <pubTime>2019-03-24T01:44:49.000Z</pubTime>
+        
+        <tag>tips</tag>
+         
+         
+           
+             
+              <breadCrumb title="工具" url="https://sunny0715.github.io/categories/%E5%B7%A5%E5%85%B7/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>https://sunny0715.github.io/%E8%87%AA%E5%AE%9A%E4%B9%89StopWatch/</loc>
     <lastmod>2019-03-18T14:21:49.099Z</lastmod>
     <data>
@@ -605,9 +625,9 @@
         <title>JAVA实现简单网络爬虫</title>
         <pubTime>2017-04-01T06:17:39.000Z</pubTime>
         
-        <tag>java</tag>
-         
         <tag>tools</tag>
+         
+        <tag>java</tag>
          
          
            
