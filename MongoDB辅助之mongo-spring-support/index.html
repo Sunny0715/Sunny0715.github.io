@@ -1,0 +1,353 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!--Setting-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta http-equiv="Cache-Control" content="no-transform">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="apple-mobile-web-app-capable" content="rainbowhorse&#39;s blog">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    <meta name="browsermode" content="application">
+    <meta name="screen-orientation" content="portrait">
+    <link rel="dns-prefetch" href="https://sunny0715.github.io">
+    <!--SEO-->
+
+    <meta name="keywords" content="java,tips,MongoDB">
+
+
+    <meta name="description" content="引言在开发中经常使用到MongoDB，每个项目使用各不相同，既繁琐又好不管理。这里封装了一套MongoDB类似于Mybatis的ORM增强版工具，和Spring无缝结合，只需要简单的配置就可以实...">
+
+
+
+<meta name="robots" content="all">
+<meta name="google" content="all">
+<meta name="googlebot" content="all">
+<meta name="verify" content="all">
+
+    <!--Title-->
+
+
+<title>MongoDB辅助之mongo-spring-support | rainbowhorse&#39;s blog</title>
+
+
+    <link rel="alternate" href="/atom.xml" title="rainbowhorse&#39;s blog" type="application/atom+xml">
+
+
+    <link rel="icon" href="/favicon.ico">
+
+    
+
+
+
+<link rel="stylesheet" href="/css/bootstrap.min.css?rev=3.3.7">
+<link rel="stylesheet" href="/css/font-awesome.min.css?rev=4.5.0">
+<link rel="stylesheet" href="/css/style.css?rev=@@hash">
+
+
+
+
+    
+
+
+
+
+
+    
+
+    <script>
+        (function(){
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+            }
+            else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        })();
+    </script>
+
+</head>
+
+</html>
+<!--[if lte IE 8]>
+<style>
+    html{ font-size: 1em }
+</style>
+<![endif]-->
+<!--[if lte IE 9]>
+<div style="ie">你使用的浏览器版本过低，为了你更好的阅读体验，请更新浏览器的版本或者使用其他现代浏览器，比如Chrome、Firefox、Safari等。</div>
+<![endif]-->
+
+<body>
+    <header class="main-header" style="background-image:url(http://snippet.shenliyang.com/img/banner.jpg)">
+    <div class="main-header-box">
+        <a class="header-avatar" href="/" title="rainbowhorse">
+            <img src="/img/avatar.jpg" alt="logo头像" class="img-responsive center-block">
+        </a>
+        <div class="branding">
+        	<!--<h2 class="text-hide">Snippet主题,从未如此简单有趣</h2>-->
+            
+                <h2> 不忘初心 方得始终 </h2>
+            
+    	</div>
+    </div>
+</header>
+    <nav class="main-navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="navbar-header"><span class="nav-toggle-button collapsed pull-right" data-toggle="collapse" data-target="#main-menu" id="mnav">
+                    <span class="sr-only"></span>
+                        <i class="fa fa-bars"></i>
+                    </span>
+                    <a class="navbar-brand" href="https://sunny0715.github.io">rainbowhorse&#39;s blog</a>
+                </div>
+                <div class="collapse navbar-collapse" id="main-menu">
+                    <ul class="menu">
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/"><i class="fa "></i>首页</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/categories/后端/"><i class="fa "></i>后端</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/categories/工具/"><i class="fa "></i>工具</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/about/"><i class="fa "></i>关于我</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/archives/"><i class="fa "></i>时间轴</a>
+                            </li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+    <section class="content-wrap">
+        <div class="container">
+            <div class="row">
+                <main class="col-md-8 main-content m-post">
+                    <p id="process"></p>
+<article class="post">
+    <div class="post-head">
+        <h1 id="MongoDB辅助之mongo-spring-support">
+            
+	            MongoDB辅助之mongo-spring-support
+            
+        </h1>
+        <div class="post-meta">
+    
+        <span class="categories-meta fa-wrap">
+            <i class="fa fa-folder-open-o"></i>
+            <a class="category-link" href="/categories/工具/">工具</a>
+        </span>
+    
+
+    
+        <span class="fa-wrap">
+            <i class="fa fa-tags"></i>
+            <span class="tags-meta">
+                
+                    <a class="tag-link" href="/tags/MongoDB/">MongoDB</a> <a class="tag-link" href="/tags/java/">java</a> <a class="tag-link" href="/tags/tips/">tips</a>
+                
+            </span>
+        </span>
+    
+
+    
+        
+        <span class="fa-wrap">
+            <i class="fa fa-clock-o"></i>
+            <span class="date-meta">2019/04/05</span>
+        </span>
+        
+            <span class="fa-wrap">
+                <i class="fa fa-eye"></i>
+                <span id="busuanzi_value_page_pv"></span>
+            </span>
+        
+    
+</div>
+            
+            
+    </div>
+    
+    <div class="post-body post-content">
+        <h1 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h1><p>在开发中经常使用到<strong>MongoDB</strong>，每个项目使用各不相同，既繁琐又好不管理。这里封装了一套MongoDB类似于Mybatis的ORM增强版工具，和Spring无缝结合，只需要简单的配置就可以实现强大的功能。同时扩展了MongoDB的Datastore功能，加了一些自定义方法。其原理离不开之前所说的FactoryBean。<div align="center"><img width="220" height="220" src="../../../../images/2019/4-6/mongo-spring-support.jpg" algin="center"></div><a id="more"></a></p>
+<p>源码放在了我的GitHub上：<a href="https://github.com/Sunny0715/mongo-spring-support" target="_blank" rel="noopener">https://github.com/Sunny0715/mongo-spring-support</a></p>
+<p>源码中有详细使用注释，其原理就是实现FactoryBean生成代理对象并对原本的Datastore进行增强。</p>
+<p>在这里记录下使用方法。</p>
+<h1 id="MongoDB数据库及集合"><a href="#MongoDB数据库及集合" class="headerlink" title="MongoDB数据库及集合"></a>MongoDB数据库及集合</h1><p>以下测试在MongoDB的TEST库中，其中有集合studen、student_1。student_1可以用来测试同库中，根据后缀来切换集合，相当与分表。</p>
+<div align="center"><img width="700" height="220" src="../../../../images/2019/4-6/Mongo-ext1.jpg" algin="center"></div>
+
+<div align="center"><img width="700" height="220" src="../../../../images/2019/4-6/Mongo-ext2.jpg" algin="center"></div>
+
+<h1 id="配置管理"><a href="#配置管理" class="headerlink" title="配置管理"></a>配置管理</h1><p>在Spring配置中配置server地址、dbName等信息。jar包中已包含<em>mongo-java-driver</em>和<em>morphia</em>。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">context:component-scan</span> <span class="attr">base-package</span>=<span class="string">"com.rainbowhorse.demo"</span>/&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--生成代理对象，增强原方法，自定义方法--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"datastoreExt"</span> <span class="attr">class</span>=<span class="string">"com.max.mongo.support.mongo.MongoDataStoreFactoryBean"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"configuration"</span> <span class="attr">ref</span>=<span class="string">"configuration"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--配置属性。可以配置更多属性，详细看MongoConfiguration类--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"configuration"</span> <span class="attr">class</span>=<span class="string">"com.max.mongo.support.mongo.MongoConfiguration"</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--数据库连接--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"servers"</span> <span class="attr">value</span>=<span class="string">"mongodb://root:root@localhost:27017/TEST"</span>/&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--数据库名称--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"dbName"</span> <span class="attr">value</span>=<span class="string">"TEST"</span>/&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--对应实体所在路径--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"mapPackage"</span> <span class="attr">value</span>=<span class="string">"com.rainbowhorse.demo.mongo"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h1 id="集合实体类StudentDO"><a href="#集合实体类StudentDO" class="headerlink" title="集合实体类StudentDO"></a>集合实体类StudentDO</h1><p>Mongdb是文档型数据库，借助<em>morphia</em>可以把集合映射到到Java中的bean。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> lombok.Data;</span><br><span class="line"><span class="keyword">import</span> org.mongodb.morphia.annotations.Entity;</span><br><span class="line"><span class="keyword">import</span> org.mongodb.morphia.annotations.Id;</span><br><span class="line"><span class="keyword">import</span> java.io.Serializable;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * value中存储集合名词</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@Entity</span>(value = <span class="string">"student"</span>, noClassnameStored = <span class="keyword">true</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StudentDO</span> <span class="keyword">implements</span> <span class="title">Serializable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = <span class="number">2997596487756179430L</span>;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 对应mongo中的_id</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Id</span></span><br><span class="line">    <span class="keyword">private</span> String id;</span><br><span class="line">    <span class="keyword">private</span> Integer age;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> Integer score;</span><br><span class="line">    <span class="keyword">private</span> String sex;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="接口及实现类"><a href="#接口及实现类" class="headerlink" title="接口及实现类"></a>接口及实现类</h1><h2 id="接口StudentDAO"><a href="#接口StudentDAO" class="headerlink" title="接口StudentDAO"></a>接口StudentDAO</h2><p>接口继承<em>mongo-support</em>中的<strong>BaseDao</strong>，可以实现更多方法的调用。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">StudentDAO</span> <span class="keyword">extends</span> <span class="title">BaseDao</span>&lt;<span class="title">StudentDO</span>&gt; </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 查询</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function">List&lt;StudentDO&gt; <span class="title">getByScore</span><span class="params">(Integer score)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 更新age</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">updateAge</span><span class="params">(String id, Integer age)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 通过name增加score</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 更新结果</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">incrScoreByName</span><span class="params">(StudentDO tenantQuotaDO)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 分页查询</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function">List&lt;StudentDO&gt; <span class="title">getScoreAndPage</span><span class="params">(StudentDO studentDO, Pager&lt;StudentDO&gt; pager)</span></span>;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">getStudentCounts</span><span class="params">(StudentDO tenantQuotaDO)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="接口实现类StudentDAOImpl"><a href="#接口实现类StudentDAOImpl" class="headerlink" title="接口实现类StudentDAOImpl"></a>接口实现类StudentDAOImpl</h2><p>继承<strong>BaseDaoImpl</strong>，其中实现基础方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Repository</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StudentDAOImpl</span> <span class="keyword">extends</span> <span class="title">BaseDaoImpl</span>&lt;<span class="title">StudentDO</span>&gt; <span class="keyword">implements</span> <span class="title">StudentDAO</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">StudentDAOImpl</span><span class="params">(DatastoreExt datastoreExt)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(datastoreExt, StudentDO.class);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;StudentDO&gt; <span class="title">getByScore</span><span class="params">(Integer score)</span> </span>&#123;</span><br><span class="line">        Query&lt;StudentDO&gt; query = createQuery();</span><br><span class="line">        query.criteria(<span class="string">"score"</span>).equal(score);</span><br><span class="line">        <span class="keyword">return</span> query.asList();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">updateAge</span><span class="params">(String id, Integer age)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        Query&lt;StudentDO&gt; query = createQuery();</span><br><span class="line">        query.field(<span class="string">"_id"</span>).equal(<span class="keyword">new</span> ObjectId(id));</span><br><span class="line"></span><br><span class="line">        <span class="keyword">final</span> UpdateOperations&lt;StudentDO&gt; update = createUpdateOperations();</span><br><span class="line">        update.set(<span class="string">"age"</span>, age);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> getDatastore().update(query, update).getUpdatedCount();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;StudentDO&gt; <span class="title">getScoreAndPage</span><span class="params">(StudentDO studentDO, Pager&lt;StudentDO&gt; pager)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> queryList(studentDO, pager.offset(), pager.getPageSize());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getStudentCounts</span><span class="params">(StudentDO studentDO)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> (<span class="keyword">int</span>) queryCount(studentDO);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">incrScoreByName</span><span class="params">(StudentDO studentDO)</span> </span>&#123;</span><br><span class="line">        Query&lt;StudentDO&gt; query = createQuery(studentDO);</span><br><span class="line">        UpdateOperations&lt;StudentDO&gt; updateOperation = createUpdateOperations().inc(<span class="string">"score"</span>, <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">return</span> getDatastore().update(query, updateOperation).getUpdatedCount();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="单元测试"><a href="#单元测试" class="headerlink" title="单元测试"></a>单元测试</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Autowired</span></span><br><span class="line">  <span class="keyword">private</span> StudentDAO studentDAO;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">      List&lt;StudentDO&gt; name1 = studentDAO.getByScore(<span class="number">88</span>);</span><br><span class="line">      System.out.println(name1.size());</span><br><span class="line"></span><br><span class="line">      StudentDO studentDO = <span class="keyword">new</span> StudentDO();</span><br><span class="line">      studentDO.setName(<span class="string">"max10"</span>);</span><br><span class="line">      System.out.println(studentDAO.incrScoreByName(studentDO));</span><br><span class="line"></span><br><span class="line">      StudentDO studentDO1 = <span class="keyword">new</span> StudentDO();</span><br><span class="line">      studentDO1.setScore(<span class="number">88</span>);</span><br><span class="line">      Pager&lt;StudentDO&gt; pager = <span class="keyword">new</span> Pager&lt;&gt;();</span><br><span class="line">      pager.setPageSize(<span class="number">2</span>);</span><br><span class="line">      pager.setCurrentPage(<span class="number">2</span>);</span><br><span class="line">      List&lt;StudentDO&gt; scoreAndPage = studentDAO.getScoreAndPage(studentDO1, pager);</span><br><span class="line">      System.out.println(scoreAndPage);</span><br><span class="line"></span><br><span class="line">      System.out.println(studentDAO.getStudentCounts(<span class="keyword">new</span> StudentDO()));</span><br><span class="line"></span><br><span class="line">      <span class="keyword">int</span> age = studentDAO.updateAge(<span class="string">"5ca6b118a03b9e0e7f5bb33c"</span>, <span class="number">20</span>);</span><br><span class="line">      System.out.println(age);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">   * 测试扩展动态切换集合</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="meta">@Test</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestDatastore</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      DatastoreExt datastore = datastoreExt.getDatastoreBySuffix(<span class="string">"TEST"</span>, <span class="string">"1"</span>);</span><br><span class="line"></span><br><span class="line">      studentDAO = <span class="keyword">new</span> StudentDAOImpl(datastore);</span><br><span class="line"></span><br><span class="line">      List&lt;StudentDO&gt; name1 = studentDAO.getByScore(<span class="number">66</span>);</span><br><span class="line">      System.out.println(name1);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+    
+        <div class="reward" ontouchstart="">
+    <div class="reward-wrap">赏
+        <div class="reward-box">
+            
+            
+                <span class="reward-type">
+                    <img class="wechat" src="../img/reward-wepay.jpg"><b>微信打赏</b>
+                </span>
+            
+        </div>
+    </div>
+    <p class="reward-tip">赞赏是不耍流氓的鼓励</p>
+</div>
+
+
+    
+    <div class="post-footer">
+        <div>
+            
+        </div>
+        <div>
+            
+        </div>
+    </div>
+</article>
+
+<div class="article-nav prev-next-wrap clearfix">
+    
+    
+        <a href="/自定义rest代理/" class="next-post btn btn-default" title="自定义rest代理">
+            <span class="hidden-lg">下一篇</span>
+            <span class="hidden-xs">自定义rest代理</span><i class="fa fa-angle-right fa-fw"></i>
+        </a>
+    
+</div>
+
+
+    <div id="comments">
+        
+	
+    <div id="vcomments" class="valine"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="/assets/valine.min.js"></script>
+
+    <script>
+        new Valine({
+            av: AV,
+            el: "#vcomments",
+            appId: "8rKac39CM1EjFl9q7i97aDSu-gzGzoHsz",
+            appKey: "5wiSIVcjJCXPwgEwOqK8GaoJ",
+            placeholder: "说点什么吧",
+            notify: false,
+            verify: false,
+            avatar: "robohash",
+            meta: "nick,mail".split(","),
+            pageSize: "10",
+            path: window.location.pathname,
+            lang: "zh-CN".toLowerCase()
+        })
+    </script>
+
+
+    </div>
+
+
+
+
+
+                </main>
+                
+                    <aside id="article-toc" role="navigation" class="col-md-4">
+    <div class="widget">
+        <h3 class="title">文章目录</h3>
+        
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#引言"><span class="toc-text">引言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#MongoDB数据库及集合"><span class="toc-text">MongoDB数据库及集合</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#配置管理"><span class="toc-text">配置管理</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#集合实体类StudentDO"><span class="toc-text">集合实体类StudentDO</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#接口及实现类"><span class="toc-text">接口及实现类</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#接口StudentDAO"><span class="toc-text">接口StudentDAO</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#接口实现类StudentDAOImpl"><span class="toc-text">接口实现类StudentDAOImpl</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#单元测试"><span class="toc-text">单元测试</span></a></li></ol>
+        
+    </div>
+</aside>
+
+                
+            </div>
+        </div>
+    </section>
+    <footer class="main-footer">
+    <div class="container">
+        <div class="row">
+        </div>
+    </div>
+</footer>
+
+<a id="back-to-top" class="icon-btn hide">
+	<i class="fa fa-chevron-up"></i>
+</a>
+
+
+
+
+    <div class="copyright">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="busuanzi">
+    
+        访问量:
+        <strong id="busuanzi_value_site_pv">
+            <i class="fa fa-spinner fa-spin"></i>
+        </strong>
+        &nbsp; | &nbsp;
+        访客数:
+        <strong id="busuanzi_value_site_uv">
+            <i class="fa fa-spinner fa-spin"></i>
+        </strong>
+    
+</div>
+
+            </div>
+            <div class="col-sm-12">
+                <span>Copyright &copy; 2017-2019
+                </span> |
+                <span>
+                    Powered by <a href="//hexo.io" class="copyright-links" target="_blank" rel="nofollow">Hexo</a>
+                </span> |
+                <span>
+                       <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=44030502003606"><img src="/img/beian.png"><p style="display: inline;">粤公网安备 44030502003606号</p></a>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+<script src="/js/app.js?rev=@@hash"></script>
+
+</body>
+</html>
