@@ -234,7 +234,7 @@
 <p>注解和页面展示对应关系：</p>
 <div align="center"><img src="../../../../images/2019/4-6/swagger-4.png" algin="center"></div>
 
-<h1 id="环境控制"><a href="#环境控制" class="headerlink" title="环境控制"></a>环境控制</h1><p>Swagger是给内部人员使用的，在生产环境不想暴露出去，有以下解决办法：</p>
+<h1 id="环境控制"><a href="#环境控制" class="headerlink" title="环境控制"></a>环境控制</h1><p>Swagger提供给内部使用的接口稳定，如果在生产环境不想暴露出去，有以下解决办法：</p>
 <ol>
 <li><p>设置了<code>spring.profiles.active</code></p>
 <p>可以通过<strong>profile</strong>注解来处理。 Swagger的congif类上声明<strong>@Profile({“dev”, “test”})</strong>,发布到生产上使用pro的profile时， swagger是无效的。</p>
