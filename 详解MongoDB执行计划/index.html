@@ -1,0 +1,433 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!--Setting-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta http-equiv="Cache-Control" content="no-transform">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="apple-mobile-web-app-capable" content="rainbowhorse&#39;s blog">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    <meta name="browsermode" content="application">
+    <meta name="screen-orientation" content="portrait">
+    <link rel="dns-prefetch" href="https://sunny0715.github.io">
+    <!--SEO-->
+
+    <meta name="keywords" content="MongoDB">
+
+
+    <meta name="description" content="引言在RDBMS中，无论那种数据库，都提供了SQL剖析工具，用来解决SQL效率低下的问题。在MongoDB中，也有相应的策略来实现剖析。MongoDB提供了db.collection.expla...">
+
+
+
+<meta name="robots" content="all">
+<meta name="google" content="all">
+<meta name="googlebot" content="all">
+<meta name="verify" content="all">
+
+    <!--Title-->
+
+
+<title>详解MongoDB执行计划 | rainbowhorse&#39;s blog</title>
+
+
+    <link rel="alternate" href="/atom.xml" title="rainbowhorse&#39;s blog" type="application/atom+xml">
+
+
+    <link rel="icon" href="/favicon.ico">
+
+    
+
+
+
+<link rel="stylesheet" href="/css/bootstrap.min.css?rev=3.3.7">
+<link rel="stylesheet" href="/css/font-awesome.min.css?rev=4.5.0">
+<link rel="stylesheet" href="/css/style.css?rev=@@hash">
+
+
+
+
+    
+
+
+
+
+
+    
+
+    <script>
+        (function(){
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+            }
+            else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        })();
+    </script>
+
+</head>
+
+</html>
+<!--[if lte IE 8]>
+<style>
+    html{ font-size: 1em }
+</style>
+<![endif]-->
+<!--[if lte IE 9]>
+<div style="ie">你使用的浏览器版本过低，为了你更好的阅读体验，请更新浏览器的版本或者使用其他现代浏览器，比如Chrome、Firefox、Safari等。</div>
+<![endif]-->
+
+<body>
+    <header class="main-header" style="background-image:url(http://snippet.shenliyang.com/img/banner.jpg)">
+    <div class="main-header-box">
+        <a class="header-avatar" href="/" title="rainbowhorse">
+            <img src="/img/avatar.jpg" alt="logo头像" class="img-responsive center-block">
+        </a>
+        <div class="branding">
+        	<!--<h2 class="text-hide">Snippet主题,从未如此简单有趣</h2>-->
+            
+                <h2> 不忘初心 方得始终 </h2>
+            
+    	</div>
+    </div>
+</header>
+    <nav class="main-navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="navbar-header"><span class="nav-toggle-button collapsed pull-right" data-toggle="collapse" data-target="#main-menu" id="mnav">
+                    <span class="sr-only"></span>
+                        <i class="fa fa-bars"></i>
+                    </span>
+                    <a class="navbar-brand" href="https://sunny0715.github.io">rainbowhorse&#39;s blog</a>
+                </div>
+                <div class="collapse navbar-collapse" id="main-menu">
+                    <ul class="menu">
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/"><i class="fa "></i>首页</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/categories/后端/"><i class="fa "></i>后端</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/categories/工具/"><i class="fa "></i>工具</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/about/"><i class="fa "></i>关于我</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/archives/"><i class="fa "></i>时间轴</a>
+                            </li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+    <section class="content-wrap">
+        <div class="container">
+            <div class="row">
+                <main class="col-md-8 main-content m-post">
+                    <p id="process"></p>
+<article class="post">
+    <div class="post-head">
+        <h1 id="详解MongoDB执行计划">
+            
+	            详解MongoDB执行计划
+            
+        </h1>
+        <div class="post-meta">
+    
+        <span class="categories-meta fa-wrap">
+            <i class="fa fa-folder-open-o"></i>
+            <a class="category-link" href="/categories/数据库/">数据库</a>
+        </span>
+    
+
+    
+        <span class="fa-wrap">
+            <i class="fa fa-tags"></i>
+            <span class="tags-meta">
+                
+                    <a class="tag-link" href="/tags/MongoDB/">MongoDB</a>
+                
+            </span>
+        </span>
+    
+
+    
+        
+        <span class="fa-wrap">
+            <i class="fa fa-clock-o"></i>
+            <span class="date-meta">2019/04/21</span>
+        </span>
+        
+            <span class="fa-wrap">
+                <i class="fa fa-eye"></i>
+                <span id="busuanzi_value_page_pv"></span>
+            </span>
+        
+    
+</div>
+            
+            
+    </div>
+    
+    <div class="post-body post-content">
+        <h1 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h1><p>在RDBMS中，无论那种数据库，都提供了SQL剖析工具，用来解决SQL效率低下的问题。在MongoDB中，也有相应的策略来实现剖析。MongoDB提供了<strong>db.collection.explain()</strong>、<strong>cursor.explain()</strong>方法，和<code>explain</code>命令返回查询计划信息和查询计划的执行统计信息。<div align="center"><img width="420" height="220" src="../../../../images/2019/4-6/MongoDB-explain.png" algin="center"></div><a id="more"></a></p>
+<h1 id="db-collection-explain-简介"><a href="#db-collection-explain-简介" class="headerlink" title="db.collection.explain()简介"></a>db.collection.explain()简介</h1><h2 id="支持的操作"><a href="#支持的操作" class="headerlink" title="支持的操作"></a>支持的操作</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">aggregate(); count(); distinct(); find(); group(); remove(); update() </span><br><span class="line"></span><br><span class="line">cursor.explain(verbosity) 为一个游标返回其查询执行计划(Reports on the query execution plan for a cursor)</span><br><span class="line">cursor.explain(verbosity) 最通常的行式为db.collection.find().explain()。其中verbosity说明返回信息的粒度。</span><br></pre></td></tr></table></figure>
+<p><strong>explain()写操作(remove和update)时，返回是删除和更新操作的信息，并不将修改应用至数据库。</strong></p>
+<p>通过<code>db.collection.explain().help()</code>可以获取支持的操作</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&gt; db.collection.explain().help()</span><br><span class="line">Explainable operations</span><br><span class="line">	.aggregate(...) - <span class="keyword">explain</span> an aggregation operation</span><br><span class="line">	.count(...) - <span class="keyword">explain</span> a <span class="keyword">count</span> operation</span><br><span class="line">	.distinct(...) - <span class="keyword">explain</span> a <span class="keyword">distinct</span> operation</span><br><span class="line">	.find(...) - <span class="keyword">get</span> an explainable <span class="keyword">query</span></span><br><span class="line">	.findAndModify(...) - <span class="keyword">explain</span> a findAndModify operation</span><br><span class="line">	.group(...) - <span class="keyword">explain</span> a <span class="keyword">group</span> operation</span><br><span class="line">	.remove(...) - <span class="keyword">explain</span> a remove operation</span><br><span class="line">	.update(...) - <span class="keyword">explain</span> an <span class="keyword">update</span> operation</span><br><span class="line">Explainable collection methods</span><br><span class="line">	.getCollection()</span><br><span class="line">	.getVerbosity()</span><br><span class="line">	.setVerbosity(verbosity)</span><br></pre></td></tr></table></figure>
+<h2 id="执行模式"><a href="#执行模式" class="headerlink" title="执行模式"></a>执行模式</h2><p><strong>db.collection.find().explain(<em>verbose</em>)</strong></p>
+<ul>
+<li>explain(）输出一个以文档形式展现的执行计划，可以包括统计信息(可选)。</li>
+<li>verbose：可选参数。<strong>缺省值为queryPlanner</strong>，用于查看指定执行计划的特定部分。即给定不同的参数则输出信息的详细程度不同。常用的有<strong>queryPlanner</strong>、<strong>executionStats</strong>、<strong>allPlansExecution。</strong></li>
+</ul>
+<h3 id="queryPlanner"><a href="#queryPlanner" class="headerlink" title="queryPlanner"></a>queryPlanner</h3><p><strong>缺省模式</strong>。MongoDB运行查询优化器对当前的查询进行评估并选择一个最佳的查询计划。</p>
+<h3 id="executionStats"><a href="#executionStats" class="headerlink" title="executionStats"></a>executionStats</h3><p>MongoDB运行查询优化器对当前的查询进行评估并选择一个最佳的查询计划进行执行。在执行完毕后返回这个最佳执行计划执行完成时的相关统计信息。<strong>对于写操作db.collection.explain()返回关于更新和删除操作的信息，但是并不将修改应用到数据库</strong>。对于那些被拒绝的执行计划(<code>rejectedPlans</code>)，不返回其统计信息。</p>
+<h3 id="allPlansExecution"><a href="#allPlansExecution" class="headerlink" title="allPlansExecution"></a>allPlansExecution</h3><p>该模式是前2种模式的更细化，即会包括上述2种模式的所有信息。<br>即按照最佳的执行计划执行以及列出统计信息，而且还会列出一些候选的执行计划。<br>如果有多个查询计划，<code>executionStats</code>信息包括这些执行计划的部分统计信息。</p>
+<h1 id="相关用法"><a href="#相关用法" class="headerlink" title="相关用法"></a>相关用法</h1><p>先在集合中插入一条数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; db.student.insert(&#123;&quot;age&quot; : 90.0,&quot;name&quot; : &quot;rainbowhorse&quot;,&quot;score&quot; : 90.0,&quot;sex&quot; : &quot;M&quot;&#125;);</span><br><span class="line">WriteResult(&#123; &quot;nInserted&quot; : 1 &#125;)</span><br></pre></td></tr></table></figure>
+<h2 id="演示db-collection-explain-update"><a href="#演示db-collection-explain-update" class="headerlink" title="演示db.collection.explain().update()"></a>演示db.collection.explain().update()</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line">&gt; db.student.explain("allPlansExecution").update(&#123;"name":"rainbowhorse"&#125;,&#123;$set:&#123;"score":99&#125;&#125;);</span><br><span class="line">&#123;</span><br><span class="line">	"queryPlanner" : &#123;</span><br><span class="line">		"plannerVersion" : 1,</span><br><span class="line">		"namespace" : "TEST.student",</span><br><span class="line">		"indexFilterSet" : false,</span><br><span class="line">		"parsedQuery" : &#123;</span><br><span class="line">			"name" : &#123;</span><br><span class="line">				"$eq" : "rainbowhorse"</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;,</span><br><span class="line">		"winningPlan" : &#123;</span><br><span class="line">			"stage" : "<span class="keyword">UPDATE</span><span class="string">",</span></span><br><span class="line"><span class="string">			"</span>inputStage<span class="string">" : &#123;</span></span><br><span class="line"><span class="string">				"</span>stage<span class="string">" : "</span>COLLSCAN<span class="string">",</span></span><br><span class="line"><span class="string">				"</span>filter<span class="string">" : &#123;</span></span><br><span class="line"><span class="string">					"</span><span class="keyword">name</span><span class="string">" : &#123;</span></span><br><span class="line"><span class="string">						"</span>$eq<span class="string">" : "</span>rainbowhorse<span class="string">"</span></span><br><span class="line"><span class="string">					&#125;</span></span><br><span class="line"><span class="string">				&#125;,</span></span><br><span class="line"><span class="string">				"</span>direction<span class="string">" : "</span>forward<span class="string">"</span></span><br><span class="line"><span class="string">			&#125;</span></span><br><span class="line"><span class="string">		&#125;,</span></span><br><span class="line"><span class="string">		"</span>rejectedPlans<span class="string">" : [ ]</span></span><br><span class="line"><span class="string">	&#125;,</span></span><br><span class="line"><span class="string">	"</span>executionStats<span class="string">" : &#123;</span></span><br><span class="line"><span class="string">		"</span>executionSuccess<span class="string">" : true,</span></span><br><span class="line"><span class="string">		"</span>nReturned<span class="string">" : 0,</span></span><br><span class="line"><span class="string">		"</span>executionTimeMillis<span class="string">" : 0,</span></span><br><span class="line"><span class="string">		"</span>totalKeysExamined<span class="string">" : 0,</span></span><br><span class="line"><span class="string">		"</span>totalDocsExamined<span class="string">" : 11,</span></span><br><span class="line"><span class="string">		"</span>executionStages<span class="string">" : &#123;</span></span><br><span class="line"><span class="string">			"</span>stage<span class="string">" : "</span><span class="keyword">UPDATE</span><span class="string">",</span></span><br><span class="line"><span class="string">			"</span>nReturned<span class="string">" : 0,</span></span><br><span class="line"><span class="string">			"</span>executionTimeMillisEstimate<span class="string">" : 0,</span></span><br><span class="line"><span class="string">			"</span>works<span class="string">" : 13,</span></span><br><span class="line"><span class="string">			"</span><span class="keyword">advanced</span><span class="string">" : 0,</span></span><br><span class="line"><span class="string">			"</span>needTime<span class="string">" : 12,</span></span><br><span class="line"><span class="string">			"</span>needYield<span class="string">" : 0,</span></span><br><span class="line"><span class="string">			"</span>saveState<span class="string">" : 0,</span></span><br><span class="line"><span class="string">			"</span>restoreState<span class="string">" : 0,</span></span><br><span class="line"><span class="string">			"</span>isEOF<span class="string">" : 1,</span></span><br><span class="line"><span class="string">			"</span>invalidates<span class="string">" : 0,</span></span><br><span class="line"><span class="string">			"</span>nMatched<span class="string">" : 1,</span></span><br><span class="line"><span class="string">			"</span>nWouldModify<span class="string">" : 1,</span></span><br><span class="line"><span class="string">			"</span>nInvalidateSkips<span class="string">" : 0,</span></span><br><span class="line"><span class="string">			"</span>wouldInsert<span class="string">" : false,</span></span><br><span class="line"><span class="string">			"</span>fastmodinsert<span class="string">" : false,</span></span><br><span class="line"><span class="string">			"</span>inputStage<span class="string">" : &#123;</span></span><br><span class="line"><span class="string">				"</span>stage<span class="string">" : "</span>COLLSCAN<span class="string">",</span></span><br><span class="line"><span class="string">				"</span>filter<span class="string">" : &#123;</span></span><br><span class="line"><span class="string">					"</span><span class="keyword">name</span><span class="string">" : &#123;</span></span><br><span class="line"><span class="string">						"</span>$eq<span class="string">" : "</span>rainbowhorse<span class="string">"</span></span><br><span class="line"><span class="string">					&#125;</span></span><br><span class="line"><span class="string">				&#125;,</span></span><br><span class="line"><span class="string">				"</span>nReturned<span class="string">" : 1,</span></span><br><span class="line"><span class="string">				"</span>executionTimeMillisEstimate<span class="string">" : 0,</span></span><br><span class="line"><span class="string">				"</span>works<span class="string">" : 12,</span></span><br><span class="line"><span class="string">				"</span><span class="keyword">advanced</span><span class="string">" : 1,</span></span><br><span class="line"><span class="string">				"</span>needTime<span class="string">" : 11,</span></span><br><span class="line"><span class="string">				"</span>needYield<span class="string">" : 0,</span></span><br><span class="line"><span class="string">				"</span>saveState<span class="string">" : 1,</span></span><br><span class="line"><span class="string">				"</span>restoreState<span class="string">" : 1,</span></span><br><span class="line"><span class="string">				"</span>isEOF<span class="string">" : 0,</span></span><br><span class="line"><span class="string">				"</span>invalidates<span class="string">" : 0,</span></span><br><span class="line"><span class="string">				"</span>direction<span class="string">" : "</span>forward<span class="string">",</span></span><br><span class="line"><span class="string">				"</span>docsExamined<span class="string">" : 11</span></span><br><span class="line"><span class="string">			&#125;</span></span><br><span class="line"><span class="string">		&#125;,</span></span><br><span class="line"><span class="string">		"</span>allPlansExecution<span class="string">" : [ ]</span></span><br><span class="line"><span class="string">	&#125;,</span></span><br><span class="line"><span class="string">	"</span>serverInfo<span class="string">" : &#123;</span></span><br><span class="line"><span class="string">		"</span>host<span class="string">" : "</span>rainbowhorse<span class="string">",</span></span><br><span class="line"><span class="string">		"</span>port<span class="string">" : 27017,</span></span><br><span class="line"><span class="string">		"</span><span class="keyword">version</span><span class="string">" : "</span><span class="number">4.0</span><span class="number">.3</span><span class="string">",</span></span><br><span class="line"><span class="string">		"</span>gitVersion<span class="string">" : "</span><span class="number">7</span>ea530946fa7880364d88c8d8b6026bbc9ffa48c<span class="string">"</span></span><br><span class="line"><span class="string">	&#125;,</span></span><br><span class="line"><span class="string">	"</span>ok<span class="string">" : 1</span></span><br><span class="line"><span class="string">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>再次查看文档，如下，文档并没有被更新，正如前文所述，该方式并不将修改应用到数据库。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; db.student.find(&#123;"name":"rainbowhorse"&#125;);</span><br><span class="line">&#123; "_id" : ObjectId("5cbbd841525ed310c440610a"), "age" : 90, "name" : "rainbowhorse", "score" : 90, "sex" : "M" &#125;</span><br></pre></td></tr></table></figure>
+<p>注意：将explain()放置到update()之后提示错误。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; db.student.update(&#123;"name":"rainbowhorse"&#125;,&#123;$set:&#123;"score":99&#125;&#125;).explain("allPlansExecution");</span><br><span class="line">2019-04-21T10:53:40.824+0800 E QUERY    [js] TypeError: db.student.update(...).explain is not a function :</span><br><span class="line">@(shell):1:1</span><br></pre></td></tr></table></figure>
+<p>在执行计划中，部分操作符需要放至<code>explain()</code>之前，部分需要放到<code>explain()</code>之后才能正确执行。</p>
+<p>聚合查询中使用：<code>collection.explain().aggregate(...)</code></p>
+<h2 id="执行计划相关描述"><a href="#执行计划相关描述" class="headerlink" title="执行计划相关描述"></a>执行计划相关描述</h2><p>缺省情况下，explain包括2个部分，<code>queryPlanner</code>和<code>serverInfo</code>。如果使用了<code>executionStats</code>或者<code>allPlansExecution</code>，则还会返回<code>executionStats</code>信息。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line">&gt; db.student.find(&#123;"name":"rainbowhorse"&#125;).explain("allPlansExecution");</span><br><span class="line">&#123;</span><br><span class="line">	"queryPlanner" : &#123;</span><br><span class="line">		"plannerVersion" : 1,		//查询计划版本</span><br><span class="line">		"namespace" : "TEST.student",		//被查询对象</span><br><span class="line">		"indexFilterSet" : false,		//是否使用到了索引过滤</span><br><span class="line">		"parsedQuery" : &#123;			//解析查询，即过滤条件是什么</span><br><span class="line">			"name" : &#123;		//此处为name=rainbowhorse</span><br><span class="line">				"$eq" : "rainbowhorse"</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;,</span><br><span class="line">		"winningPlan" : &#123;		//最佳的执行计划</span><br><span class="line">			"stage" : "COLLSCAN",		//COLLSCAN为集合扫描</span><br><span class="line">			"filter" : &#123;		//过滤条件</span><br><span class="line">				"name" : &#123;</span><br><span class="line">					"$eq" : "rainbowhorse"</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;,</span><br><span class="line">			"direction" : "forward"		//方向：forward</span><br><span class="line">		&#125;,</span><br><span class="line">		"rejectedPlans" : [ ]		//拒绝的执行计划，此处没有</span><br><span class="line">	&#125;,</span><br><span class="line">	"executionStats" : &#123;		//执行计划相关统计信息</span><br><span class="line">		"executionSuccess" : true,		//执行成功的状态</span><br><span class="line">		"nReturned" : 1,		//返回结果集数目</span><br><span class="line">		"executionTimeMillis" : 0,		//执行所需的时间,毫秒</span><br><span class="line">		"totalKeysExamined" : 0,		//索引检查的时间</span><br><span class="line">		"totalDocsExamined" : 11,		//检查文档总数</span><br><span class="line">		"executionStages" : &#123;</span><br><span class="line">			"stage" : "COLLSCAN",		//使用集合扫描方式</span><br><span class="line">			"filter" : &#123;		//过滤条件</span><br><span class="line">				"name" : &#123;</span><br><span class="line">					"$eq" : "rainbowhorse"</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;,</span><br><span class="line">			"nReturned" : 1,		//返回结果集数目</span><br><span class="line">			"executionTimeMillisEstimate" : 0,		//预估的执行时间，毫秒</span><br><span class="line">			"works" : 13,		//工作单元数，一个查询会被派生为一些小的工作单元</span><br><span class="line">			"advanced" : 1,		//优先返回的结果数目</span><br><span class="line">			"needTime" : 11,</span><br><span class="line">			"needYield" : 0,</span><br><span class="line">			"saveState" : 0,</span><br><span class="line">			"restoreState" : 0,</span><br><span class="line">			"isEOF" : 1,</span><br><span class="line">			"invalidates" : 0,</span><br><span class="line">			"direction" : "forward",</span><br><span class="line">			"docsExamined" : 11		//文档检查数目</span><br><span class="line">		&#125;,</span><br><span class="line">		"allPlansExecution" : [ ]</span><br><span class="line">	&#125;,</span><br><span class="line">	"serverInfo" : &#123;		//服务器信息，包括主机名，端口，版本等。</span><br><span class="line">		"host" : "rainbowhorse",</span><br><span class="line">		"port" : 27017,</span><br><span class="line">		"version" : "4.0.3",</span><br><span class="line">		"gitVersion" : "7ea530946fa7880364d88c8d8b6026bbc9ffa48c"</span><br><span class="line">	&#125;,</span><br><span class="line">	"ok" : 1</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>更详细的描述可以参考官方文档：<a href="https://docs.mongodb.com/manual/reference/explain-results/#executionstats" target="_blank" rel="noopener">https://docs.mongodb.com/manual/reference/explain-results/#executionstats</a></p>
+<h3 id="Stage状态分析"><a href="#Stage状态分析" class="headerlink" title="Stage状态分析"></a>Stage状态分析</h3><table>
+<thead>
+<tr>
+<th style="text-align:center"><strong>stage</strong></th>
+<th style="text-align:left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">COLLSCAN</td>
+<td style="text-align:left">全表扫描</td>
+</tr>
+<tr>
+<td style="text-align:center">IXSCAN</td>
+<td style="text-align:left">扫描索引</td>
+</tr>
+<tr>
+<td style="text-align:center">FETCH</td>
+<td style="text-align:left">根据索引去检索指定document</td>
+</tr>
+<tr>
+<td style="text-align:center">SHARD_MERGE</td>
+<td style="text-align:left">将各个分片返回数据进行merge</td>
+</tr>
+<tr>
+<td style="text-align:center">SORT</td>
+<td style="text-align:left">表明在内存中进行了排序</td>
+</tr>
+<tr>
+<td style="text-align:center">LIMIT</td>
+<td style="text-align:left">使用limit限制返回数</td>
+</tr>
+<tr>
+<td style="text-align:center">SKIP</td>
+<td style="text-align:left">使用skip进行跳过</td>
+</tr>
+<tr>
+<td style="text-align:center">IDHACK</td>
+<td style="text-align:left">针对_id进行查询</td>
+</tr>
+<tr>
+<td style="text-align:center">SHARDING_FILTER</td>
+<td style="text-align:left">通过mongos对分片数据进行查询</td>
+</tr>
+<tr>
+<td style="text-align:center">COUNT</td>
+<td style="text-align:left">利用db.coll.explain().count()之类进行count运算</td>
+</tr>
+<tr>
+<td style="text-align:center">COUNTSCAN</td>
+<td style="text-align:left">count不使用Index进行count时的stage返回</td>
+</tr>
+<tr>
+<td style="text-align:center">COUNT_SCAN</td>
+<td style="text-align:left">count使用了Index进行count时的stage返回</td>
+</tr>
+<tr>
+<td style="text-align:center">SUBPLA</td>
+<td style="text-align:left">未使用到索引的$or查询的stage返回</td>
+</tr>
+<tr>
+<td style="text-align:center">TEXT</td>
+<td style="text-align:left">使用全文索引进行查询时候的stage返回</td>
+</tr>
+<tr>
+<td style="text-align:center">PROJECTION</td>
+<td style="text-align:left">限定返回字段时候stage的返回</td>
+</tr>
+</tbody>
+</table>
+<h2 id="比较运算符"><a href="#比较运算符" class="headerlink" title="比较运算符"></a>比较运算符</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">$eq    =               <span class="string">"="</span></span><br><span class="line">$gt   (greater than )  &gt;</span><br><span class="line">$gte                   &gt;=  (equal)</span><br><span class="line">$lt   (less than)      &lt;</span><br><span class="line">$lte                   &lt;=  (equal)</span><br><span class="line">$ne   (not equal)      !=</span><br><span class="line">$<span class="keyword">in</span>                    <span class="keyword">in</span></span><br><span class="line">$nin  (not <span class="keyword">in</span>)         !<span class="keyword">in</span></span><br><span class="line"></span><br><span class="line">重点：所有的比较运算符都是出现在键与值得中间，示例如下</span><br><span class="line">&#123; &lt;field_name&gt;: &#123; <span class="attr">$operator</span>: <span class="xml"><span class="tag">&lt;<span class="name">value</span>&gt;</span> &#125; &#125;</span></span><br><span class="line">&#123; &lt;ename&gt;: &#123; $eq: "robin" &#125; &#125;</span><br><span class="line">&#123; &lt;qty&gt;: &#123; $gt: 20 &#125; &#125;</span><br></pre></td></tr></table></figure>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="http://www.voidcn.com/article/p-gxwefchh-bgt.html" target="_blank" rel="noopener">MongoDB执行计划获取(db.collection.explain())</a></p>
+<p><a href="https://docs.mongodb.com/manual/reference/explain-results/#executionstats" target="_blank" rel="noopener">https://docs.mongodb.com/manual/reference/explain-results/#executionstats</a></p>
+
+    </div>
+    
+        <div class="reward" ontouchstart="">
+    <div class="reward-wrap">赏
+        <div class="reward-box">
+            
+            
+                <span class="reward-type">
+                    <img class="wechat" src="../img/reward-wepay.jpg"><b>微信打赏</b>
+                </span>
+            
+        </div>
+    </div>
+    <p class="reward-tip">赞赏是不耍流氓的鼓励</p>
+</div>
+
+
+    
+    <div class="post-footer">
+        <div>
+            
+        </div>
+        <div>
+            
+        </div>
+    </div>
+</article>
+
+<div class="article-nav prev-next-wrap clearfix">
+    
+    
+        <a href="/SpringMVC集成Swagger/" class="next-post btn btn-default" title="SpringMVC集成Swagger">
+            <span class="hidden-lg">下一篇</span>
+            <span class="hidden-xs">SpringMVC集成Swagger</span><i class="fa fa-angle-right fa-fw"></i>
+        </a>
+    
+</div>
+
+
+    <div id="comments">
+        
+	
+    <div id="vcomments" class="valine"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="/assets/valine.min.js"></script>
+
+    <script>
+        new Valine({
+            av: AV,
+            el: "#vcomments",
+            appId: "8rKac39CM1EjFl9q7i97aDSu-gzGzoHsz",
+            appKey: "5wiSIVcjJCXPwgEwOqK8GaoJ",
+            placeholder: "说点什么吧",
+            notify: false,
+            verify: false,
+            avatar: "robohash",
+            meta: "nick,mail".split(","),
+            pageSize: "10",
+            path: window.location.pathname,
+            lang: "zh-CN".toLowerCase()
+        })
+    </script>
+
+
+    </div>
+
+
+
+
+
+                </main>
+                
+                    <aside id="article-toc" role="navigation" class="col-md-4">
+    <div class="widget">
+        <h3 class="title">文章目录</h3>
+        
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#引言"><span class="toc-text">引言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#db-collection-explain-简介"><span class="toc-text">db.collection.explain()简介</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#支持的操作"><span class="toc-text">支持的操作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#执行模式"><span class="toc-text">执行模式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#queryPlanner"><span class="toc-text">queryPlanner</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#executionStats"><span class="toc-text">executionStats</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#allPlansExecution"><span class="toc-text">allPlansExecution</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#相关用法"><span class="toc-text">相关用法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#演示db-collection-explain-update"><span class="toc-text">演示db.collection.explain().update()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#执行计划相关描述"><span class="toc-text">执行计划相关描述</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Stage状态分析"><span class="toc-text">Stage状态分析</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#比较运算符"><span class="toc-text">比较运算符</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#参考"><span class="toc-text">参考</span></a></li></ol>
+        
+    </div>
+</aside>
+
+                
+            </div>
+        </div>
+    </section>
+    <footer class="main-footer">
+    <div class="container">
+        <div class="row">
+        </div>
+    </div>
+</footer>
+
+<a id="back-to-top" class="icon-btn hide">
+	<i class="fa fa-chevron-up"></i>
+</a>
+
+
+
+
+    <div class="copyright">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="busuanzi">
+    
+        访问量:
+        <strong id="busuanzi_value_site_pv">
+            <i class="fa fa-spinner fa-spin"></i>
+        </strong>
+        &nbsp; | &nbsp;
+        访客数:
+        <strong id="busuanzi_value_site_uv">
+            <i class="fa fa-spinner fa-spin"></i>
+        </strong>
+    
+</div>
+
+            </div>
+            <div class="col-sm-12">
+                <span>Copyright &copy; 2017-2019
+                </span> |
+                <span>
+                    Powered by <a href="//hexo.io" class="copyright-links" target="_blank" rel="nofollow">Hexo</a>
+                </span> |
+                <span>
+                       <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=44030502003606"><img src="/img/beian.png"><p style="display: inline;">粤公网安备 44030502003606号</p></a>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+<script src="/js/app.js?rev=@@hash"></script>
+
+</body>
+</html>
