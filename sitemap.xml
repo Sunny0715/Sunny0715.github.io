@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://sunny0715.github.io/%E8%87%AA%E5%AE%9A%E4%B9%89rest%E4%BB%A3%E7%90%86-%E4%BA%8C/</loc>
+    
+    <lastmod>2019-05-02T02:48:30.032Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://sunny0715.github.io/%E8%AF%A6%E8%A7%A3MongoDB%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92/</loc>
     
     <lastmod>2019-04-30T00:34:53.539Z</lastmod>
@@ -33,13 +40,6 @@
     <loc>https://sunny0715.github.io/SpringMVC%E9%9B%86%E6%88%90Swagger/</loc>
     
     <lastmod>2019-04-19T13:51:32.219Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://sunny0715.github.io/%E8%87%AA%E5%AE%9A%E4%B9%89rest%E4%BB%A3%E7%90%86-%E4%BA%8C/</loc>
-    
-    <lastmod>2019-04-16T14:44:26.092Z</lastmod>
     
   </url>
   
@@ -492,14 +492,14 @@
   </url>
   
   <url>
-    <loc>https://sunny0715.github.io/categories/index.html</loc>
+    <loc>https://sunny0715.github.io/About/</loc>
     
     <lastmod>2018-10-23T15:32:00.194Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://sunny0715.github.io/About/</loc>
+    <loc>https://sunny0715.github.io/categories/index.html</loc>
     
     <lastmod>2018-10-23T15:32:00.194Z</lastmod>
     
