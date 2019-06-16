@@ -1,0 +1,661 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!--Setting-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta http-equiv="Cache-Control" content="no-transform">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="apple-mobile-web-app-capable" content="rainbowhorse&#39;s blog">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    <meta name="browsermode" content="application">
+    <meta name="screen-orientation" content="portrait">
+    <link rel="dns-prefetch" href="https://mx-go.github.io">
+    <!--SEO-->
+
+    <meta name="keywords" content="RocketMQ">
+
+
+    <meta name="description" content="引言我们通过缓存和消息队列来化解海量的读请求和写请求对后端数据库服务造成的压力。RocketMQ作为阿里巴巴开源的消息队列中间件，得到不少企业的青睐。在RocketMQ中有四大角色 NameSe...">
+
+
+
+<meta name="robots" content="all">
+<meta name="google" content="all">
+<meta name="googlebot" content="all">
+<meta name="verify" content="all">
+
+    <!--Title-->
+
+
+<title>RocketMQ(一)—角色与术语 | rainbowhorse&#39;s blog</title>
+
+
+    <link rel="alternate" href="/atom.xml" title="rainbowhorse&#39;s blog" type="application/atom+xml">
+
+
+    <link rel="icon" href="/favicon.ico">
+
+    
+
+
+
+<link rel="stylesheet" href="/css/bootstrap.min.css?rev=3.3.7">
+<link rel="stylesheet" href="/css/font-awesome.min.css?rev=4.5.0">
+<link rel="stylesheet" href="/css/style.css?rev=@@hash">
+
+
+
+
+    
+
+
+
+
+
+    
+
+    <script>
+        (function(){
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+            }
+            else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        })();
+    </script>
+
+</head>
+
+</html>
+<!--[if lte IE 8]>
+<style>
+    html{ font-size: 1em }
+</style>
+<![endif]-->
+<!--[if lte IE 9]>
+<div style="ie">你使用的浏览器版本过低，为了你更好的阅读体验，请更新浏览器的版本或者使用其他现代浏览器，比如Chrome、Firefox、Safari等。</div>
+<![endif]-->
+
+<body>
+    <header class="main-header" style="background-image:url(http://snippet.shenliyang.com/img/banner.jpg)">
+    <div class="main-header-box">
+        <a class="header-avatar" href="/" title="rainbowhorse">
+            <img src="/img/avatar.jpg" alt="logo头像" class="img-responsive center-block">
+        </a>
+        <div class="branding">
+        	<!--<h2 class="text-hide">Snippet主题,从未如此简单有趣</h2>-->
+            
+                <h2> 不忘初心 方得始终 </h2>
+            
+    	</div>
+    </div>
+</header>
+    <nav class="main-navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="navbar-header"><span class="nav-toggle-button collapsed pull-right" data-toggle="collapse" data-target="#main-menu" id="mnav">
+                    <span class="sr-only"></span>
+                        <i class="fa fa-bars"></i>
+                    </span>
+                    <a class="navbar-brand" href="https://mx-go.github.io">rainbowhorse&#39;s blog</a>
+                </div>
+                <div class="collapse navbar-collapse" id="main-menu">
+                    <ul class="menu">
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/"><i class="fa "></i>首页</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/categories/后端/"><i class="fa "></i>后端</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/categories/工具/"><i class="fa "></i>工具</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/about/"><i class="fa "></i>关于我</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/archives/"><i class="fa "></i>时间轴</a>
+                            </li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+    <section class="content-wrap">
+        <div class="container">
+            <div class="row">
+                <main class="col-md-8 main-content m-post">
+                    <p id="process"></p>
+<article class="post">
+    <div class="post-head">
+        <h1 id="RocketMQ(一)—角色与术语">
+            
+	            RocketMQ(一)—角色与术语
+            
+        </h1>
+        <div class="post-meta">
+    
+        <span class="categories-meta fa-wrap">
+            <i class="fa fa-folder-open-o"></i>
+            <a class="category-link" href="/categories/中间件/">中间件</a>
+        </span>
+    
+
+    
+        <span class="fa-wrap">
+            <i class="fa fa-tags"></i>
+            <span class="tags-meta">
+                
+                    <a class="tag-link" href="/tags/RocketMQ/">RocketMQ</a>
+                
+            </span>
+        </span>
+    
+
+    
+        
+        <span class="fa-wrap">
+            <i class="fa fa-clock-o"></i>
+            <span class="date-meta">2019/06/15</span>
+        </span>
+        
+            <span class="fa-wrap">
+                <i class="fa fa-eye"></i>
+                <span id="busuanzi_value_page_pv"></span>
+            </span>
+        
+    
+</div>
+            
+            
+    </div>
+    
+    <div class="post-body post-content">
+        <h1 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h1><p>我们通过缓存和消息队列来化解海量的读请求和写请求对后端数据库服务造成的压力。RocketMQ作为阿里巴巴开源的消息队列中间件，得到不少企业的青睐。在RocketMQ中有四大角色 <strong>NameServer</strong>、<strong>Broker</strong>、<strong>Producer</strong>和<strong>Consumer</strong>。<div align="center"><img width="700" height="300" src="../../../../images/2019/4-6/overview.png" algin="center"></div></p>
+<h1 id="RocketMQ-特点"><a href="#RocketMQ-特点" class="headerlink" title="RocketMQ 特点"></a>RocketMQ 特点</h1><h2 id="灵活可扩展性"><a href="#灵活可扩展性" class="headerlink" title="灵活可扩展性"></a>灵活可扩展性</h2><p>RocketMQ天然支持集群，其核心四组件（<strong>NameServer</strong>、<strong>Broker</strong>、<strong>Producer</strong>、<strong>Consumer</strong>）每一个都可以在没有单点故障的情况下进行水平扩展。</p>
+<h2 id="海量消息堆积能力"><a href="#海量消息堆积能力" class="headerlink" title="海量消息堆积能力"></a>海量消息堆积能力</h2><p>RocketMQ采用零拷贝原理实现超大的消息的堆积能力，据说单机已可以支持亿级消息堆积，而且在堆积了这么多消息后依然保持写入低延迟。</p>
+<h2 id="支持顺序消息"><a href="#支持顺序消息" class="headerlink" title="支持顺序消息"></a>支持顺序消息</h2><p>可以保证消息消费者按照消息发送的顺序对消息进行消费。顺序消息分为全局有序和局部有序，一般推荐使用局部有序，即生产者通过将某一类消息按顺序发送至同一个队列来实现。</p>
+<h2 id="多种消息过滤方式"><a href="#多种消息过滤方式" class="headerlink" title="多种消息过滤方式"></a>多种消息过滤方式</h2><p>消息过滤分为在服务器端过滤和在消费端过滤。服务器端过滤时可以按照消息消费者的要求做过滤，优点是减少不必要消息传输，缺点是增加了消息服务器的负担，实现相对复杂。消费端过滤则完全由具体应用自定义实现，这种方式更加灵活，缺点是很多无用的消息会传输给消息消费者。</p>
+<h2 id="支持事务消息"><a href="#支持事务消息" class="headerlink" title="支持事务消息"></a>支持事务消息</h2><p>RocketMQ除了支持普通消息，顺序消息之外还支持事务消息，这个特性对于分布式事务来说提供了又一种解决思路。</p>
+<h2 id="回溯消费"><a href="#回溯消费" class="headerlink" title="回溯消费"></a>回溯消费</h2><p>回溯消费是指消费者已经消费成功的消息，由于业务上需求需要重新消费，RocketMQ支持按照时间回溯消费，时间维度精确到毫秒，可以向前回溯，也可以向后回溯。</p>
+<h1 id="Name-Server"><a href="#Name-Server" class="headerlink" title="Name Server"></a>Name Server</h1><p><code>NameServer</code>用来保存<code>Broker</code>相关元信息并提供给<code>Producer</code>和<code>Consumer</code>查找<code>Broker</code>信息。<code>NameServer</code>被设计成无状态的，可以横向扩展，节点之间相互之间无通信，通过部署多台机器来标记自己是一个伪集群。每个<code>Broker</code>在启动的时候会到<code>NameServer</code>注册，<code>Producer</code>在发送消息前会根据<code>Topic</code>到<code>NameServer</code>获取到<code>Broker</code>的路由信息，<code>Consumer</code>也会定时获取<code>Topic</code>的路由信息。</p>
+<ul>
+<li>Name Server是一个无状态的结点，Name Server之间采取share-nothing的设计，互不通信。</li>
+<li>Name Server所有状态都从Broker上报而来，本身不存储任何状态，所有数据均在内存。</li>
+<li>Name Server不会有频繁的读写，所以性能开销非常小，稳定性很高。</li>
+<li>如果所有Name Server全都挂了，只会影响到Topic到Broker路由信息的更新，不会影响Topic和Broker的通信。</li>
+</ul>
+<h1 id="Broker"><a href="#Broker" class="headerlink" title="Broker"></a>Broker</h1><p><code>Broker</code>是消息存储中心，主要作用是接收来自<code>Producer</code>的消息并存储，<code>Consumer</code>从这里取得消息。它还存储与消息相关的元数据，包括用户组、消费进度偏移量、队列信息等。</p>
+<ul>
+<li>Broker向所有的NameServer结点建立长连接，注册Topic信息。</li>
+<li>Broker分为master和slave。只有master才能进行写入操作，slave不允许。</li>
+<li>slave从master中同步数据。同步策略取决于master的配置，可以采用同步刷盘，异步刷盘两种。</li>
+<li>客户端消费可以从master和slave消费。在默认情况下，Consumer都从master消费，在master挂后，客户端由于从Name Server中感知到Broker挂机，就会从slave消费。</li>
+</ul>
+<h2 id="与Name-Server关系"><a href="#与Name-Server关系" class="headerlink" title="与Name Server关系"></a>与Name Server关系</h2><ul>
+<li><strong>连接。</strong>单个Broker和所有NameServer保持长连接。</li>
+<li><strong>心跳。</strong>每隔30秒（此时间无法更改）向所有NameServer发送心跳，心跳包含了自身的Topic配置信息。</li>
+<li><strong>断开。</strong>当Broker挂掉时，心跳超时导致NameServer主动关闭连接。一旦连接断开，NameServer会立即感知，更新Topic与队列的对应关系，但不会通知生产者和消费者。</li>
+</ul>
+<h2 id="负载均衡"><a href="#负载均衡" class="headerlink" title="负载均衡"></a>负载均衡</h2><ul>
+<li>一个Topic分布在多个Broker上，一个Broker可以配置多个Topic，它们是多对多的关系。</li>
+<li>如果某个Topic消息量很大，应该多配置几个队列，并尽量分布在不同Broker上，减轻某个Broker的压力。</li>
+<li>Topic消息量比较均匀的情况下，如果某个Broker上的队列越多，则该Broker压力越大。</li>
+</ul>
+<h2 id="可用性"><a href="#可用性" class="headerlink" title="可用性"></a>可用性</h2><p>由于消息分布在各个Broker上，一旦某个Broker宕机，则该Broker上的消息读写都会受到影响。所以RocketMQ提供了master/slave的结构，salve定时从master同步数据。如果master宕机，则slave提供消费服务，但是不能写入消息，此过程对应用透明，由RocketMQ内部解决。</p>
+<ul>
+<li>一旦某个Broker master宕机，受限于RocketMQ的网络连接机制，默认情况下，生产者和消费者最多需要30秒会发现，但这个时间可由应用设定参数来缩短时间。这个时间段内，发往该Broker的消息都是失败的，而且该Broker的消息无法消费，因为此时消费者不知道该Broker已经挂掉。</li>
+<li>消费者得到master宕机通知后，转向slave消费，但是slave不能保证master的消息100%都同步过来了，因此会有少量的消息丢失。但是消息最终不会丢的，一旦master恢复，未同步过去的消息会被消费掉。</li>
+</ul>
+<h1 id="Producer"><a href="#Producer" class="headerlink" title="Producer"></a>Producer</h1><p><code>Producer</code>负责产生消息，生产者向消息服务器发送由业务应用程序系统生成的消息。</p>
+<h2 id="与Name-Server关系-1"><a href="#与Name-Server关系-1" class="headerlink" title="与Name Server关系"></a>与Name Server关系</h2><ul>
+<li>连接。单个生产者者和一台NameServer保持长连接，定时查询Topic配置信息，如果该NameServer挂掉，Producer会自动连接下一个NameServer，直到有可用连接为止，并能自动重连。</li>
+<li>轮询时间。生产者每30秒从NameServer获取Topic跟Broker的映射关系，更新到本地内存中。再跟Topic涉及的所有Broker建立长连接，每隔30秒发一次心跳。在Broker端也会每10秒扫描一次当前注册的Producer，如果发现某个Producer超过2分钟都没有发心跳，则断开连接。</li>
+</ul>
+<h2 id="与broker关系"><a href="#与broker关系" class="headerlink" title="与broker关系"></a>与broker关系</h2><ul>
+<li>连接。单个生产者和该生产者关联的所有Broker保持长连接。</li>
+<li>心跳。默认情况下，生产者每隔30秒向所有Broker发送心跳，该时间由DefaultMQProducer的<code>heartbeatBrokerInterval</code>参数决定，可手动配置。Broker每隔10秒钟（此时间无法更改），扫描所有还存活的连接，若某个连接2分钟内（当前时间与最后更新时间差值超过2分钟，此时间无法更改）没有发送心跳数据，则关闭连接。</li>
+<li>连接断开。移除Broker上的生产者信息。</li>
+</ul>
+<blockquote>
+<p>假如某个Broker宕机，意味生产者最长需要30秒才能感知到。在这期间会向宕机的Broker发送消息。当一条消息发送到某个Broker失败后，会往该Broker自动再重发2次，假如还是发送失败，则抛出发送失败异常。业务捕获异常，重新发送即可。客户端里会自动轮询另外一个Broker重新发送，这个对于用户是透明的。</p>
+</blockquote>
+<h2 id="负载均衡-1"><a href="#负载均衡-1" class="headerlink" title="负载均衡"></a>负载均衡</h2><p>生产者发送时，会自动轮询当前所有可发送的Broker，一条消息发送成功，下次换另外一个Broker发送，以达到消息平均落到所有的Broker上。</p>
+<h1 id="Consumer"><a href="#Consumer" class="headerlink" title="Consumer"></a>Consumer</h1><p>消费消息的客户端角色。通常是后台处理异步消费的系统。 </p>
+<blockquote>
+<p>RocketMQ中Consumer有两种实现：PushConsumer和PullConsumer。</p>
+<p>消费者有两种模式消费：集群消费(clustering)，广播消费(broadcast)。</p>
+</blockquote>
+<h2 id="与NameServer关系"><a href="#与NameServer关系" class="headerlink" title="与NameServer关系"></a>与NameServer关系</h2><ul>
+<li>连接。单个消费者和一台NameServer保持长连接，定时查询Topic配置信息，如果该NameServer挂掉，消费者会自动连接下一个NameServer，直到有可用连接为止，并能自动重连。</li>
+<li>轮询时间。消费者每隔30秒从NameServer获取所有Topic的最新队列情况，这意味着某个Broker如果宕机，客户端最多要30秒才能感知。连接建立后，从NameServer中获取当前消费Topic所涉及的Broker，直连Broker。</li>
+</ul>
+<h2 id="与broker关系-1"><a href="#与broker关系-1" class="headerlink" title="与broker关系"></a>与broker关系</h2><ul>
+<li>连接。单个消费者和该消费者关联的所有Broker保持长连接。</li>
+<li>心跳。Consumer跟Broker是长连接，会每隔30秒发心跳信息到Broker。Broker端每10秒检查一次当前存活的Consumer，若发现某个Consumer 2分钟内没有心跳，就断开与该Consumer的连接，并且向该消费组的其他实例发送通知，触发该消费者集群的负载均衡。</li>
+<li>断开。一旦连接断开，Broker会立即感知到，并向该消费者分组的所有消费者发出通知，分组内消费者重新分配队列继续消费。</li>
+</ul>
+<h2 id="负载均衡-2"><a href="#负载均衡-2" class="headerlink" title="负载均衡"></a>负载均衡</h2><p>集群消费模式下，一个消费者集群多台机器共同消费一个Topic的多个队列，一个队列只会被一个消费者消费。如果某个消费者挂掉，分组内其它消费者会接替挂掉的消费者继续消费。</p>
+<h1 id="参数详解"><a href="#参数详解" class="headerlink" title="参数详解"></a>参数详解</h1><ul>
+<li>客户端的公共配置类：<strong>ClientConfig</strong></li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">参数名</th>
+<th style="text-align:left">默认值</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">NamesrvAddr</td>
+<td style="text-align:left">无</td>
+<td style="text-align:left">NameServer地址列表，多个nameServer地址用分号隔开</td>
+</tr>
+<tr>
+<td style="text-align:left">clientIP</td>
+<td style="text-align:left">本机IP</td>
+<td style="text-align:left">客户端本机IP地址，某些机器会发生无法识别客户端IP地址情况，需要应用在代码中强制指定</td>
+</tr>
+<tr>
+<td style="text-align:left">instanceName</td>
+<td style="text-align:left">DEFAULT</td>
+<td style="text-align:left">客户端实例名称，客户端创建的多个Producer，Consumer实际是共用一个内部实例（这个实例包含网络连接，线程资源等）</td>
+</tr>
+<tr>
+<td style="text-align:left">clientCallbackExecutorThreads</td>
+<td style="text-align:left">4</td>
+<td style="text-align:left">通信层异步回调线程数</td>
+</tr>
+<tr>
+<td style="text-align:left">pollNameServerInteval</td>
+<td style="text-align:left">30000</td>
+<td style="text-align:left">轮询Name Server 间隔时间，单位毫秒</td>
+</tr>
+<tr>
+<td style="text-align:left">heartbeatBrokerInterval</td>
+<td style="text-align:left">30000</td>
+<td style="text-align:left">向Broker发送心跳间隔时间，单位毫秒</td>
+</tr>
+<tr>
+<td style="text-align:left">persistConsumerOffsetInterval</td>
+<td style="text-align:left">5000</td>
+<td style="text-align:left">持久化Consumer消费进度间隔时间，单位毫秒</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Producer配置</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">参数名</th>
+<th style="text-align:left">默认值</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">producerGroup</td>
+<td style="text-align:left">DEFAULT_PRODUCER</td>
+<td style="text-align:left">Producer组名，多个Producer如果属于一个应用，发送同样的消息，则应该将它们归为同一组。标识发送同一类消息的Producer，通常发送逻辑一致。发送普通消息的时候，仅标识使用，并无特别用处。若事务消息，如果某条发送某条消息的producer-A宕机，使得事务消息一直处于PREPARED状态并超时，则broker会回查同一个group的其 他producer，确认这条消息应该commit还是rollback。</td>
+</tr>
+<tr>
+<td style="text-align:left">createTopicKey</td>
+<td style="text-align:left">TBW102</td>
+<td style="text-align:left">在发送消息时，自动创建服务器不存在的topic，需要指定key</td>
+</tr>
+<tr>
+<td style="text-align:left">defaultTopicQueueNums</td>
+<td style="text-align:left">4</td>
+<td style="text-align:left">在发送消息时，自动创建服务器不存在的topic，默认创建的队列数</td>
+</tr>
+<tr>
+<td style="text-align:left">sendMsgTimeout</td>
+<td style="text-align:left">10000</td>
+<td style="text-align:left">发送消息超时时间，单位毫秒</td>
+</tr>
+<tr>
+<td style="text-align:left">compressMsgBodyOverHowmuch</td>
+<td style="text-align:left">4096</td>
+<td style="text-align:left">消息Body超过多大开始压缩（Consumer收到消息会自动解压缩），单位字节</td>
+</tr>
+<tr>
+<td style="text-align:left">retryAnotherBrokerWhenNotStoreOK</td>
+<td style="text-align:left">FALSE</td>
+<td style="text-align:left">如果发送消息返回sendResult,但是sendStatus!=SEND_OK,是否重试发送</td>
+</tr>
+<tr>
+<td style="text-align:left">maxMessageSize</td>
+<td style="text-align:left">131072</td>
+<td style="text-align:left">客户端限制的消息大小，超过报错，同时服务端也会限制（默认128K）</td>
+</tr>
+<tr>
+<td style="text-align:left">transactionCheckListener</td>
+<td style="text-align:left">无</td>
+<td style="text-align:left">事物消息回查监听器，如果发送事务消息，必须设置</td>
+</tr>
+<tr>
+<td style="text-align:left">checkThreadPoolMinSize</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">Broker回查Producer事务状态时，线程池大小</td>
+</tr>
+<tr>
+<td style="text-align:left">checkThreadPoolMaxSize</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">Broker回查Producer事务状态时，线程池大小</td>
+</tr>
+<tr>
+<td style="text-align:left">checkRequestHoldMax</td>
+<td style="text-align:left">2000</td>
+<td style="text-align:left">Broker回查Producer事务状态时，Producer本地缓冲请求队列大小</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>PushConsumer配置</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">参数名</th>
+<th style="text-align:left">默认值</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">consumerGroup</td>
+<td style="text-align:left">DEFAULT_CONSUMER</td>
+<td style="text-align:left">Consumer组名，多个Consumer如果属于一个应用，订阅同样的消息，且消费逻辑一致，则应将它们归为同一组。消费进度以Consumer Group为粒度管理，不同Consumer Group之间消费进度彼此不受影响，即消息A被Consumer Group1消费过，也会再给Consumer Group2消费</td>
+</tr>
+<tr>
+<td style="text-align:left">messageModel</td>
+<td style="text-align:left">CLUSTERING</td>
+<td style="text-align:left">消息模型，支持以下两种1.集群消费2.广播消费</td>
+</tr>
+<tr>
+<td style="text-align:left">consumeFromWhere</td>
+<td style="text-align:left">CONSUME_FROM_LAST_OFFSET</td>
+<td style="text-align:left">Consumer启动后，默认从什么位置开始消费</td>
+</tr>
+<tr>
+<td style="text-align:left">allocateMessageQueueStrategy</td>
+<td style="text-align:left">AllocateMessageQueueAveragely</td>
+<td style="text-align:left">Rebalance算法实现策略</td>
+</tr>
+<tr>
+<td style="text-align:left">Subscription</td>
+<td style="text-align:left">{}</td>
+<td style="text-align:left">订阅关系</td>
+</tr>
+<tr>
+<td style="text-align:left">messageListener</td>
+<td style="text-align:left">无</td>
+<td style="text-align:left">消息监听器</td>
+</tr>
+<tr>
+<td style="text-align:left">offsetStore</td>
+<td style="text-align:left">无</td>
+<td style="text-align:left">消费进度存储</td>
+</tr>
+<tr>
+<td style="text-align:left">consumeThreadMin</td>
+<td style="text-align:left">20</td>
+<td style="text-align:left">消费线程池数量</td>
+</tr>
+<tr>
+<td style="text-align:left">consumeThreadMax</td>
+<td style="text-align:left">64</td>
+<td style="text-align:left">消费线程池数量</td>
+</tr>
+<tr>
+<td style="text-align:left">consumeConcurrentlyMaxSpan</td>
+<td style="text-align:left">2000</td>
+<td style="text-align:left">单队列并行消费允许的最大跨度</td>
+</tr>
+<tr>
+<td style="text-align:left">pullThresholdForQueue</td>
+<td style="text-align:left">1000</td>
+<td style="text-align:left">拉消息本地队列缓存消息最大数</td>
+</tr>
+<tr>
+<td style="text-align:left">Pullinterval</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">拉消息间隔，由于是长轮询，所以为0，但是如果应用了流控，也可以设置大于0的值，单位毫秒</td>
+</tr>
+<tr>
+<td style="text-align:left">consumeMessageBatchMaxSize</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">批量消费，一次消费多少条消息</td>
+</tr>
+<tr>
+<td style="text-align:left">pullBatchSize</td>
+<td style="text-align:left">32</td>
+<td style="text-align:left">批量拉消息，一次最多拉多少条</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>PullConsumer配置</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">参数名</th>
+<th style="text-align:left">默认值</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">consumerGroup</td>
+<td style="text-align:left">无</td>
+<td style="text-align:left">Conusmer组名，多个Consumer如果属于一个应用，订阅同样的消息，且消费逻辑一致，则应该将它们归为同一组</td>
+</tr>
+<tr>
+<td style="text-align:left">brokerSuspendMaxTimeMillis</td>
+<td style="text-align:left">20000</td>
+<td style="text-align:left">长轮询，Consumer拉消息请求在Broker挂起最长时间，单位毫秒</td>
+</tr>
+<tr>
+<td style="text-align:left">consumerPullTimeoutMillis</td>
+<td style="text-align:left">10000</td>
+<td style="text-align:left">非长轮询，拉消息超时时间，单位毫秒</td>
+</tr>
+<tr>
+<td style="text-align:left">consumerTimeoutMillisWhenSuspend</td>
+<td style="text-align:left">30000</td>
+<td style="text-align:left">长轮询，Consumer拉消息请求咋broker挂起超过指定时间，客户端认为超时，单位毫秒</td>
+</tr>
+<tr>
+<td style="text-align:left">messageModel</td>
+<td style="text-align:left">BROADCASTING</td>
+<td style="text-align:left">消息模型，支持以下两种：1集群消费 2广播模式</td>
+</tr>
+<tr>
+<td style="text-align:left">messageQueueListener</td>
+<td style="text-align:left">无</td>
+<td style="text-align:left">监听队列变化</td>
+</tr>
+<tr>
+<td style="text-align:left">offsetStore</td>
+<td style="text-align:left">无</td>
+<td style="text-align:left">消费进度存储</td>
+</tr>
+<tr>
+<td style="text-align:left">registerTopics</td>
+<td style="text-align:left">无</td>
+<td style="text-align:left">注册的topic集合</td>
+</tr>
+<tr>
+<td style="text-align:left">allocateMessageQueueStrategy</td>
+<td style="text-align:left">无</td>
+<td style="text-align:left">Rebalance算法实现策略</td>
+</tr>
+</tbody>
+</table>
+
+    </div>
+    
+        <div class="reward" ontouchstart="">
+    <div class="reward-wrap">赏
+        <div class="reward-box">
+            
+            
+                <span class="reward-type">
+                    <img class="wechat" src="../img/reward-wepay.jpg"><b>微信打赏</b>
+                </span>
+            
+        </div>
+    </div>
+    <p class="reward-tip">赞赏是不耍流氓的鼓励</p>
+</div>
+
+
+    
+    <div class="post-footer">
+        <div>
+            
+        </div>
+        <div>
+            
+        </div>
+    </div>
+</article>
+
+<div class="article-nav prev-next-wrap clearfix">
+    
+    
+        <a href="/Java和Docker限制的那些事儿/" class="next-post btn btn-default" title="Java和Docker限制的那些事儿">
+            <span class="hidden-lg">下一篇</span>
+            <span class="hidden-xs">Java和Docker限制的那些事儿</span><i class="fa fa-angle-right fa-fw"></i>
+        </a>
+    
+</div>
+
+
+    <div id="comments">
+        
+	
+    <div id="vcomments" class="valine"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="/assets/valine.min.js"></script>
+
+    <script>
+        new Valine({
+            av: AV,
+            el: "#vcomments",
+            appId: "8rKac39CM1EjFl9q7i97aDSu-gzGzoHsz",
+            appKey: "5wiSIVcjJCXPwgEwOqK8GaoJ",
+            placeholder: "说点什么吧",
+            notify: false,
+            verify: false,
+            avatar: "robohash",
+            meta: "nick,mail".split(","),
+            pageSize: "10",
+            path: window.location.pathname,
+            lang: "zh-CN".toLowerCase()
+        })
+    </script>
+
+
+    </div>
+
+
+
+
+
+                </main>
+                
+                    <aside id="article-toc" role="navigation" class="col-md-4">
+    <div class="widget">
+        <h3 class="title">文章目录</h3>
+        
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#引言"><span class="toc-text">引言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#RocketMQ-特点"><span class="toc-text">RocketMQ 特点</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#灵活可扩展性"><span class="toc-text">灵活可扩展性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#海量消息堆积能力"><span class="toc-text">海量消息堆积能力</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#支持顺序消息"><span class="toc-text">支持顺序消息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#多种消息过滤方式"><span class="toc-text">多种消息过滤方式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#支持事务消息"><span class="toc-text">支持事务消息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#回溯消费"><span class="toc-text">回溯消费</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Name-Server"><span class="toc-text">Name Server</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Broker"><span class="toc-text">Broker</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#与Name-Server关系"><span class="toc-text">与Name Server关系</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#负载均衡"><span class="toc-text">负载均衡</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#可用性"><span class="toc-text">可用性</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Producer"><span class="toc-text">Producer</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#与Name-Server关系-1"><span class="toc-text">与Name Server关系</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#与broker关系"><span class="toc-text">与broker关系</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#负载均衡-1"><span class="toc-text">负载均衡</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Consumer"><span class="toc-text">Consumer</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#与NameServer关系"><span class="toc-text">与NameServer关系</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#与broker关系-1"><span class="toc-text">与broker关系</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#负载均衡-2"><span class="toc-text">负载均衡</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#参数详解"><span class="toc-text">参数详解</span></a></li></ol>
+        
+    </div>
+</aside>
+
+                
+            </div>
+        </div>
+    </section>
+    <footer class="main-footer">
+    <div class="container">
+        <div class="row">
+        </div>
+    </div>
+</footer>
+
+<a id="back-to-top" class="icon-btn hide">
+	<i class="fa fa-chevron-up"></i>
+</a>
+
+
+
+
+    <div class="copyright">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="busuanzi">
+    
+        访问量:
+        <strong id="busuanzi_value_site_pv">
+            <i class="fa fa-spinner fa-spin"></i>
+        </strong>
+        &nbsp; | &nbsp;
+        访客数:
+        <strong id="busuanzi_value_site_uv">
+            <i class="fa fa-spinner fa-spin"></i>
+        </strong>
+    
+</div>
+
+            </div>
+            <div class="col-sm-12">
+                <span>Copyright &copy; 2017-2019
+                </span> |
+                <span>
+                    Powered by <a href="//hexo.io" class="copyright-links" target="_blank" rel="nofollow">Hexo</a>
+                </span> |
+                <span>
+                       <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=44030502003606"><img src="/img/beian.png"><p style="display: inline;">粤公网安备 44030502003606号</p></a>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+<script src="/js/app.js?rev=@@hash"></script>
+
+</body>
+</html>
