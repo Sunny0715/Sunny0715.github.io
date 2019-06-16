@@ -226,13 +226,13 @@
 </ul>
 <h1 id="Producer"><a href="#Producer" class="headerlink" title="Producer"></a>Producer</h1><p><code>Producer</code>负责产生消息，生产者向消息服务器发送由业务应用程序系统生成的消息。</p>
 <h2 id="与Name-Server关系-1"><a href="#与Name-Server关系-1" class="headerlink" title="与Name Server关系"></a>与Name Server关系</h2><ul>
-<li>连接。单个生产者者和一台NameServer保持长连接，定时查询Topic配置信息，如果该NameServer挂掉，Producer会自动连接下一个NameServer，直到有可用连接为止，并能自动重连。</li>
-<li>轮询时间。生产者每30秒从NameServer获取Topic跟Broker的映射关系，更新到本地内存中。再跟Topic涉及的所有Broker建立长连接，每隔30秒发一次心跳。在Broker端也会每10秒扫描一次当前注册的Producer，如果发现某个Producer超过2分钟都没有发心跳，则断开连接。</li>
+<li><strong>连接。</strong>单个生产者者和一台NameServer保持长连接，定时查询Topic配置信息，如果该NameServer挂掉，Producer会自动连接下一个NameServer，直到有可用连接为止，并能自动重连。</li>
+<li><strong>轮询时间。</strong>生产者每30秒从NameServer获取Topic跟Broker的映射关系，更新到本地内存中。再跟Topic涉及的所有Broker建立长连接，每隔30秒发一次心跳。在Broker端也会每10秒扫描一次当前注册的Producer，如果发现某个Producer超过2分钟都没有发心跳，则断开连接。</li>
 </ul>
 <h2 id="与broker关系"><a href="#与broker关系" class="headerlink" title="与broker关系"></a>与broker关系</h2><ul>
-<li>连接。单个生产者和该生产者关联的所有Broker保持长连接。</li>
-<li>心跳。默认情况下，生产者每隔30秒向所有Broker发送心跳，该时间由DefaultMQProducer的<code>heartbeatBrokerInterval</code>参数决定，可手动配置。Broker每隔10秒钟（此时间无法更改），扫描所有还存活的连接，若某个连接2分钟内（当前时间与最后更新时间差值超过2分钟，此时间无法更改）没有发送心跳数据，则关闭连接。</li>
-<li>连接断开。移除Broker上的生产者信息。</li>
+<li><strong>连接。</strong>单个生产者和该生产者关联的所有Broker保持长连接。</li>
+<li><strong>心跳。</strong>默认情况下，生产者每隔30秒向所有Broker发送心跳，该时间由DefaultMQProducer的<code>heartbeatBrokerInterval</code>参数决定，可手动配置。Broker每隔10秒钟（此时间无法更改），扫描所有还存活的连接，若某个连接2分钟内（当前时间与最后更新时间差值超过2分钟，此时间无法更改）没有发送心跳数据，则关闭连接。</li>
+<li><strong>连接断开。</strong>移除Broker上的生产者信息。</li>
 </ul>
 <blockquote>
 <p>假如某个Broker宕机，意味生产者最长需要30秒才能感知到。在这期间会向宕机的Broker发送消息。当一条消息发送到某个Broker失败后，会往该Broker自动再重发2次，假如还是发送失败，则抛出发送失败异常。业务捕获异常，重新发送即可。客户端里会自动轮询另外一个Broker重新发送，这个对于用户是透明的。</p>
@@ -244,13 +244,13 @@
 <p>消费者有两种模式消费：集群消费(clustering)，广播消费(broadcast)。</p>
 </blockquote>
 <h2 id="与NameServer关系"><a href="#与NameServer关系" class="headerlink" title="与NameServer关系"></a>与NameServer关系</h2><ul>
-<li>连接。单个消费者和一台NameServer保持长连接，定时查询Topic配置信息，如果该NameServer挂掉，消费者会自动连接下一个NameServer，直到有可用连接为止，并能自动重连。</li>
-<li>轮询时间。消费者每隔30秒从NameServer获取所有Topic的最新队列情况，这意味着某个Broker如果宕机，客户端最多要30秒才能感知。连接建立后，从NameServer中获取当前消费Topic所涉及的Broker，直连Broker。</li>
+<li><strong>连接。</strong>单个消费者和一台NameServer保持长连接，定时查询Topic配置信息，如果该NameServer挂掉，消费者会自动连接下一个NameServer，直到有可用连接为止，并能自动重连。</li>
+<li><strong>轮询时间。</strong>消费者每隔30秒从NameServer获取所有Topic的最新队列情况，这意味着某个Broker如果宕机，客户端最多要30秒才能感知。连接建立后，从NameServer中获取当前消费Topic所涉及的Broker，直连Broker。</li>
 </ul>
 <h2 id="与broker关系-1"><a href="#与broker关系-1" class="headerlink" title="与broker关系"></a>与broker关系</h2><ul>
-<li>连接。单个消费者和该消费者关联的所有Broker保持长连接。</li>
-<li>心跳。Consumer跟Broker是长连接，会每隔30秒发心跳信息到Broker。Broker端每10秒检查一次当前存活的Consumer，若发现某个Consumer 2分钟内没有心跳，就断开与该Consumer的连接，并且向该消费组的其他实例发送通知，触发该消费者集群的负载均衡。</li>
-<li>断开。一旦连接断开，Broker会立即感知到，并向该消费者分组的所有消费者发出通知，分组内消费者重新分配队列继续消费。</li>
+<li><strong>连接。</strong>单个消费者和该消费者关联的所有Broker保持长连接。</li>
+<li><strong>心跳。</strong>Consumer跟Broker是长连接，会每隔30秒发心跳信息到Broker。Broker端每10秒检查一次当前存活的Consumer，若发现某个Consumer 2分钟内没有心跳，就断开与该Consumer的连接，并且向该消费组的其他实例发送通知，触发该消费者集群的负载均衡。</li>
+<li><strong>断开。</strong>一旦连接断开，Broker会立即感知到，并向该消费者分组的所有消费者发出通知，分组内消费者重新分配队列继续消费。</li>
 </ul>
 <h2 id="负载均衡-2"><a href="#负载均衡-2" class="headerlink" title="负载均衡"></a>负载均衡</h2><p>集群消费模式下，一个消费者集群多台机器共同消费一个Topic的多个队列，一个队列只会被一个消费者消费。如果某个消费者挂掉，分组内其它消费者会接替挂掉的消费者继续消费。</p>
 <h1 id="参数详解"><a href="#参数详解" class="headerlink" title="参数详解"></a>参数详解</h1><ul>
