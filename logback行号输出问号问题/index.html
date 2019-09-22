@@ -16,13 +16,11 @@
     <link rel="dns-prefetch" href="https://mx-go.github.io">
     <!--SEO-->
 
-    <meta name="keywords" content="随笔">
+    <meta name="keywords" content="java">
 
 
-    <meta name="description" content="
-经过几天的努力，自己的博客终于搭建起来了，打心里很开心。
-这不是贴吧，不是豆瓣，不是CSDN，这是我自己在互联网上的一小点领地。
-从开始博客基本样式，到域名，自己一步一步摸索搭建起来的，我相信...">
+    <meta name="description" content="引言Logback日志输出使用 AsyncAppender 时，输出的文件行号信息是 ?:? ，问题产生原因及解决方案。
+问题在 logback推荐配置 一文中，列举了logback常用的几种配...">
 
 
 
@@ -34,7 +32,7 @@
     <!--Title-->
 
 
-<title>博客建成第一天 | rainbowhorse&#39;s blog</title>
+<title>logback行号输出问号问题 | rainbowhorse&#39;s blog</title>
 
 
     <link rel="alternate" href="/atom.xml" title="rainbowhorse&#39;s blog" type="application/atom+xml">
@@ -148,16 +146,16 @@
                     <p id="process"></p>
 <article class="post">
     <div class="post-head">
-        <h1 id="博客建成第一天">
+        <h1 id="logback行号输出问号问题">
             
-	            博客建成第一天
+	            logback行号输出问号问题
             
         </h1>
         <div class="post-meta">
     
         <span class="categories-meta fa-wrap">
             <i class="fa fa-folder-open-o"></i>
-            <a class="category-link" href="/categories/生活/">生活</a>
+            <a class="category-link" href="/categories/采坑记录/">采坑记录</a>
         </span>
     
 
@@ -166,7 +164,7 @@
             <i class="fa fa-tags"></i>
             <span class="tags-meta">
                 
-                    <a class="tag-link" href="/tags/随笔/">随笔</a>
+                    <a class="tag-link" href="/tags/java/">java</a>
                 
             </span>
         </span>
@@ -176,7 +174,7 @@
         
         <span class="fa-wrap">
             <i class="fa fa-clock-o"></i>
-            <span class="date-meta">2017/03/07</span>
+            <span class="date-meta">2019/09/22</span>
         </span>
         
             <span class="fa-wrap">
@@ -191,12 +189,30 @@
     </div>
     
     <div class="post-body post-content">
-        <blockquote>
-<p>经过几天的努力，自己的博客终于搭建起来了，打心里很开心。</p>
-<p>这不是贴吧，不是豆瓣，不是CSDN，这是我自己在互联网上的一小点领地。</p>
-<p>从开始博客基本样式，到域名，自己一步一步摸索搭建起来的，我相信自己可以做的更好，加油!</p>
-</blockquote>
-<div align="center"><img width="300" height="300" src="../../../../images/avatar.jpg" algin="center"></div>
+        <h1 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h1><p>Logback日志输出使用 AsyncAppender 时，输出的文件行号信息是 <strong>?:?</strong> ，问题产生原因及解决方案。<a id="more"></a></p>
+<h1 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h1><p>在 <a href="http://rainbowhorse.site/logback推荐配置/" target="_blank" rel="noopener">logback推荐配置</a> 一文中，列举了logback常用的几种配置，使用的是logback异步输出日志AsyncAppender。但在实际的开发中，遇到了日志没有输出类和行号，而输出的文件行号信息是 <strong>?:?</strong>。</p>
+<p>输出的日志类似于这种：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">framework-server-demo 2017-07-17 14:15:11,876 INFO [main] o.s.j.e.a.AnnotationMBeanExporter [?:?] - Located managed bean &apos;refreshScope&apos;: registering with JMX server as MBean [org.springframework.cloud.context.scope.refresh:name=refreshScope,type=RefreshScope]</span><br><span class="line">framework-server-demo 2017-07-17 14:15:11,881 INFO [main] o.s.j.e.a.AnnotationMBeanExporter [?:?] - Located managed bean &apos;configurationPropertiesRebinder&apos;: registering with JMX server as MBean [org.springframework.cloud.context.properties:name=configurationPropertiesRebinder,context=43f2f92d,type=ConfigurationPropertiesRebinder]</span><br><span class="line">framework-server-demo 2017-07-17 14:15:11,887 INFO [main] o.s.j.e.a.AnnotationMBeanExporter [?:?] - Located managed bean &apos;refreshEndpoint&apos;: registering with JMX server as MBean [org.springframework.cloud.endpoint:name=refreshEndpoint,type=RefreshEndpoint]</span><br><span class="line">framework-server-demo 2017-07-17 14:15:11,888 INFO [main] o.s.b.a.e.j.EndpointMBeanExporter [?:?] - Registering beans for JMX exposure on startup</span><br><span class="line">framework-server-demo 2017-07-17 14:15:12,709 INFO [main] application [?:?] - jolokia: No access restrictor found, access to any MBean is allowed</span><br><span class="line">framework-server-demo 2017-07-17 14:15:12,714 INFO [main] application [?:?] - jolokia: jolokia:type=Config is already registered. Adding it with jolokia:type=Config,uuid=43140813-0dc0-413d-96c0-5de1799eadd3, but you should revise your setup in order to either use a qualifier or ensure, that only a single agent gets registered (otherwise history functionality might not work)</span><br><span class="line">framework-server-demo 2017-07-17 14:15:12,714 INFO [main] application [?:?] - jolokia: Cannot register (legacy) MBean handler for config store with name jmx4perl:type=Config since it already exists. This is the case if another agent has been already started within the same JVM. The registration is skipped.</span><br><span class="line">framework-server-demo 2017-07-17 14:15:12,715 INFO [main] application [?:?] - jolokia: Jolokia Discovery MBean registration is skipped because there is already one registered.</span><br></pre></td></tr></table></figure>
+<h1 id="原因分析"><a href="#原因分析" class="headerlink" title="原因分析"></a>原因分析</h1><p>输出文件以及行号信息需要 <code>stacktrace</code> 获取 <code>callerdata</code>，<strong>因为性能原因 logback 的 AsyncAppender 默认是不记录该信息。即默认为false</strong>。</p>
+<p>官方文档： <a href="https://logback.qos.ch/manual/appenders.html#AsyncAppender" target="_blank" rel="noopener">https://logback.qos.ch/manual/appenders.html#AsyncAppender</a></p>
+<table>
+<thead>
+<tr>
+<th>Property Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>includeCallerData</td>
+<td>boolean</td>
+<td>Extracting caller data can be rather expensive. To improve performance, by default, caller data associated with an event is not extracted when the event added to the event queue. By default, only “cheap” data like the thread name and the MDC are copied. You can direct this appender to include caller data by setting the includeCallerData property to true.</td>
+</tr>
+</tbody>
+</table>
+<h1 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h1><p>如文档说明，只需要在 <strong>logback</strong> 配置文件里 <strong>AsyncAppender</strong> 中添加 <strong>includeCallerData</strong> 并设置为 <strong>true</strong> 。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;includeCallerData&gt;true&lt;/includeCallerData&gt;</span><br></pre></td></tr></table></figure>
 
     </div>
     
@@ -228,15 +244,10 @@
 
 <div class="article-nav prev-next-wrap clearfix">
     
-        <a href="/Markdown语法/" class="pre-post btn btn-default" title="Markdown语法指南">
-            <i class="fa fa-angle-left fa-fw"></i><span class="hidden-lg">上一篇</span>
-            <span class="hidden-xs">Markdown语法指南</span>
-        </a>
     
-    
-        <a href="/About/" class="next-post btn btn-default" title="About">
+        <a href="/RocketMQ-一-——角色与术语/" class="next-post btn btn-default" title="RocketMQ(一)—角色与术语">
             <span class="hidden-lg">下一篇</span>
-            <span class="hidden-xs">About</span><i class="fa fa-angle-right fa-fw"></i>
+            <span class="hidden-xs">RocketMQ(一)—角色与术语</span><i class="fa fa-angle-right fa-fw"></i>
         </a>
     
 </div>
@@ -279,7 +290,7 @@
     <div class="widget">
         <h3 class="title">文章目录</h3>
         
-            <p>暂无目录</p>
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#引言"><span class="toc-text">引言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#问题"><span class="toc-text">问题</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#原因分析"><span class="toc-text">原因分析</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#解决方案"><span class="toc-text">解决方案</span></a></li></ol>
         
     </div>
 </aside>
