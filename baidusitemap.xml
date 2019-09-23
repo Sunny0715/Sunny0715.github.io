@@ -4,8 +4,48 @@
 
     
   <url>
+    <loc>https://mx-go.github.io/bug%E7%AE%80%E8%AE%B0/</loc>
+    <lastmod>2019-09-23T14:39:32.970Z</lastmod>
+    <data>
+        <display>
+        <title>bug简记</title>
+        <pubTime>2018-10-01T14:39:56.000Z</pubTime>
+        
+        <tag>java</tag>
+         
+         
+           
+             
+              <breadCrumb title="踩坑记录" url="https://mx-go.github.io/categories/%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://mx-go.github.io/Java%E5%92%8CDocker%E9%99%90%E5%88%B6%E7%9A%84%E9%82%A3%E4%BA%9B%E4%BA%8B%E5%84%BF/</loc>
+    <lastmod>2019-09-23T14:38:35.603Z</lastmod>
+    <data>
+        <display>
+        <title>Java和Docker限制的那些事儿</title>
+        <pubTime>2019-06-01T01:01:36.000Z</pubTime>
+        
+        <tag>java</tag>
+         
+         
+           
+             
+              <breadCrumb title="踩坑记录" url="https://mx-go.github.io/categories/%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>https://mx-go.github.io/logback%E8%A1%8C%E5%8F%B7%E8%BE%93%E5%87%BA%E9%97%AE%E5%8F%B7%E9%97%AE%E9%A2%98/</loc>
-    <lastmod>2019-09-22T06:27:14.304Z</lastmod>
+    <lastmod>2019-09-23T14:38:25.989Z</lastmod>
     <data>
         <display>
         <title>logback行号输出问号问题</title>
@@ -16,7 +56,7 @@
          
            
              
-              <breadCrumb title="采坑记录" url="https://mx-go.github.io/categories/%E9%87%87%E5%9D%91%E8%AE%B0%E5%BD%95/"/>
+              <breadCrumb title="踩坑记录" url="https://mx-go.github.io/categories/%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/"/>
           
         </display>
     </data>
@@ -117,46 +157,6 @@
            
              
               <breadCrumb title="后端" url="https://mx-go.github.io/categories/%E5%90%8E%E7%AB%AF/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>https://mx-go.github.io/Java%E5%92%8CDocker%E9%99%90%E5%88%B6%E7%9A%84%E9%82%A3%E4%BA%9B%E4%BA%8B%E5%84%BF/</loc>
-    <lastmod>2019-06-02T05:34:06.123Z</lastmod>
-    <data>
-        <display>
-        <title>Java和Docker限制的那些事儿</title>
-        <pubTime>2019-06-01T01:01:36.000Z</pubTime>
-        
-        <tag>java</tag>
-         
-         
-           
-             
-              <breadCrumb title="采坑记录" url="https://mx-go.github.io/categories/%E9%87%87%E5%9D%91%E8%AE%B0%E5%BD%95/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>https://mx-go.github.io/bug%E7%AE%80%E8%AE%B0/</loc>
-    <lastmod>2019-06-02T01:58:10.501Z</lastmod>
-    <data>
-        <display>
-        <title>bug简记</title>
-        <pubTime>2018-10-01T14:39:56.000Z</pubTime>
-        
-        <tag>java</tag>
-         
-         
-           
-             
-              <breadCrumb title="采坑记录" url="https://mx-go.github.io/categories/%E9%87%87%E5%9D%91%E8%AE%B0%E5%BD%95/"/>
           
         </display>
     </data>
