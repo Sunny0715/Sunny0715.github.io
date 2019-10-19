@@ -1,0 +1,351 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!--Setting-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta http-equiv="Cache-Control" content="no-transform">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="apple-mobile-web-app-capable" content="rainbowhorse&#39;s blog">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    <meta name="browsermode" content="application">
+    <meta name="screen-orientation" content="portrait">
+    <link rel="dns-prefetch" href="https://mx-go.github.io">
+    <!--SEO-->
+
+    <meta name="keywords" content="java">
+
+
+    <meta name="description" content="引言项目中遇到一个问题，由于后台数据库表ID使用分布式唯一算法生成的Long类型(19位数字)，导致转成json传至前端js使用时报错，因为js的数字类型最大只能表示15位数字长度【JavaSc...">
+
+
+
+<meta name="robots" content="all">
+<meta name="google" content="all">
+<meta name="googlebot" content="all">
+<meta name="verify" content="all">
+
+    <!--Title-->
+
+
+<title>Javascript Number类型长度溢出 | rainbowhorse&#39;s blog</title>
+
+
+    <link rel="alternate" href="/atom.xml" title="rainbowhorse&#39;s blog" type="application/atom+xml">
+
+
+    <link rel="icon" href="/favicon.ico">
+
+    
+
+
+
+<link rel="stylesheet" href="/css/bootstrap.min.css?rev=3.3.7">
+<link rel="stylesheet" href="/css/font-awesome.min.css?rev=4.5.0">
+<link rel="stylesheet" href="/css/style.css?rev=@@hash">
+
+
+
+
+    
+
+
+
+
+
+    
+
+    <script>
+        (function(){
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+            }
+            else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        })();
+    </script>
+
+</head>
+
+</html>
+<!--[if lte IE 8]>
+<style>
+    html{ font-size: 1em }
+</style>
+<![endif]-->
+<!--[if lte IE 9]>
+<div style="ie">你使用的浏览器版本过低，为了你更好的阅读体验，请更新浏览器的版本或者使用其他现代浏览器，比如Chrome、Firefox、Safari等。</div>
+<![endif]-->
+
+<body>
+    <header class="main-header" style="background-image:url(http://snippet.shenliyang.com/img/banner.jpg)">
+    <div class="main-header-box">
+        <a class="header-avatar" href="/" title="rainbowhorse">
+            <img src="/img/avatar.jpg" alt="logo头像" class="img-responsive center-block">
+        </a>
+        <div class="branding">
+        	<!--<h2 class="text-hide">Snippet主题,从未如此简单有趣</h2>-->
+            
+                <h2> 不忘初心 方得始终 </h2>
+            
+    	</div>
+    </div>
+</header>
+    <nav class="main-navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="navbar-header"><span class="nav-toggle-button collapsed pull-right" data-toggle="collapse" data-target="#main-menu" id="mnav">
+                    <span class="sr-only"></span>
+                        <i class="fa fa-bars"></i>
+                    </span>
+                    <a class="navbar-brand" href="https://mx-go.github.io">rainbowhorse&#39;s blog</a>
+                </div>
+                <div class="collapse navbar-collapse" id="main-menu">
+                    <ul class="menu">
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/"><i class="fa "></i>首页</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/categories/后端/"><i class="fa "></i>后端</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/categories/工具/"><i class="fa "></i>工具</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/about/"><i class="fa "></i>关于我</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/archives/"><i class="fa "></i>时间轴</a>
+                            </li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+    <section class="content-wrap">
+        <div class="container">
+            <div class="row">
+                <main class="col-md-8 main-content m-post">
+                    <p id="process"></p>
+<article class="post">
+    <div class="post-head">
+        <h1 id="Javascript Number类型长度溢出">
+            
+	            Javascript Number类型长度溢出
+            
+        </h1>
+        <div class="post-meta">
+    
+        <span class="categories-meta fa-wrap">
+            <i class="fa fa-folder-open-o"></i>
+            <a class="category-link" href="/categories/踩坑记录/">踩坑记录</a>
+        </span>
+    
+
+    
+        <span class="fa-wrap">
+            <i class="fa fa-tags"></i>
+            <span class="tags-meta">
+                
+                    <a class="tag-link" href="/tags/java/">java</a>
+                
+            </span>
+        </span>
+    
+
+    
+        
+        <span class="fa-wrap">
+            <i class="fa fa-clock-o"></i>
+            <span class="date-meta">2019/10/19</span>
+        </span>
+        
+            <span class="fa-wrap">
+                <i class="fa fa-eye"></i>
+                <span id="busuanzi_value_page_pv"></span>
+            </span>
+        
+    
+</div>
+            
+            
+    </div>
+    
+    <div class="post-body post-content">
+        <h1 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h1><p>项目中遇到一个问题，由于后台数据库表ID使用分布式唯一算法生成的<code>Long</code>类型(19位数字)，导致转成json传至前端js使用时报错，因为js的数字类型最大只能表示15位数字长度【<a href="https://www.w3school.com.cn/js/js_obj_number.asp" target="_blank" rel="noopener"><em>JavaScript Number 对象</em></a>】。</p>
+<p>解决方案：使用Spring自定义Json序列化方式，将过长的Long类型转成String类型。</p>
+<div align="center"><img width="420" height="220" src="../../../../images/2018-8/bug.jpg" algin="center"></div>
+
+<h1 id="默认序列化配置"><a href="#默认序列化配置" class="headerlink" title="默认序列化配置"></a>默认序列化配置</h1><p>默认序列化方式会将Long类型不做转换，直接传递给前端。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">mvc:annotation-driven</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">mvc:message-converters</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">"org.springframework.http.converter.StringHttpMessageConverter"</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">ref</span>=<span class="string">"utf8charset"</span>/&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"writeAcceptCharset"</span> <span class="attr">value</span>=<span class="string">"false"</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">"org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"objectMapper"</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">"com.fasterxml.jackson.databind.ObjectMapper"</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"serializationInclusion"</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">value</span> <span class="attr">type</span>=<span class="string">"com.fasterxml.jackson.annotation.JsonInclude.Include"</span>&gt;</span>NON_NULL<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">mvc:message-converters</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">mvc:annotation-driven</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h1 id="自定义序列化方式"><a href="#自定义序列化方式" class="headerlink" title="自定义序列化方式"></a>自定义序列化方式</h1><p>现在需要将Long类型数字达到一定长度才转为String类型传递给前端。实现方式有两种：</p>
+<h2 id="局部配置某个字段序列化"><a href="#局部配置某个字段序列化" class="headerlink" title="局部配置某个字段序列化"></a>局部配置某个字段序列化</h2><p>实现抽象接口<code>JsonSerializer</code>自定义序列化类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CustomLongConverter</span> <span class="keyword">extends</span> <span class="title">JsonSerializer</span>&lt;<span class="title">Long</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 超过多少位转换为Long类型</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> THRESHOLD_LENGTH = <span class="number">15</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">serialize</span><span class="params">(Long value, JsonGenerator gen, SerializerProvider serializers)</span> <span class="keyword">throws</span> IOException, JsonProcessingException </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (value.toString().length() &gt; THRESHOLD_LENGTH) &#123;</span><br><span class="line">            gen.writeString(value.toString());</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            gen.writeNumber(value);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>用<code>@JsonSerialize(using = CustomLongConverter.class)</code>注解到指定字段上</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@JsonSerialize</span>(using = CustomLongConverter.class)</span><br><span class="line"><span class="keyword">private</span> Long id;</span><br></pre></td></tr></table></figure>
+<h2 id="全局配置序注册自定义的序列化类"><a href="#全局配置序注册自定义的序列化类" class="headerlink" title="全局配置序注册自定义的序列化类"></a>全局配置序注册自定义的序列化类</h2><h3 id="继承自StdSerializer类的一个自定义序列化"><a href="#继承自StdSerializer类的一个自定义序列化" class="headerlink" title="继承自StdSerializer类的一个自定义序列化"></a>继承自<code>StdSerializer</code>类的一个自定义序列化</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CustomLongConverter</span> <span class="keyword">extends</span> <span class="title">StdSerializer</span>&lt;<span class="title">Long</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 超过多少位转换为Long类型</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> THRESHOLD_LENGTH = <span class="number">15</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = -<span class="number">4532126689403959662L</span>;</span><br><span class="line"></span><br><span class="line">    CustomLongConverter() &#123;</span><br><span class="line">        <span class="keyword">super</span>(Long.class);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">serialize</span><span class="params">(Long value, JsonGenerator gen, SerializerProvider serializers)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (value.toString().length() &gt;= THRESHOLD_LENGTH) &#123;</span><br><span class="line">            gen.writeString(value.toString());</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            gen.writeNumber(value);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>需要注册到ObjectMapper中</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ObjectMapperConverter</span> <span class="keyword">extends</span> <span class="title">ObjectMapper</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = <span class="number">5383113523976711806L</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ObjectMapperConverter</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>();</span><br><span class="line">        <span class="comment">// 不包含为空的字段</span></span><br><span class="line">        setSerializationInclusion(JsonInclude.Include.NON_NULL);</span><br><span class="line">        <span class="comment">// 不包含空字符串字段</span></span><br><span class="line">        setSerializationInclusion(JsonInclude.Include.NON_EMPTY);</span><br><span class="line"></span><br><span class="line">        SimpleModule simpleModule = <span class="keyword">new</span> SimpleModule();</span><br><span class="line">        simpleModule.addSerializer(Long.class, <span class="keyword">new</span> CustomLongConverter());</span><br><span class="line">        simpleModule.addSerializer(Long.TYPE, <span class="keyword">new</span> CustomLongConverter());</span><br><span class="line">        registerModule(simpleModule);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="xml中配置注册方式"><a href="#xml中配置注册方式" class="headerlink" title="xml中配置注册方式"></a>xml中配置注册方式</h3><p>Spring配置中需要指定为自定义序列化</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">mvc:annotation-driven</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">mvc:message-converters</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">"org.springframework.http.converter.StringHttpMessageConverter"</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">ref</span>=<span class="string">"utf8charset"</span>/&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"writeAcceptCharset"</span> <span class="attr">value</span>=<span class="string">"false"</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">"org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"objectMapper"</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">"com.rainbowhorse.consult.web.util.ObjectMapperConverter"</span>/&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">mvc:message-converters</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">mvc:annotation-driven</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+    </div>
+    
+        <div class="reward" ontouchstart="">
+    <div class="reward-wrap">赏
+        <div class="reward-box">
+            
+            
+                <span class="reward-type">
+                    <img class="wechat" src="../img/reward-wepay.jpg"><b>微信打赏</b>
+                </span>
+            
+        </div>
+    </div>
+    <p class="reward-tip">赞赏是不耍流氓的鼓励</p>
+</div>
+
+
+    
+    <div class="post-footer">
+        <div>
+            
+        </div>
+        <div>
+            
+        </div>
+    </div>
+</article>
+
+<div class="article-nav prev-next-wrap clearfix">
+    
+    
+        <a href="/logback行号输出问号问题/" class="next-post btn btn-default" title="logback行号输出问号问题">
+            <span class="hidden-lg">下一篇</span>
+            <span class="hidden-xs">logback行号输出问号问题</span><i class="fa fa-angle-right fa-fw"></i>
+        </a>
+    
+</div>
+
+
+    <div id="comments">
+        
+	
+    <div id="vcomments" class="valine"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="/assets/valine.min.js"></script>
+
+    <script>
+        new Valine({
+            av: AV,
+            el: "#vcomments",
+            appId: "8rKac39CM1EjFl9q7i97aDSu-gzGzoHsz",
+            appKey: "5wiSIVcjJCXPwgEwOqK8GaoJ",
+            placeholder: "说点什么吧",
+            notify: false,
+            verify: false,
+            avatar: "robohash",
+            meta: "nick,mail".split(","),
+            pageSize: "10",
+            path: window.location.pathname,
+            lang: "zh-CN".toLowerCase()
+        })
+    </script>
+
+
+    </div>
+
+
+
+
+
+                </main>
+                
+                    <aside id="article-toc" role="navigation" class="col-md-4">
+    <div class="widget">
+        <h3 class="title">文章目录</h3>
+        
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#引言"><span class="toc-text">引言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#默认序列化配置"><span class="toc-text">默认序列化配置</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#自定义序列化方式"><span class="toc-text">自定义序列化方式</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#局部配置某个字段序列化"><span class="toc-text">局部配置某个字段序列化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#全局配置序注册自定义的序列化类"><span class="toc-text">全局配置序注册自定义的序列化类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#继承自StdSerializer类的一个自定义序列化"><span class="toc-text">继承自StdSerializer类的一个自定义序列化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#xml中配置注册方式"><span class="toc-text">xml中配置注册方式</span></a></li></ol></li></ol></li></ol>
+        
+    </div>
+</aside>
+
+                
+            </div>
+        </div>
+    </section>
+    <footer class="main-footer">
+    <div class="container">
+        <div class="row">
+        </div>
+    </div>
+</footer>
+
+<a id="back-to-top" class="icon-btn hide">
+	<i class="fa fa-chevron-up"></i>
+</a>
+
+
+
+
+    <div class="copyright">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="busuanzi">
+    
+        访问量:
+        <strong id="busuanzi_value_site_pv">
+            <i class="fa fa-spinner fa-spin"></i>
+        </strong>
+        &nbsp; | &nbsp;
+        访客数:
+        <strong id="busuanzi_value_site_uv">
+            <i class="fa fa-spinner fa-spin"></i>
+        </strong>
+    
+</div>
+
+            </div>
+            <div class="col-sm-12">
+                <span>Copyright &copy; 2017-2019
+                </span> |
+                <span>
+                    Powered by <a href="//hexo.io" class="copyright-links" target="_blank" rel="nofollow">Hexo</a>
+                </span> |
+                <span>
+                       <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=44030502003606"><img src="/img/beian.png"><p style="display: inline;">粤公网安备 44030502003606号</p></a>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+<script src="/js/app.js?rev=@@hash"></script>
+
+</body>
+</html>
