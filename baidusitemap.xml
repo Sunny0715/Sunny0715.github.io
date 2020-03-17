@@ -4,6 +4,46 @@
 
     
   <url>
+    <loc>https://mx-go.github.io/Bug%E7%AE%80%E8%AE%B0-%E9%95%BF%E8%BD%AE%E8%AE%ADResponse/</loc>
+    <lastmod>2020-03-14T11:05:35.969Z</lastmod>
+    <data>
+        <display>
+        <title>Bug简记-长轮训Response</title>
+        <pubTime>2020-01-05T14:29:36.000Z</pubTime>
+        
+        <tag>java</tag>
+         
+         
+           
+             
+              <breadCrumb title="踩坑记录" url="https://mx-go.github.io/categories/%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://mx-go.github.io/Bug%E7%AE%80%E8%AE%B0-Spring%E8%BF%94%E5%9B%9E%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%8A%A0%E5%BC%95%E5%8F%B7/</loc>
+    <lastmod>2020-03-14T11:04:15.494Z</lastmod>
+    <data>
+        <display>
+        <title>Bug简记-Spring返回字符串加引号</title>
+        <pubTime>2018-10-01T14:39:56.000Z</pubTime>
+        
+        <tag>java</tag>
+         
+         
+           
+             
+              <breadCrumb title="踩坑记录" url="https://mx-go.github.io/categories/%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>https://mx-go.github.io/%E6%B5%85%E8%B0%88%E8%AE%BE%E8%AE%A1%E6%96%87%E6%A1%A3/</loc>
     <lastmod>2020-03-14T02:24:33.492Z</lastmod>
     <data>
@@ -52,26 +92,6 @@
         <display>
         <title>Javascript Number类型长度溢出</title>
         <pubTime>2019-09-19T02:36:39.000Z</pubTime>
-        
-        <tag>java</tag>
-         
-         
-           
-             
-              <breadCrumb title="踩坑记录" url="https://mx-go.github.io/categories/%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>https://mx-go.github.io/bug%E7%AE%80%E8%AE%B0/</loc>
-    <lastmod>2019-10-19T02:49:57.960Z</lastmod>
-    <data>
-        <display>
-        <title>bug简记</title>
-        <pubTime>2018-10-01T14:39:56.000Z</pubTime>
         
         <tag>java</tag>
          
@@ -953,9 +973,9 @@
         <title>JAVA实现简单网络爬虫</title>
         <pubTime>2017-04-01T06:17:39.000Z</pubTime>
         
-        <tag>tools</tag>
-         
         <tag>java</tag>
+         
+        <tag>tools</tag>
          
          
            
