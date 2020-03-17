@@ -205,7 +205,7 @@
 <p><strong>正确的使用方式很简单：</strong></p>
 <p><strong>只需要把response.getWriter().write(…); </strong></p>
 <p><strong>修改为context.getResponse().getWriter().write(…)即可，就是这么一行代码，导致了整个事件的发生。</strong></p>
-<p>另外，使用Spring提供的DeferredResult已完全封装，可避免此问题。</p>
+<p>另外，使用Spring提供的DeferredResult已完全封装了异步请求，可避免此问题。</p>
 
     </div>
     
