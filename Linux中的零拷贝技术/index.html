@@ -1,0 +1,404 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!--Setting-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta http-equiv="Cache-Control" content="no-transform">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="apple-mobile-web-app-capable" content="rainbowhorse&#39;s blog">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    <meta name="browsermode" content="application">
+    <meta name="screen-orientation" content="portrait">
+    <link rel="dns-prefetch" href="https://mx-go.github.io">
+    <!--SEO-->
+
+    <meta name="keywords" content="tips">
+
+
+    <meta name="description" content="引言零拷贝(Zero-Copy)技术指在计算机执行操作时，CPU不需要先将数据从一个内存区域复制到另一个内存区域，从而可以减少上下文切换以及CPU的拷贝时间。作用是在数据从网络设备到用户程序空间...">
+
+
+
+<meta name="robots" content="all">
+<meta name="google" content="all">
+<meta name="googlebot" content="all">
+<meta name="verify" content="all">
+
+    <!--Title-->
+
+
+<title>Linux中的零拷贝技术 | rainbowhorse&#39;s blog</title>
+
+
+    <link rel="alternate" href="/atom.xml" title="rainbowhorse&#39;s blog" type="application/atom+xml">
+
+
+    <link rel="icon" href="/favicon.ico">
+
+    
+
+
+
+<link rel="stylesheet" href="/css/bootstrap.min.css?rev=3.3.7">
+<link rel="stylesheet" href="/css/font-awesome.min.css?rev=4.5.0">
+<link rel="stylesheet" href="/css/style.css?rev=@@hash">
+
+
+
+
+    
+
+
+
+
+
+    
+
+    <script>
+        (function(){
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+            }
+            else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        })();
+    </script>
+
+</head>
+
+</html>
+<!--[if lte IE 8]>
+<style>
+    html{ font-size: 1em }
+</style>
+<![endif]-->
+<!--[if lte IE 9]>
+<div style="ie">你使用的浏览器版本过低，为了你更好的阅读体验，请更新浏览器的版本或者使用其他现代浏览器，比如Chrome、Firefox、Safari等。</div>
+<![endif]-->
+
+<body>
+    <header class="main-header" style="background-image:url(http://snippet.shenliyang.com/img/banner.jpg)">
+    <div class="main-header-box">
+        <a class="header-avatar" href="/" title="rainbowhorse">
+            <img src="/img/avatar.jpg" alt="logo头像" class="img-responsive center-block">
+        </a>
+        <div class="branding">
+        	<!--<h2 class="text-hide">Snippet主题,从未如此简单有趣</h2>-->
+            
+                <h2> 不忘初心 方得始终 </h2>
+            
+    	</div>
+    </div>
+</header>
+    <nav class="main-navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="navbar-header"><span class="nav-toggle-button collapsed pull-right" data-toggle="collapse" data-target="#main-menu" id="mnav">
+                    <span class="sr-only"></span>
+                        <i class="fa fa-bars"></i>
+                    </span>
+                    <a class="navbar-brand" href="https://mx-go.github.io">rainbowhorse&#39;s blog</a>
+                </div>
+                <div class="collapse navbar-collapse" id="main-menu">
+                    <ul class="menu">
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/"><i class="fa "></i>首页</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/categories/后端/"><i class="fa "></i>后端</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/categories/工具/"><i class="fa "></i>工具</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/about/"><i class="fa "></i>关于我</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/archives/"><i class="fa "></i>时间轴</a>
+                            </li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+    <section class="content-wrap">
+        <div class="container">
+            <div class="row">
+                <main class="col-md-8 main-content m-post">
+                    <p id="process"></p>
+<article class="post">
+    <div class="post-head">
+        <h1 id="Linux中的零拷贝技术">
+            
+	            Linux中的零拷贝技术
+            
+        </h1>
+        <div class="post-meta">
+    
+        <span class="categories-meta fa-wrap">
+            <i class="fa fa-folder-open-o"></i>
+            <a class="category-link" href="/categories/Linux/">Linux</a>
+        </span>
+    
+
+    
+        <span class="fa-wrap">
+            <i class="fa fa-tags"></i>
+            <span class="tags-meta">
+                
+                    <a class="tag-link" href="/tags/tips/">tips</a>
+                
+            </span>
+        </span>
+    
+
+    
+        
+        <span class="fa-wrap">
+            <i class="fa fa-clock-o"></i>
+            <span class="date-meta">2020/02/10</span>
+        </span>
+        
+            <span class="fa-wrap">
+                <i class="fa fa-eye"></i>
+                <span id="busuanzi_value_page_pv"></span>
+            </span>
+        
+    
+</div>
+            
+            
+    </div>
+    
+    <div class="post-body post-content">
+        <h1 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h1><p><strong>零拷贝(Zero-Copy)</strong>技术指在计算机执行操作时，CPU不需要先将数据从一个内存区域复制到另一个内存区域，从而可以减少上下文切换以及CPU的拷贝时间。作用是在数据从网络设备到用户程序空间传递的过程中，减少数据拷贝次数，减少系统调用，实现CPU的零参与，消除CPU在这方面的负载。<div align="center"><img width="220" height="160" src="../../../../images/2020/1-4/Zero-Copy.png" algin="center"></div><a id="more"></a></p>
+<h1 id="零拷贝思想"><a href="#零拷贝思想" class="headerlink" title="零拷贝思想"></a>零拷贝思想</h1><p>零拷贝是一个通过尽量避免拷贝操作来缓解CPU压力的解决方案。Linux下常见的零拷贝技术可以分为两大类：一是针对特定场景，去掉不必要的拷贝；二是去优化整个拷贝的过程。零拷贝并没有真正做到“0”拷贝，它更多是一种思想，很多的零拷贝技术都是基于这个思想去做的优化。</p>
+<h1 id="原始数据拷贝"><a href="#原始数据拷贝" class="headerlink" title="原始数据拷贝"></a>原始数据拷贝</h1><div align="center"><img width="720" height="460" src="../../../../images/2020/1-4/Traditional-copy.jpg" algin="center"></div>
+
+<p>传统数据拷贝产生了四次数据拷贝，即使使用了<strong>DMA(Direct Memory Access)</strong>处理了硬件的通讯，CPU仍然需要处理两次数据拷贝。同时，CPU在用户态和内核态也发生了多次上下文切换，增加了CPU的负担。在此过程中，如果没有对数据做任何修改，那么在内核态和用户态间来回拷贝数据就是一种浪费。</p>
+<h1 id="零拷贝的几种方法"><a href="#零拷贝的几种方法" class="headerlink" title="零拷贝的几种方法"></a>零拷贝的几种方法</h1><h2 id="用户态直接IO"><a href="#用户态直接IO" class="headerlink" title="用户态直接IO"></a>用户态直接IO</h2><div align="center"><img width="720" height="460" src="../../../../images/2020/1-4/Direct-IO.jpg" algin="center"></div>
+
+<p>对于这种数据传输方式来说，应用程序可以直接访问硬件存储，操作系统内核只是辅助数据传输。这种方式依旧存在用户空间和内核空间的上下文切换，但是硬件上的数据不会拷贝一份到内核空间，而是直接拷贝至了用户空间，因此直接I/O不存在内核空间缓冲区和用户空间缓冲区之间的数据拷贝。</p>
+<h3 id="缺陷"><a href="#缺陷" class="headerlink" title="缺陷"></a>缺陷</h3><ul>
+<li>只能适用于那些不需要内核缓冲区处理的应用程序，这些应用程序通常在进程地址空间有自己的数据缓存机制，称为自缓存应用程序，如数据库管理系统。</li>
+<li>这种方法直接操作磁盘I/O，由于CPU和磁盘I/O之间的执行时间差距，会造成资源的浪费，解决这个问题需要和异步I/O结合使用。</li>
+</ul>
+<h2 id="mmap"><a href="#mmap" class="headerlink" title="mmap"></a>mmap</h2><p>这种方法，使用mmap来代替 read，可以减少一次拷贝操作。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">buf = mmap(diskfd, len);</span><br><span class="line">write(sockfd, buf, len);</span><br></pre></td></tr></table></figure>
+<div align="center"><img width="720" height="460" src="../../../../images/2020/1-4/mmap.jpg" algin="center"></div>
+
+<h3 id="过程"><a href="#过程" class="headerlink" title="过程"></a><strong>过程</strong></h3><ol>
+<li>应用进程调用了mmap()之后，数据会先通过DMA拷贝到操作系统内核缓冲区中。接着应用进程跟操作系统<strong>共享这个缓冲区</strong>。这样，操作系统内核和应用进程空间就不需要再进行任何的数据拷贝操作。</li>
+<li>应用进程调用write()，操作系统直接将内核缓冲区的数据拷贝到Socket缓冲区中，这一切都发生在内核态。</li>
+<li>Socket缓冲区把数据发到网卡。</li>
+</ol>
+<h3 id="缺陷-1"><a href="#缺陷-1" class="headerlink" title="缺陷"></a>缺陷</h3><p>mmap隐藏着一个陷阱，当mmap一个文件时，如果这个文件被另一个进程所截获，那么write系统调用会因为访问非法地址被SIGBUS信号终止，SIGBUS 默认会杀死进程并产生一个coredump，如果服务器被这样终止了，那损失就可能不小了。</p>
+<blockquote>
+<p>解决这个问题通常使用文件的租借锁：首先为文件申请一个租借锁，当其他进程想要截断这个文件时，内核会发送一个实时的RT_SIGNAL_LEASE信号，告诉当前进程有进程在试图破坏文件，这样write在被SIGBUS 杀死之前，会被中断，返回已经写入的字节数，并设置errno为success。</p>
+<p>通常的做法是在 mmap 之前加锁，操作完之后解锁。</p>
+</blockquote>
+<h2 id="sendfile"><a href="#sendfile" class="headerlink" title="sendfile"></a>sendfile</h2><p>为了简化用户接口，同时减少CPU的拷贝次数，Linux 在版本 2.1 中引入了sendfile()系统调用。</p>
+<div align="center"><img width="720" height="460" src="../../../../images/2020/1-4/sendfile-1.jpg" algin="center"></div>
+
+<h3 id="过程-1"><a href="#过程-1" class="headerlink" title="过程"></a>过程</h3><ol>
+<li>sendfile()系统调用利用DMA引擎将文件中的数据拷贝到操作系统内核缓冲区中。</li>
+<li>然后数据被拷贝到与Socket相关的内核缓冲区中去。</li>
+<li>接下来，DMA引擎将数据从内核Socket缓冲区中拷贝到协议引擎中去。</li>
+</ol>
+<p>sendfile() 系统调用不需要将数据拷贝或者映射到应用程序地址空间中去，所以sendfile()只是适用于应用程序地址空间不需要对所访问数据进行处理的情况。相对于mmap()方法来说，因为sendfile传输的数据没有越过用户应用程序/操作系统内核的边界线，所以sendfile()也极大地减少了存储管理的开销。</p>
+<h3 id="缺陷-2"><a href="#缺陷-2" class="headerlink" title="缺陷"></a>缺陷</h3><ul>
+<li>只能适用于那些不需要用户态处理的应用程序。</li>
+</ul>
+<h2 id="DMA辅助的sendfile"><a href="#DMA辅助的sendfile" class="headerlink" title="DMA辅助的sendfile"></a>DMA辅助的sendfile</h2><p>常规sendfile还有一次内核态的拷贝操作，使用DMA辅助的sendfile可以把这次拷贝操作消除。</p>
+<div align="center"><img width="720" height="460" src="../../../../images/2020/1-4/sendfile-2.jpg" algin="center"></div>
+
+<h3 id="过程-2"><a href="#过程-2" class="headerlink" title="过程"></a>过程</h3><ol>
+<li>用户进程通过sendfile()函数向内核(kernel)发起系统调用，上下文从用户态(user space)切换为内核态(kernel space)；</li>
+<li>CPU利用DMA控制器将数据从主存或硬盘拷贝到内核空间(kernel space)的读缓冲区(read buffer)；</li>
+<li>CPU把读缓冲区(read buffer)的文件描述符(file descriptor)和数据长度拷贝到网络缓冲区(socket buffer)；</li>
+<li>基于已拷贝的文件描述符(file descriptor)和数据长度，CPU利用DMA控制器的gather/scatter操作直接批量地将数据从内核的读缓冲区(read buffer)拷贝到网卡进行数据传输；</li>
+<li>上下文从内核态(kernel space)切换回用户态(user space)，Sendfile系统调用执行返回；</li>
+</ol>
+<p>这种方法借助硬件的帮助，在数据从内核缓冲区到Socket缓冲区这一步操作上，并不是拷贝数据，而是拷贝缓冲区描述符(fd)和数据长度。完成后，DMA引擎直接将数据从内核缓冲区拷贝到协议引擎中去，避免了最后一次拷贝。</p>
+<h3 id="缺陷-3"><a href="#缺陷-3" class="headerlink" title="缺陷"></a>缺陷</h3><ul>
+<li>同样适用于那些不需要用户态处理的应用程序。还需要硬件以及驱动程序支持。</li>
+<li>只适用于将数据从文件拷贝到套接字上。</li>
+</ul>
+<h2 id="splice"><a href="#splice" class="headerlink" title="splice"></a>splice</h2><p>splice去掉sendfile的使用范围限制，可以用于任意两个文件描述符中传输数据。</p>
+<div align="center"><img width="720" height="460" src="../../../../images/2020/1-4/splice.jpg" algin="center"></div>
+
+<h3 id="过程-3"><a href="#过程-3" class="headerlink" title="过程"></a>过程</h3><ol>
+<li>用户进程通过splice()函数向内核(kernel)发起系统调用，上下文从用户态(user space)切换为内核态(kernel space)；</li>
+<li>CPU利用DMA控制器将数据从主存或硬盘拷贝到内核空间(kernel space)的读缓冲区(read buffer)；</li>
+<li>CPU在内核空间的读缓冲区(read buffer)和网络缓冲区(socket buffer)之间建立管道(pipeline)；</li>
+<li>CPU利用DMA控制器将数据从网络缓冲区(socket buffer)拷贝到网卡进行数据传输；</li>
+<li>上下文从内核态(kernel space)切换回用户态(user space)，splice系统调用执行返回；</li>
+</ol>
+<p>但是splice也有局限，它使用了Linux的管道缓冲机制，所以，它的两个文件描述符参数中至少有一个必须是管道设备。</p>
+<h3 id="缺陷-4"><a href="#缺陷-4" class="headerlink" title="缺陷"></a>缺陷</h3><ul>
+<li>同样只适用于不需要用户态处理的程序。</li>
+<li>传输描述符至少有一个是管道设备。</li>
+</ul>
+<h1 id="Java应用"><a href="#Java应用" class="headerlink" title="Java应用"></a>Java应用</h1><p>Java NIO的<strong>FileChannel.transferFrom()、FileChannel.transferTo()</strong>底层基于<strong>sendfile/splice</strong>，不仅可以进行网络文件传输，还可以对本地文件实现零拷贝操作</p>
+<div align="center"><img width="720" height="460" src="../../../../images/2020/1-4/java-nio.jpg" algin="center"></div>
+    </div>
+    
+        <div class="reward" ontouchstart="">
+    <div class="reward-wrap">赏
+        <div class="reward-box">
+            
+            
+                <span class="reward-type">
+                    <img class="wechat" src="../img/reward-wepay.jpg"><b>微信打赏</b>
+                </span>
+            
+        </div>
+    </div>
+    <p class="reward-tip">赞赏是不耍流氓的鼓励</p>
+</div>
+
+
+    
+    <div class="post-footer">
+        <div>
+            
+        </div>
+        <div>
+            
+        </div>
+    </div>
+</article>
+
+<div class="article-nav prev-next-wrap clearfix">
+    
+    
+        <a href="/Bug简记-长轮训Response/" class="next-post btn btn-default" title="Bug简记-长轮训Response">
+            <span class="hidden-lg">下一篇</span>
+            <span class="hidden-xs">Bug简记-长轮训Response</span><i class="fa fa-angle-right fa-fw"></i>
+        </a>
+    
+</div>
+
+
+    <div id="comments">
+        
+	
+    <div id="vcomments" class="valine"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="/assets/valine.min.js"></script>
+
+    <script>
+        new Valine({
+            av: AV,
+            el: "#vcomments",
+            appId: "8rKac39CM1EjFl9q7i97aDSu-gzGzoHsz",
+            appKey: "5wiSIVcjJCXPwgEwOqK8GaoJ",
+            placeholder: "说点什么吧",
+            notify: false,
+            verify: false,
+            avatar: "robohash",
+            meta: "nick,mail".split(","),
+            pageSize: "10",
+            path: window.location.pathname,
+            lang: "zh-CN".toLowerCase()
+        })
+    </script>
+
+
+    </div>
+
+
+
+
+
+                </main>
+                
+                    <aside id="article-toc" role="navigation" class="col-md-4">
+    <div class="widget">
+        <h3 class="title">文章目录</h3>
+        
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#引言"><span class="toc-text">引言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#零拷贝思想"><span class="toc-text">零拷贝思想</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#原始数据拷贝"><span class="toc-text">原始数据拷贝</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#零拷贝的几种方法"><span class="toc-text">零拷贝的几种方法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#用户态直接IO"><span class="toc-text">用户态直接IO</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#缺陷"><span class="toc-text">缺陷</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#mmap"><span class="toc-text">mmap</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#过程"><span class="toc-text">过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#缺陷-1"><span class="toc-text">缺陷</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sendfile"><span class="toc-text">sendfile</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#过程-1"><span class="toc-text">过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#缺陷-2"><span class="toc-text">缺陷</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DMA辅助的sendfile"><span class="toc-text">DMA辅助的sendfile</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#过程-2"><span class="toc-text">过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#缺陷-3"><span class="toc-text">缺陷</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#splice"><span class="toc-text">splice</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#过程-3"><span class="toc-text">过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#缺陷-4"><span class="toc-text">缺陷</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Java应用"><span class="toc-text">Java应用</span></a></li></ol>
+        
+    </div>
+</aside>
+
+                
+            </div>
+        </div>
+    </section>
+    <footer class="main-footer">
+    <div class="container">
+        <div class="row">
+        </div>
+    </div>
+</footer>
+
+<a id="back-to-top" class="icon-btn hide">
+	<i class="fa fa-chevron-up"></i>
+</a>
+
+
+
+
+    <div class="copyright">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="busuanzi">
+    
+        访问量:
+        <strong id="busuanzi_value_site_pv">
+            <i class="fa fa-spinner fa-spin"></i>
+        </strong>
+        &nbsp; | &nbsp;
+        访客数:
+        <strong id="busuanzi_value_site_uv">
+            <i class="fa fa-spinner fa-spin"></i>
+        </strong>
+    
+</div>
+
+            </div>
+            <div class="col-sm-12">
+                <span>Copyright &copy; 2017-2019
+                </span> |
+                <span>
+                    Powered by <a href="//hexo.io" class="copyright-links" target="_blank" rel="nofollow">Hexo</a>
+                </span> |
+                <span>
+                       <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=44030502003606"><img src="/img/beian.png"><p style="display: inline;">粤公网安备 44030502003606号</p></a>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+<script src="/js/app.js?rev=@@hash"></script>
+
+</body>
+</html>
