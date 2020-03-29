@@ -4,8 +4,43 @@
 
     
   <url>
+    <loc>https://mx-go.github.io/RocketMQ-%E4%B8%89-%E2%80%94%E6%B6%88%E6%81%AF%E5%B9%82%E7%AD%89/</loc>
+    <lastmod>2020-03-29T02:07:13.232Z</lastmod>
+    <data>
+        <display>
+        <title>RocketMQ(三)—消息幂等</title>
+        <pubTime>2019-11-12T08:33:29.000Z</pubTime>
+        
+        <tag>RocketMQ</tag>
+         
+         
+           
+             
+              <breadCrumb title="中间件" url="https://mx-go.github.io/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://mx-go.github.io/About/</loc>
+    <lastmod>2020-03-28T13:49:43.802Z</lastmod>
+    <data>
+        <display>
+        <title>About</title>
+        <pubTime>2017-03-07T01:00:07.000Z</pubTime>
+        
+         
+           
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>https://mx-go.github.io/RocketMQ-%E4%BA%8C-%E2%80%94%E6%B6%88%E6%81%AF%E9%87%8D%E8%AF%95/</loc>
-    <lastmod>2020-03-22T03:14:31.459Z</lastmod>
+    <lastmod>2020-03-28T08:35:26.812Z</lastmod>
     <data>
         <display>
         <title>RocketMQ(二)—消息重试</title>
@@ -1571,20 +1606,5 @@
     
     
     
-    
-  <url>
-    <loc>https://mx-go.github.io/About/</loc>
-    <lastmod>2018-10-23T15:32:00.194Z</lastmod>
-    <data>
-        <display>
-        <title>About</title>
-        <pubTime>2017-03-07T01:00:07.000Z</pubTime>
-        
-         
-           
-        </display>
-    </data>
-    </url>
-
     
 </urlset>
