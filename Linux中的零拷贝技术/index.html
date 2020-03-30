@@ -256,7 +256,7 @@
 <li>同样只适用于不需要用户态处理的程序。</li>
 <li>传输描述符至少有一个是管道设备。</li>
 </ul>
-<h1 id="Java应用"><a href="#Java应用" class="headerlink" title="Java应用"></a>Java应用</h1><p>Java NIO的<strong>FileChannel.transferFrom()、FileChannel.transferTo()</strong>底层基于<strong>sendfile/splice</strong>，不仅可以进行网络文件传输，还可以对本地文件实现零拷贝操作</p>
+<h1 id="Java应用"><a href="#Java应用" class="headerlink" title="Java应用"></a>Java应用</h1><p>Java NIO的<strong>FileChannel.transferFrom()、FileChannel.transferTo()</strong>底层基于<strong>sendfile/splice</strong>，不仅可以进行网络文件传输，还可以对本地文件实现零拷贝操作。</p>
 <div align="center"><img width="720" height="460" src="../../../../images/2020/1-4/java-nio.jpg" algin="center"></div>
     </div>
     
