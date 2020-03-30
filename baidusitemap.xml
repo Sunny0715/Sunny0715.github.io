@@ -4,6 +4,28 @@
 
     
   <url>
+    <loc>https://mx-go.github.io/Mybatis%E4%B9%8B%E7%BC%93%E5%AD%98/</loc>
+    <lastmod>2020-03-30T14:05:02.761Z</lastmod>
+    <data>
+        <display>
+        <title>Mybatis之缓存</title>
+        <pubTime>2018-03-20T02:43:53.000Z</pubTime>
+        
+        <tag>java</tag>
+         
+        <tag>mybatis</tag>
+         
+         
+           
+             
+              <breadCrumb title="后端" url="https://mx-go.github.io/categories/%E5%90%8E%E7%AB%AF/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>https://mx-go.github.io/Linux%E4%B8%AD%E7%9A%84%E9%9B%B6%E6%8B%B7%E8%B4%9D%E6%8A%80%E6%9C%AF/</loc>
     <lastmod>2020-03-30T00:35:26.129Z</lastmod>
     <data>
@@ -921,28 +943,6 @@
         <tag>tools</tag>
          
         <tag>redis</tag>
-         
-         
-           
-             
-              <breadCrumb title="后端" url="https://mx-go.github.io/categories/%E5%90%8E%E7%AB%AF/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>https://mx-go.github.io/Mybatis%E4%B9%8B%E7%BC%93%E5%AD%98/</loc>
-    <lastmod>2018-12-30T14:43:15.992Z</lastmod>
-    <data>
-        <display>
-        <title>Mybatis之缓存</title>
-        <pubTime>2018-03-20T02:43:53.000Z</pubTime>
-        
-        <tag>java</tag>
-         
-        <tag>mybatis</tag>
          
          
            

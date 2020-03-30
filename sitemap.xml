@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://mx-go.github.io/Mybatis%E4%B9%8B%E7%BC%93%E5%AD%98/</loc>
+    
+    <lastmod>2020-03-30T14:05:02.761Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://mx-go.github.io/Linux%E4%B8%AD%E7%9A%84%E9%9B%B6%E6%8B%B7%E8%B4%9D%E6%8A%80%E6%9C%AF/</loc>
     
     <lastmod>2020-03-30T00:35:26.129Z</lastmod>
@@ -313,13 +320,6 @@
     <loc>https://mx-go.github.io/Redis%E6%95%B0%E6%8D%AE%E8%BF%87%E6%9C%9F%E7%AD%96%E7%95%A5/</loc>
     
     <lastmod>2018-12-30T14:43:38.487Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://mx-go.github.io/Mybatis%E4%B9%8B%E7%BC%93%E5%AD%98/</loc>
-    
-    <lastmod>2018-12-30T14:43:15.992Z</lastmod>
     
   </url>
   
