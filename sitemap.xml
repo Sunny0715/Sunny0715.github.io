@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://mx-go.github.io/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Spring/</loc>
+    
+    <lastmod>2020-03-30T14:12:21.370Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://mx-go.github.io/Mybatis%E4%B9%8B%E7%BC%93%E5%AD%98/</loc>
     
     <lastmod>2020-03-30T14:05:02.761Z</lastmod>
@@ -418,13 +425,6 @@
     <loc>https://mx-go.github.io/%E8%AF%B4%E8%AF%B4JSON%E5%92%8CJSONP/</loc>
     
     <lastmod>2018-12-30T14:40:32.162Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://mx-go.github.io/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Spring/</loc>
-    
-    <lastmod>2018-12-30T14:40:17.484Z</lastmod>
     
   </url>
   
