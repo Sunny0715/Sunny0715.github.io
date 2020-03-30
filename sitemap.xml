@@ -2,9 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://mx-go.github.io/Spring%E4%B9%8B%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/</loc>
+    
+    <lastmod>2020-03-30T14:24:57.188Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://mx-go.github.io/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Spring/</loc>
     
-    <lastmod>2020-03-30T14:22:56.156Z</lastmod>
+    <lastmod>2020-03-30T14:23:09.103Z</lastmod>
     
   </url>
   
@@ -292,13 +299,6 @@
     <loc>https://mx-go.github.io/tomcat%E5%85%A5%E9%97%A8/</loc>
     
     <lastmod>2018-12-30T14:44:16.656Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://mx-go.github.io/Spring%E4%B9%8B%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/</loc>
-    
-    <lastmod>2018-12-30T14:44:07.709Z</lastmod>
     
   </url>
   
