@@ -1,0 +1,404 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!--Setting-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta http-equiv="Cache-Control" content="no-transform">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="apple-mobile-web-app-capable" content="rainbowhorse&#39;s blog">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    <meta name="browsermode" content="application">
+    <meta name="screen-orientation" content="portrait">
+    <link rel="dns-prefetch" href="https://mx-go.github.io">
+    <!--SEO-->
+
+    <meta name="keywords" content="java,spring">
+
+
+    <meta name="description" content="引言在Spring框架中，针对Bean之间的循环依赖，Spring通过三级缓存的机制已经解决和规避了部分场景Bean的循环依赖。但是仍需了解Spring解决循环依赖的原理和注意Spring无法解...">
+
+
+
+<meta name="robots" content="all">
+<meta name="google" content="all">
+<meta name="googlebot" content="all">
+<meta name="verify" content="all">
+
+    <!--Title-->
+
+
+<title>Spring之循环依赖 | rainbowhorse&#39;s blog</title>
+
+
+    <link rel="alternate" href="/atom.xml" title="rainbowhorse&#39;s blog" type="application/atom+xml">
+
+
+    <link rel="icon" href="/favicon.ico">
+
+    
+
+
+
+<link rel="stylesheet" href="/css/bootstrap.min.css?rev=3.3.7">
+<link rel="stylesheet" href="/css/font-awesome.min.css?rev=4.5.0">
+<link rel="stylesheet" href="/css/style.css?rev=@@hash">
+
+
+
+
+    
+
+
+
+
+
+    
+
+    <script>
+        (function(){
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+            }
+            else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        })();
+    </script>
+
+</head>
+
+</html>
+<!--[if lte IE 8]>
+<style>
+    html{ font-size: 1em }
+</style>
+<![endif]-->
+<!--[if lte IE 9]>
+<div style="ie">你使用的浏览器版本过低，为了你更好的阅读体验，请更新浏览器的版本或者使用其他现代浏览器，比如Chrome、Firefox、Safari等。</div>
+<![endif]-->
+
+<body>
+    <header class="main-header" style="background-image:url(http://snippet.shenliyang.com/img/banner.jpg)">
+    <div class="main-header-box">
+        <a class="header-avatar" href="/" title="rainbowhorse">
+            <img src="/img/avatar.jpg" alt="logo头像" class="img-responsive center-block">
+        </a>
+        <div class="branding">
+        	<!--<h2 class="text-hide">Snippet主题,从未如此简单有趣</h2>-->
+            
+                <h2> 不忘初心 方得始终 </h2>
+            
+    	</div>
+    </div>
+</header>
+    <nav class="main-navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="navbar-header"><span class="nav-toggle-button collapsed pull-right" data-toggle="collapse" data-target="#main-menu" id="mnav">
+                    <span class="sr-only"></span>
+                        <i class="fa fa-bars"></i>
+                    </span>
+                    <a class="navbar-brand" href="https://mx-go.github.io">rainbowhorse&#39;s blog</a>
+                </div>
+                <div class="collapse navbar-collapse" id="main-menu">
+                    <ul class="menu">
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/"><i class="fa "></i>首页</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/categories/后端/"><i class="fa "></i>后端</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/categories/工具/"><i class="fa "></i>工具</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/about/"><i class="fa "></i>关于我</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/archives/"><i class="fa "></i>时间轴</a>
+                            </li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+    <section class="content-wrap">
+        <div class="container">
+            <div class="row">
+                <main class="col-md-8 main-content m-post">
+                    <p id="process"></p>
+<article class="post">
+    <div class="post-head">
+        <h1 id="Spring之循环依赖">
+            
+	            Spring之循环依赖
+            
+        </h1>
+        <div class="post-meta">
+    
+        <span class="categories-meta fa-wrap">
+            <i class="fa fa-folder-open-o"></i>
+            <a class="category-link" href="/categories/后端/">后端</a>
+        </span>
+    
+
+    
+        <span class="fa-wrap">
+            <i class="fa fa-tags"></i>
+            <span class="tags-meta">
+                
+                    <a class="tag-link" href="/tags/java/">java</a> <a class="tag-link" href="/tags/spring/">spring</a>
+                
+            </span>
+        </span>
+    
+
+    
+        
+        <span class="fa-wrap">
+            <i class="fa fa-clock-o"></i>
+            <span class="date-meta">2020/03/05</span>
+        </span>
+        
+            <span class="fa-wrap">
+                <i class="fa fa-eye"></i>
+                <span id="busuanzi_value_page_pv"></span>
+            </span>
+        
+    
+</div>
+            
+            
+    </div>
+    
+    <div class="post-body post-content">
+        <h1 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h1><p>在Spring框架中，针对Bean之间的循环依赖，Spring通过<strong>三级缓存</strong>的机制已经解决和规避了部分场景Bean的循环依赖。但是仍需了解Spring解决循环依赖的原理和注意Spring无法解决循环依赖的场景，避免出现此类问题。<div align="center"><img width="800" height="400" src="../../../../images/2020/5-8/spring-dependency1.jpg" algin="center"></div><a id="more"></a></p>
+<h1 id="循环依赖示例"><a href="#循环依赖示例" class="headerlink" title="循环依赖示例"></a>循环依赖示例</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AServiceImpl</span> <span class="keyword">implements</span> <span class="title">AService</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> BService bService;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BServiceImpl</span> <span class="keyword">implements</span> <span class="title">BService</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> AService aService;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个例子是非常经典的Spring Bean循环依赖的场景，在这种循环依赖场景，Spring已经帮我们解决了循环依赖的问题，所以服务可以正常启动和运行。</p>
+<h1 id="Spring循环依赖的场景"><a href="#Spring循环依赖的场景" class="headerlink" title="Spring循环依赖的场景"></a>Spring循环依赖的场景</h1><h2 id="构造器注入"><a href="#构造器注入" class="headerlink" title="构造器注入"></a>构造器注入</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AServiceImpl</span> <span class="keyword">implements</span> <span class="title">AService</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> BService bService;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">AServiceImpl</span><span class="params">(BService bService)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.bService = bService;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BServiceImpl</span> <span class="keyword">implements</span> <span class="title">BService</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> AService aService;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">BServiceImpl</span><span class="params">(AService aService)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.aService = aService;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>结果：项目启动失败并抛出<code>BeanCurrentlyInCreationException</code>异常。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Caused by: org.springframework.beans.factory.BeanCurrentlyInCreationException: Error creating bean with name <span class="string">'AServiceImpl'</span>: Requested bean is currently in creation: Is there an unresolvable circular reference?</span><br><span class="line">	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.beforeSingletonCreation(DefaultSingletonBeanRegistry.java:<span class="number">347</span>)</span><br><span class="line">	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:<span class="number">223</span>)</span><br><span class="line">	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:<span class="number">308</span>)</span><br><span class="line">	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:<span class="number">202</span>)</span><br></pre></td></tr></table></figure>
+<p><strong>构造器注入无法解决循环依赖问题</strong>，Spring只能抛出<code>BeanCurrentlyInCreationException</code>依赖表示循环依赖。</p>
+<blockquote>
+<p>Spring解决循环依赖是依靠Bean的“中间态“的概念，”中间态“是指Bean已经实例化，但还没有初始化的状态，而构造器注入的是初始化后的对象，所以不能解决循环依赖。</p>
+</blockquote>
+<h2 id="注解注入-field属性注入"><a href="#注解注入-field属性注入" class="headerlink" title="注解注入(field属性注入)"></a>注解注入(field属性注入)</h2><p>这个是最常见的注入方式，通过<code>@Autowired</code>或<code>@Resource</code>注入。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AServiceImpl</span> <span class="keyword">implements</span> <span class="title">AService</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> BService bService;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BServiceImpl</span> <span class="keyword">implements</span> <span class="title">BService</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> AService aService;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>项目可以正常启动，说明循环依赖被解决。</p>
+<h2 id="prototype-field属性注入"><a href="#prototype-field属性注入" class="headerlink" title="prototype field属性注入"></a><code>prototype</code> field属性注入</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Scope</span>(ConfigurableBeanFactory.SCOPE_PROTOTYPE)</span><br><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AServiceImpl</span> <span class="keyword">implements</span> <span class="title">AService</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> BService bService;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Scope</span>(ConfigurableBeanFactory.SCOPE_PROTOTYPE)</span><br><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BServiceImpl</span> <span class="keyword">implements</span> <span class="title">BService</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> AService aService;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>启动没有报错，因为非单例的Bean默认不会初始化，只有在第一次使用时才会初始化。需要手动调用<code>getBean()</code>或者在一个单例Bean内<code>@Autowired</code>就可以触发初始化。此时同样会抛出异常：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name <span class="string">'AServiceImpl'</span>: Unsatisfied dependency expressed through field <span class="string">'bService'</span>; nested exception is org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name <span class="string">'BServiceImpl'</span>: Unsatisfied dependency expressed through field <span class="string">'aService'</span>; nested exception is org.springframework.beans.factory.BeanCurrentlyInCreationException: Error creating bean with name <span class="string">'AServiceImpl'</span>: Requested bean is currently in creation: Is there an unresolvable circular reference?</span><br><span class="line">	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:<span class="number">586</span>)</span><br><span class="line">	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:<span class="number">87</span>)</span><br><span class="line">	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessPropertyValues(AutowiredAnnotationBeanPostProcessor.java:<span class="number">364</span>)</span><br><span class="line">	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:<span class="number">1269</span>)</span><br></pre></td></tr></table></figure>
+<p>网上有的说法是使用<code>@Lazy</code>注解解决。这样做启动确实不报错了，但是实际这样是解决不了问题的，<strong><code>@Lazy</code>只是延迟初始化，当真正使用到的时候还是会报异常。</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Autowired</span></span><br><span class="line"><span class="meta">@Lazy</span></span><br><span class="line"><span class="keyword">private</span> AService aService;</span><br></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><h3 id="可解决循环依赖场景"><a href="#可解决循环依赖场景" class="headerlink" title="可解决循环依赖场景"></a>可解决循环依赖场景</h3><ol>
+<li>注解注入(field属性)注入循环依赖</li>
+</ol>
+<h3 id="无法解决循环依赖场景"><a href="#无法解决循环依赖场景" class="headerlink" title="无法解决循环依赖场景"></a>无法解决循环依赖场景</h3><ol>
+<li>构造器注入循环依赖</li>
+<li><code>prototype</code> field属性注入循环依赖</li>
+</ol>
+<h1 id="Spring解决循环依赖原理"><a href="#Spring解决循环依赖原理" class="headerlink" title="Spring解决循环依赖原理"></a>Spring解决循环依赖原理</h1><p>Spring创建单例Bean流程可以简化如下图：</p>
+<div align="center"><img width="800" height="200" src="../../../../images/2020/5-8/spring-dependency2.jpg" algin="center"></div>
+
+<p>其中比较核心的方法为：</p>
+<ul>
+<li><strong>createBeanInstance</strong>：实例化，其实是调用对象的构造方法实例化对象。</li>
+<li><strong>populateBean</strong>：填充Bean属性，主要对Bean的依赖属性进行注入(<code>@Autowired</code>、<code>@Resource</code>)</li>
+</ul>
+<p>其中Spring解决循环依赖主要发生在<code>populateBean</code>这一步。</p>
+<h2 id="Spring容器的”三级缓存“"><a href="#Spring容器的”三级缓存“" class="headerlink" title="Spring容器的”三级缓存“"></a>Spring容器的”三级缓存“</h2><p>在Spring容器中大量使用了缓存来加速访问，其中单例Bean也利用了这种手段。其中Spring采用了”三级缓存“来解决循环依赖问题。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DefaultSingletonBeanRegistry</span> <span class="keyword">extends</span> <span class="title">SimpleAliasRegistry</span> <span class="keyword">implements</span> <span class="title">SingletonBeanRegistry</span> </span>&#123;</span><br><span class="line">    <span class="comment">/** 一级缓存 */</span></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Cache of singleton objects: bean name --&gt; bean instance</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Map&lt;String, Object&gt; singletonObjects = <span class="keyword">new</span> ConcurrentHashMap&lt;String, Object&gt;(<span class="number">256</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** 二级缓存 */</span></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Cache of singleton factories: bean name --&gt; ObjectFactory</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Map&lt;String, ObjectFactory&lt;?&gt;&gt; singletonFactories = <span class="keyword">new</span> HashMap&lt;String, ObjectFactory&lt;?&gt;&gt;(<span class="number">16</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** 三级缓存 */</span></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Cache of early singleton objects: bean name --&gt; bean instance</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Map&lt;String, Object&gt; earlySingletonObjects = <span class="keyword">new</span> HashMap&lt;String, Object&gt;(<span class="number">16</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** 正在创建中的Bean。Bean开始创建时存入,创建完成时移除。 */</span></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Names of beans that are currently in creation</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Set&lt;String&gt; singletonsCurrentlyInCreation =</span><br><span class="line">            Collections.newSetFromMap(<span class="keyword">new</span> ConcurrentHashMap&lt;String, Boolean&gt;(<span class="number">16</span>));</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** 创建完成的Bean集合 */</span></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Set of registered singletons, containing the bean names in registration order</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Set&lt;String&gt; registeredSingletons = <span class="keyword">new</span> LinkedHashSet&lt;String&gt;(<span class="number">256</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>AbstractBeanFactory</code>继承自<code>DefaultSingletonBeanRegistry</code></p>
+<ol>
+<li><code>singletonObjects(一级缓存)</code>：存放完全初始化好的Bean，从该缓存中取出的bean可以直接使用。</li>
+<li><code>earlySingletonObjects(二级缓存)</code>：提前曝光的单例对象的cache，存放原始的Bean对象(已实例化，尚未初始化)，用于解决循环依赖。</li>
+<li><code>singletonFactories(三级缓存)</code>：单例对象工厂的cache，存放Bean工厂对象，用于解决循环依赖。</li>
+</ol>
+<h2 id="获取单例Bean的流程"><a href="#获取单例Bean的流程" class="headerlink" title="获取单例Bean的流程"></a>获取单例Bean的流程</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DefaultSingletonBeanRegistry</span> <span class="keyword">extends</span> <span class="title">SimpleAliasRegistry</span> <span class="keyword">implements</span> <span class="title">SingletonBeanRegistry</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="meta">@Nullable</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">getSingleton</span><span class="params">(String beanName)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> getSingleton(beanName, <span class="keyword">true</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 1.从一级缓存singletonObjects中去获取(如果获取到就直接return)</span></span><br><span class="line"><span class="comment">     * &lt;p&gt;</span></span><br><span class="line"><span class="comment">     * 2.如果获取不到或者对象正在创建中(isSingletonCurrentlyInCreation(),</span></span><br><span class="line"><span class="comment">     * 那就再从二级缓存earlySingletonObjects中获取(如果获取到就直接return）</span></span><br><span class="line"><span class="comment">     * &lt;p&gt;</span></span><br><span class="line"><span class="comment">     * 3.如果还是获取不到,且允许singletonFactories(allowEarlyReference=true)通过getObject()获取。</span></span><br><span class="line"><span class="comment">     * 就从三级缓存singletonFactory.getObject()获取。如果获取到了就从singletonFactories中移除，并且放进earlySingletonObjects。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Nullable</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> Object <span class="title">getSingleton</span><span class="params">(String beanName, <span class="keyword">boolean</span> allowEarlyReference)</span> </span>&#123;</span><br><span class="line">        Object singletonObject = <span class="keyword">this</span>.singletonObjects.get(beanName);</span><br><span class="line">        <span class="comment">// 检查一级缓存中是否存在实例。isSingletonCurrentlyInCreation判断该实例是否在创建中</span></span><br><span class="line">        <span class="keyword">if</span> (singletonObject == <span class="keyword">null</span> &amp;&amp; isSingletonCurrentlyInCreation(beanName)) &#123;</span><br><span class="line">            <span class="comment">// 如果缓存中实例为null，则锁定全局变量singletonObjects并进行处理</span></span><br><span class="line">            <span class="keyword">synchronized</span> (<span class="keyword">this</span>.singletonObjects) &#123;</span><br><span class="line">                <span class="comment">// 尝试从二级缓存earlySingletonObjects(创建中提早曝光的beanFactory) 获取bean</span></span><br><span class="line">                singletonObject = <span class="keyword">this</span>.earlySingletonObjects.get(beanName);</span><br><span class="line">                <span class="keyword">if</span> (singletonObject == <span class="keyword">null</span> &amp;&amp; allowEarlyReference) &#123;</span><br><span class="line">                    <span class="comment">// 尝试从三级缓存singletonFactories获取beanFactory</span></span><br><span class="line">                    ObjectFactory&lt;?&gt; singletonFactory = <span class="keyword">this</span>.singletonFactories.get(beanName);</span><br><span class="line">                    <span class="keyword">if</span> (singletonFactory != <span class="keyword">null</span>) &#123;</span><br><span class="line">                        <span class="comment">// 返回获取到的bean</span></span><br><span class="line">                        singletonObject = singletonFactory.getObject();</span><br><span class="line">                        <span class="comment">// 增加二级缓存</span></span><br><span class="line">                        <span class="keyword">this</span>.earlySingletonObjects.put(beanName, singletonObject);</span><br><span class="line">                        <span class="comment">// 删除三级缓存</span></span><br><span class="line">                        <span class="keyword">this</span>.singletonFactories.remove(beanName);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> singletonObject;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Bean是否正在创建中</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isSingletonCurrentlyInCreation</span><span class="params">(String beanName)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.singletonsCurrentlyInCreation.contains(beanName);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Spring利用<code>singletonFactories</code>这个三级缓存将创建对象的步骤封装到<code>ObjectFactory</code>中，交给自定义的<code>Scope</code>来选择是否需要创建对象来灵活的实现<code>scope</code>。 <strong>经过<code>ObjectFactory.getObject()</code>后，此时放进了二级缓存<code>earlySingletonObjects</code>内。这个时候对象已经实例化了，虽然还没有初始化完成，但该对象已经可以被其它对象引用了。</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DefaultSingletonBeanRegistry</span> <span class="keyword">extends</span> <span class="title">SimpleAliasRegistry</span> <span class="keyword">implements</span> <span class="title">SingletonBeanRegistry</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">getSingleton</span><span class="params">(String beanName, ObjectFactory&lt;?&gt; singletonFactory)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 加锁，全局变量需要同步</span></span><br><span class="line">        <span class="keyword">synchronized</span> (<span class="keyword">this</span>.singletonObjects) &#123;</span><br><span class="line">            <span class="comment">// 查看单例bean是否已经创建</span></span><br><span class="line">            Object singletonObject = <span class="keyword">this</span>.singletonObjects.get(beanName);</span><br><span class="line">            <span class="keyword">if</span> (singletonObject == <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">                <span class="comment">// 调用getObject方法创建bean实例</span></span><br><span class="line">                singletonObject = singletonFactory.getObject();</span><br><span class="line">                newSingleton = <span class="keyword">true</span>;</span><br><span class="line"></span><br><span class="line">                <span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (newSingleton) &#123;</span><br><span class="line">                    addSingleton(beanName, singletonObject);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> singletonObject;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">addSingleton</span><span class="params">(String beanName, Object singletonObject)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (<span class="keyword">this</span>.singletonObjects) &#123;</span><br><span class="line">            <span class="comment">// 添加一级缓存</span></span><br><span class="line">            <span class="keyword">this</span>.singletonObjects.put(beanName, singletonObject);</span><br><span class="line">            <span class="comment">// 移除二三级缓存</span></span><br><span class="line">            <span class="keyword">this</span>.singletonFactories.remove(beanName);</span><br><span class="line">            <span class="keyword">this</span>.earlySingletonObjects.remove(beanName);</span><br><span class="line">            <span class="keyword">this</span>.registeredSingletons.add(beanName);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>创建Bean可以简单分为三个流程：</p>
+<ol>
+<li>创建原始<code>bean</code>实例 → <code>createBeanInstance(beanName, mbd, args)</code></li>
+<li>添加原始对象工厂对象到 <code>singletonFactories</code> 缓存中 → <code>addSingletonFactory(beanName, new ObjectFactory&lt;Object&gt;{...})</code></li>
+<li>填充属性，解析依赖 → <code>populateBean(beanName, mbd, instanceWrapper)</code></li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">AbstractAutowireCapableBeanFactory</span> <span class="keyword">extends</span> <span class="title">AbstractBeanFactory</span> <span class="keyword">implements</span> <span class="title">AutowireCapableBeanFactory</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> Object <span class="title">doCreateBean</span><span class="params">(<span class="keyword">final</span> String beanName, <span class="keyword">final</span> RootBeanDefinition mbd, <span class="keyword">final</span> @Nullable Object[] args)</span></span></span><br><span class="line"><span class="function">            <span class="keyword">throws</span> BeanCreationException </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Instantiate the bean.</span></span><br><span class="line">        BeanWrapper instanceWrapper = <span class="keyword">null</span>;</span><br><span class="line">        <span class="comment">// 创建bean对象，并将bean对象包裹在 eanWrapper对象中返回</span></span><br><span class="line">        instanceWrapper = createBeanInstance(beanName, mbd, args);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 是否需要提前暴露。单例&amp;允许循环依赖&amp;当前bean正在创建中。</span></span><br><span class="line">        <span class="keyword">boolean</span> earlySingletonExposure = (mbd.isSingleton() &amp;&amp; <span class="keyword">this</span>.allowCircularReferences &amp;&amp;</span><br><span class="line">                isSingletonCurrentlyInCreation(beanName));</span><br><span class="line">        <span class="keyword">if</span> (earlySingletonExposure) &#123;</span><br><span class="line">            <span class="comment">// 在bean未实例化之前加入到三级缓存singletonFactories中</span></span><br><span class="line">            addSingletonFactory(beanName, () -&gt; getEarlyBeanReference(beanName, mbd, bean));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Object exposedObject = bean;</span><br><span class="line">        <span class="comment">// 对bean进行填充，属性注入，bean依赖</span></span><br><span class="line">        populateBean(beanName, mbd, instanceWrapper);</span><br><span class="line">        <span class="comment">// 调用相关初始化方法</span></span><br><span class="line">        exposedObject = initializeBean(beanName, exposedObject, mbd);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> exposedObject;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">addSingletonFactory</span><span class="params">(String beanName, ObjectFactory&lt;?&gt; singletonFactory)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (<span class="keyword">this</span>.singletonObjects) &#123;</span><br><span class="line">            <span class="comment">// 将singletonFactory添加到singletonFactories缓存中</span></span><br><span class="line">            <span class="keyword">if</span> (!<span class="keyword">this</span>.singletonObjects.containsKey(beanName)) &#123;</span><br><span class="line">                <span class="keyword">this</span>.singletonFactories.put(beanName, singletonFactory);</span><br><span class="line">                <span class="keyword">this</span>.earlySingletonObjects.remove(beanName);</span><br><span class="line">                <span class="keyword">this</span>.registeredSingletons.add(beanName);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h1><p>Spring通过三级缓存可以解决部分场景下Bean循环依赖的问题，但是不能解决 1)构造器注入; 2)非单例Bean的循环依赖的问题。</p>
+<p>Spring解决循环依赖的流程可以简化如下图所示：</p>
+<div align="center"><img width="800" height="200" src="../../../../images/2020/5-8/spring-dependency3.jpg" algin="center"></div>
+
+<p>以A、B类使用注解注入为例，对整个流程描述如下：</p>
+<ol>
+<li>获取A：调用<code>getBean(beanA)</code>，获取容器内的单例A对象，但此时容器内不存在A的实例，即走创建A的流程。</li>
+<li>实例化A(<code>createBeanInstance</code>)：此处仅仅是实例化，并将A放入三级缓存<code>singletonFactories</code>中(此时A已实例化完成，可以被引用)。</li>
+<li>初始化A(<code>populateBean</code>)：<code>@Autowired</code>依赖注入B(需要到容器内获取B)。</li>
+<li>获取B：为了完成依赖注入B，会通过<code>getBean(B)</code>去容器内寻找B。但此时B在容器内不存在，即走B的创建流程。</li>
+<li>实例化B(<code>createBeanInstance</code>)：并将其放入三级缓存<code>singletonFactories</code>中(此时B也能够被引用)。</li>
+<li>初始化B(<code>populateBean</code>)：<code>@Autowired</code>依赖注入A(此时需要去容器内获取A)</li>
+<li><strong>重要流程</strong>：初始化B时会调用<code>getBean(A)</code>去容器内寻找A，而此时候A已经实例化完成了并且在三级缓存中，此时可以通过A的<code>ObjectFactory</code> Bean工厂创建A对象，所以<code>getBean(A)</code>能够正常返回。</li>
+<li>B初始化成功：此时B已经注入A成功，已成功持有A的引用了。return(此处return相当于返回最上面的<code>getBean(B)</code>这句代码，回到了初始化A的流程中)。</li>
+<li>A初始化成功：因为B实例已经成功返回了，因此最终A也初始化成功。</li>
+<li>结束：此时，B持有的已经是初始化完成的A，A持有的也是初始化完成的B。</li>
+</ol>
+
+    </div>
+    
+        <div class="reward" ontouchstart="">
+    <div class="reward-wrap">赏
+        <div class="reward-box">
+            
+            
+                <span class="reward-type">
+                    <img class="wechat" src="../img/reward-wepay.jpg"><b>微信打赏</b>
+                </span>
+            
+        </div>
+    </div>
+    <p class="reward-tip">赞赏是不耍流氓的鼓励</p>
+</div>
+
+
+    
+    <div class="post-footer">
+        <div>
+            
+        </div>
+        <div>
+            
+        </div>
+    </div>
+</article>
+
+<div class="article-nav prev-next-wrap clearfix">
+    
+    
+        <a href="/Linux中的零拷贝技术/" class="next-post btn btn-default" title="Linux中的零拷贝技术">
+            <span class="hidden-lg">下一篇</span>
+            <span class="hidden-xs">Linux中的零拷贝技术</span><i class="fa fa-angle-right fa-fw"></i>
+        </a>
+    
+</div>
+
+
+    <div id="comments">
+        
+	
+    <div id="vcomments" class="valine"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="/assets/valine.min.js"></script>
+
+    <script>
+        new Valine({
+            av: AV,
+            el: "#vcomments",
+            appId: "8rKac39CM1EjFl9q7i97aDSu-gzGzoHsz",
+            appKey: "5wiSIVcjJCXPwgEwOqK8GaoJ",
+            placeholder: "说点什么吧",
+            notify: false,
+            verify: false,
+            avatar: "robohash",
+            meta: "nick,mail".split(","),
+            pageSize: "10",
+            path: window.location.pathname,
+            lang: "zh-CN".toLowerCase()
+        })
+    </script>
+
+
+    </div>
+
+
+
+
+
+                </main>
+                
+                    <aside id="article-toc" role="navigation" class="col-md-4">
+    <div class="widget">
+        <h3 class="title">文章目录</h3>
+        
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#引言"><span class="toc-text">引言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#循环依赖示例"><span class="toc-text">循环依赖示例</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Spring循环依赖的场景"><span class="toc-text">Spring循环依赖的场景</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#构造器注入"><span class="toc-text">构造器注入</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#注解注入-field属性注入"><span class="toc-text">注解注入(field属性注入)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#prototype-field属性注入"><span class="toc-text">prototype field属性注入</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-text">总结</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#可解决循环依赖场景"><span class="toc-text">可解决循环依赖场景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#无法解决循环依赖场景"><span class="toc-text">无法解决循环依赖场景</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Spring解决循环依赖原理"><span class="toc-text">Spring解决循环依赖原理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring容器的”三级缓存“"><span class="toc-text">Spring容器的”三级缓存“</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#获取单例Bean的流程"><span class="toc-text">获取单例Bean的流程</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#总结-1"><span class="toc-text">总结</span></a></li></ol>
+        
+    </div>
+</aside>
+
+                
+            </div>
+        </div>
+    </section>
+    <footer class="main-footer">
+    <div class="container">
+        <div class="row">
+        </div>
+    </div>
+</footer>
+
+<a id="back-to-top" class="icon-btn hide">
+	<i class="fa fa-chevron-up"></i>
+</a>
+
+
+
+
+    <div class="copyright">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="busuanzi">
+    
+        访问量:
+        <strong id="busuanzi_value_site_pv">
+            <i class="fa fa-spinner fa-spin"></i>
+        </strong>
+        &nbsp; | &nbsp;
+        访客数:
+        <strong id="busuanzi_value_site_uv">
+            <i class="fa fa-spinner fa-spin"></i>
+        </strong>
+    
+</div>
+
+            </div>
+            <div class="col-sm-12">
+                <span>Copyright &copy; 2017-2020
+                </span> |
+                <span>
+                    Powered by <a href="//hexo.io" class="copyright-links" target="_blank" rel="nofollow">Hexo</a>
+                </span> |
+                <span>
+                       <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=44030502003606"><img src="/img/beian.png"><p style="display: inline;">粤公网安备 44030502003606号</p></a>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+<script src="/js/app.js?rev=@@hash"></script>
+
+</body>
+</html>

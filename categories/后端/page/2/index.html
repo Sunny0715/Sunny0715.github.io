@@ -153,6 +153,27 @@
         <div class="post-content">
             <div class="post-head home-post-head">
                 <h1 class="post-title">
+                    <a href="/Mybatis之缓存/">Mybatis之缓存</a>
+                </h1>
+                <div class="post-meta">  &bull;
+                    <time class="post-date" datetime="" title="">
+                        2018年03月20日
+                    </time>
+                </div>
+            </div>
+            <p class="brief">
+                
+                    引言Mybatis中有一级缓存和二级缓存，默认情况下一级缓存是开启的，而且是不能关闭的。一级缓存是指SqlSession级别的缓存，当在同一个SqlSession中进行相同的SQL语句查询时，第二次以后的查询不会从数据库查询，而是直接从缓存中获取，一级缓存最多缓存1024条SQL。二级缓存是指可以跨SqlSession的缓存。…
+                
+            </p>
+        </div>
+    </article>
+ 
+    <article class="post">
+        
+        <div class="post-content">
+            <div class="post-head home-post-head">
+                <h1 class="post-title">
                     <a href="/线程池之ThreadPoolExecutor/">线程池之ThreadPoolExecutor</a>
                 </h1>
                 <div class="post-meta">  &bull;
@@ -346,28 +367,6 @@ intern()方法设计的初衷，就是重用String对象，以节省内存消耗
         </div>
     </article>
  
-    <article class="post">
-        
-        <div class="post-content">
-            <div class="post-head home-post-head">
-                <h1 class="post-title">
-                    <a href="/JVM入门/">JVM入门</a>
-                </h1>
-                <div class="post-meta">  &bull;
-                    <time class="post-date" datetime="" title="">
-                        2017年11月20日
-                    </time>
-                </div>
-            </div>
-            <p class="brief">
-                
-                    引言JVM（Java Virtual Machine）Java 虚拟机是整个 Java 平台的基石，是 Java 系统实现硬件无关与操作系统无关的关键部分，是保障用户机器免于恶意代码损害的屏障。Java开发人员不需要了解JVM是如何工作的，但是，了解 JVM 有助于我们更好的开发java 程序。近些天一直在看周志明的《深入理解Java虚拟机》这本书，这本书写的堪称经典，对于JVM的学习非常有帮助。
-…
-                
-            </p>
-        </div>
-    </article>
- 
 
 
     <nav class="pagination" role="navigation">
@@ -420,7 +419,7 @@ intern()方法设计的初衷，就是重用String对象，以节省内存消耗
         
     <div class="widget">
         <h3 class="title">分类</h3>
-        <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/"><i class="fa" aria-hidden="true">Linux</i></a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/中间件/"><i class="fa" aria-hidden="true">中间件</i></a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/前端/"><i class="fa" aria-hidden="true">前端</i></a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/后端/"><i class="fa" aria-hidden="true">后端</i></a><span class="category-list-count">27</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/"><i class="fa" aria-hidden="true">工具</i></a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/"><i class="fa" aria-hidden="true">数据库</i></a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/方法论/"><i class="fa" aria-hidden="true">方法论</i></a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/杂谈/"><i class="fa" aria-hidden="true">杂谈</i></a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/"><i class="fa" aria-hidden="true">生活</i></a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/踩坑记录/"><i class="fa" aria-hidden="true">踩坑记录</i></a><span class="category-list-count">5</span></li></ul>
+        <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/"><i class="fa" aria-hidden="true">Linux</i></a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/中间件/"><i class="fa" aria-hidden="true">中间件</i></a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/前端/"><i class="fa" aria-hidden="true">前端</i></a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/后端/"><i class="fa" aria-hidden="true">后端</i></a><span class="category-list-count">28</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/"><i class="fa" aria-hidden="true">工具</i></a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/"><i class="fa" aria-hidden="true">数据库</i></a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/方法论/"><i class="fa" aria-hidden="true">方法论</i></a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/杂谈/"><i class="fa" aria-hidden="true">杂谈</i></a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/"><i class="fa" aria-hidden="true">生活</i></a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/踩坑记录/"><i class="fa" aria-hidden="true">踩坑记录</i></a><span class="category-list-count">5</span></li></ul>
     </div>
 
 
@@ -428,7 +427,7 @@ intern()方法设计的初衷，就是重用String对象，以节省内存消耗
         
     <div class="widget">
         <h3 class="title">归档</h3>
-        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/"><i class="fa" aria-hidden="true">2020年</i></a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/"><i class="fa" aria-hidden="true">2019年</i></a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/"><i class="fa" aria-hidden="true">2018年</i></a><span class="archive-list-count">34</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/"><i class="fa" aria-hidden="true">2017年</i></a><span class="archive-list-count">24</span></li></ul>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/"><i class="fa" aria-hidden="true">2020年</i></a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/"><i class="fa" aria-hidden="true">2019年</i></a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/"><i class="fa" aria-hidden="true">2018年</i></a><span class="archive-list-count">34</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/"><i class="fa" aria-hidden="true">2017年</i></a><span class="archive-list-count">24</span></li></ul>
     </div>
 
 
