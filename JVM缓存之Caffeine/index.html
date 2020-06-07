@@ -1,0 +1,414 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!--Setting-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta http-equiv="Cache-Control" content="no-transform">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="apple-mobile-web-app-capable" content="rainbowhorse&#39;s blog">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    <meta name="browsermode" content="application">
+    <meta name="screen-orientation" content="portrait">
+    <link rel="dns-prefetch" href="https://mx-go.github.io">
+    <!--SEO-->
+
+    <meta name="keywords" content="java,cache">
+
+
+    <meta name="description" content="引言Caffeine是一个高性能、高命中率、低内存占用的的本地缓存。它是Guava的加强版，Caffeine使用Window TinyLfu (最近最少频率使用)算法，提供了近乎最佳的命中率。
+...">
+
+
+
+<meta name="robots" content="all">
+<meta name="google" content="all">
+<meta name="googlebot" content="all">
+<meta name="verify" content="all">
+
+    <!--Title-->
+
+
+<title>JVM缓存之Caffeine | rainbowhorse&#39;s blog</title>
+
+
+    <link rel="alternate" href="/atom.xml" title="rainbowhorse&#39;s blog" type="application/atom+xml">
+
+
+    <link rel="icon" href="/favicon.ico">
+
+    
+
+
+
+<link rel="stylesheet" href="/css/bootstrap.min.css?rev=3.3.7">
+<link rel="stylesheet" href="/css/font-awesome.min.css?rev=4.5.0">
+<link rel="stylesheet" href="/css/style.css?rev=@@hash">
+
+
+
+
+    
+
+
+
+
+
+    
+
+    <script>
+        (function(){
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+            }
+            else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        })();
+    </script>
+
+</head>
+
+</html>
+<!--[if lte IE 8]>
+<style>
+    html{ font-size: 1em }
+</style>
+<![endif]-->
+<!--[if lte IE 9]>
+<div style="ie">你使用的浏览器版本过低，为了你更好的阅读体验，请更新浏览器的版本或者使用其他现代浏览器，比如Chrome、Firefox、Safari等。</div>
+<![endif]-->
+
+<body>
+    <header class="main-header" style="background-image:url(http://snippet.shenliyang.com/img/banner.jpg)">
+    <div class="main-header-box">
+        <a class="header-avatar" href="/" title="rainbowhorse">
+            <img src="/img/avatar.jpg" alt="logo头像" class="img-responsive center-block">
+        </a>
+        <div class="branding">
+        	<!--<h2 class="text-hide">Snippet主题,从未如此简单有趣</h2>-->
+            
+                <h2> 不忘初心 方得始终 </h2>
+            
+    	</div>
+    </div>
+</header>
+    <nav class="main-navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="navbar-header"><span class="nav-toggle-button collapsed pull-right" data-toggle="collapse" data-target="#main-menu" id="mnav">
+                    <span class="sr-only"></span>
+                        <i class="fa fa-bars"></i>
+                    </span>
+                    <a class="navbar-brand" href="https://mx-go.github.io">rainbowhorse&#39;s blog</a>
+                </div>
+                <div class="collapse navbar-collapse" id="main-menu">
+                    <ul class="menu">
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/"><i class="fa "></i>首页</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/categories/后端/"><i class="fa "></i>后端</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/categories/工具/"><i class="fa "></i>工具</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/about/"><i class="fa "></i>关于我</a>
+                            </li>
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/archives/"><i class="fa "></i>时间轴</a>
+                            </li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+    <section class="content-wrap">
+        <div class="container">
+            <div class="row">
+                <main class="col-md-8 main-content m-post">
+                    <p id="process"></p>
+<article class="post">
+    <div class="post-head">
+        <h1 id="JVM缓存之Caffeine">
+            
+	            JVM缓存之Caffeine
+            
+        </h1>
+        <div class="post-meta">
+    
+        <span class="categories-meta fa-wrap">
+            <i class="fa fa-folder-open-o"></i>
+            <a class="category-link" href="/categories/后端/">后端</a>
+        </span>
+    
+
+    
+        <span class="fa-wrap">
+            <i class="fa fa-tags"></i>
+            <span class="tags-meta">
+                
+                    <a class="tag-link" href="/tags/cache/">cache</a> <a class="tag-link" href="/tags/java/">java</a>
+                
+            </span>
+        </span>
+    
+
+    
+        
+        <span class="fa-wrap">
+            <i class="fa fa-clock-o"></i>
+            <span class="date-meta">2020/06/07</span>
+        </span>
+        
+            <span class="fa-wrap">
+                <i class="fa fa-eye"></i>
+                <span id="busuanzi_value_page_pv"></span>
+            </span>
+        
+    
+</div>
+            
+            
+    </div>
+    
+    <div class="post-body post-content">
+        <h1 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h1><p><a href="https://www.baeldung.com/java-caching-caffeine" target="_blank" rel="noopener">Caffeine</a>是一个高性能、高命中率、低内存占用的的本地缓存。它是Guava的加强版，Caffeine使用<em>Window TinyLfu</em> (最近最少频率使用)算法，提供了<strong>近乎最佳的命中率</strong>。<div align="center"><img width="800" height="400" src="../../../../images/2020/5-8/caffeine.png" algin="center"></div><a id="more"></a></p>
+<h1 id="Caffeine-VS-Guava-Cache"><a href="#Caffeine-VS-Guava-Cache" class="headerlink" title="Caffeine VS Guava Cache"></a>Caffeine VS Guava Cache</h1><p>Spring5中将放弃Guava Cache作为默认的缓存机制，而改用Caffeine作为本地缓存组件，Spring作出如此大的改变不是没有原因的。在Caffeine的<a href="https://github.com/ben-manes/caffeine/wiki/Benchmarks" target="_blank" rel="noopener">Benchmarks</a>给出了亮眼的数据，对比其他的缓存组件，Caffeine的读写性能都很优异。<div align="center"><img width="800" height="400" src="../../../../images/2020/5-8/caffeine-1.png" algin="center"></div></p>
+<h1 id="Caffeine的使用"><a href="#Caffeine的使用" class="headerlink" title="Caffeine的使用"></a>Caffeine的使用</h1><p>Caffeine和Guava Cache的Api很像，熟悉Guava Cache上手Caffeine就很简单了。</p>
+<h2 id="引入坐标"><a href="#引入坐标" class="headerlink" title="引入坐标"></a>引入坐标</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.github.ben-manes.caffeine<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>caffeine<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;lasted-version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="缓存填充策略"><a href="#缓存填充策略" class="headerlink" title="缓存填充策略"></a>缓存填充策略</h2><p>Caffeine提供了三种缓存填充策略：手动、同步加载和异步加载。</p>
+<h3 id="手动加载"><a href="#手动加载" class="headerlink" title="手动加载"></a>手动加载</h3><p>每次通过get key的时候可以指定一个同步的函数，当key不存在时调用函数生成value同时将KV存入Cache中。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">Cache&lt;String, Object&gt; cache = Caffeine.newBuilder()</span><br><span class="line">                .expireAfterWrite(<span class="number">1</span>, TimeUnit.MINUTES)</span><br><span class="line">                .maximumSize(<span class="number">100</span>)</span><br><span class="line">                .build();</span><br><span class="line"></span><br><span class="line">        String key = <span class="string">"hello"</span>;</span><br><span class="line">        <span class="comment">// 使用getIfPresent方法，如果缓存中不存在该值，则此方法将返回null</span></span><br><span class="line">        Object o = cache.getIfPresent(key);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 使用put方法手动填充缓存</span></span><br><span class="line">        cache.put(key, <span class="string">"world"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 通过get方法获取值，如果键在缓存中不存在，则此函数将用于提供备用值，该键将在计算后插入到缓存中</span></span><br><span class="line">        cache.get(key, value -&gt; <span class="string">"world"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 手动使某些缓存的值无效</span></span><br><span class="line">        cache.invalidate(key);</span><br></pre></td></tr></table></figure>
+<p>get方法优于getIfPresent，因为get方法是原子计算，即使多个线程同时要求该值，计算也只进行一次。</p>
+<h3 id="同步加载"><a href="#同步加载" class="headerlink" title="同步加载"></a>同步加载</h3><p>构造Cache的时候，build方法中传入CacheLoader的实现类，重写load方法，通过key可以加载value。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 方式一</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> Object <span class="title">syncLoad</span><span class="params">(String key)</span> </span>&#123;</span><br><span class="line">       LoadingCache&lt;String, Object&gt; cache = Caffeine.newBuilder()</span><br><span class="line">               .expireAfterWrite(<span class="number">1</span>, TimeUnit.MINUTES)</span><br><span class="line">               .maximumSize(<span class="number">100</span>)</span><br><span class="line">               .build(<span class="keyword">new</span> CacheLoader&lt;String, Object&gt;() &#123;</span><br><span class="line">                   <span class="meta">@Nullable</span></span><br><span class="line">                   <span class="meta">@Override</span></span><br><span class="line">                   <span class="function"><span class="keyword">public</span> Object <span class="title">load</span><span class="params">(@NonNull String key)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">                       <span class="keyword">return</span> key + <span class="string">" world"</span>;</span><br><span class="line">                   &#125;</span><br><span class="line">               &#125;);</span><br><span class="line">       <span class="keyword">return</span> cache.get(key);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 方式二</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> Object <span class="title">syncLoad1</span><span class="params">(String key)</span> </span>&#123;</span><br><span class="line">       LoadingCache&lt;String, Object&gt; cache = Caffeine.newBuilder()</span><br><span class="line">               .expireAfterWrite(<span class="number">1</span>, TimeUnit.MINUTES)</span><br><span class="line">               .maximumSize(<span class="number">100</span>)</span><br><span class="line">               .build(k -&gt; setValue(key).get());</span><br><span class="line">       <span class="keyword">return</span> cache.get(key);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> Supplier&lt;Object&gt; <span class="title">setValue</span><span class="params">(String key)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">return</span> () -&gt; key + <span class="string">" world"</span>;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="异步加载"><a href="#异步加载" class="headerlink" title="异步加载"></a>异步加载</h3><p>该策略与先前的策略相同，但是异步执行操作，并返回保存实际值的CompletableFuture。可以调用get或getAll方法调用获取返回值。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 方式一</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">asyncLoad</span><span class="params">(String key)</span> </span>&#123;</span><br><span class="line">        AsyncLoadingCache&lt;String, Object&gt; cache = Caffeine.newBuilder()</span><br><span class="line">                .expireAfterWrite(<span class="number">1</span>, TimeUnit.MINUTES)</span><br><span class="line">                .maximumSize(<span class="number">100</span>)</span><br><span class="line">                .buildAsync(<span class="keyword">new</span> AsyncCacheLoader&lt;String, Object&gt;() &#123;</span><br><span class="line">                    <span class="meta">@Override</span></span><br><span class="line">                    <span class="keyword">public</span> <span class="meta">@NonNull</span> <span class="function">CompletableFuture&lt;Object&gt; <span class="title">asyncLoad</span><span class="params">(@NonNull String key, @NonNull Executor executor)</span> </span>&#123;</span><br><span class="line">                        <span class="keyword">return</span> CompletableFuture.supplyAsync(() -&gt; key + <span class="string">" world"</span>, executor);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br><span class="line">        <span class="keyword">return</span> cache.get(key);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 方式二</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">asyncLoad1</span><span class="params">(String key)</span> </span>&#123;</span><br><span class="line">        AsyncLoadingCache&lt;String, Object&gt; cache = Caffeine.newBuilder()</span><br><span class="line">                .expireAfterWrite(<span class="number">1</span>, TimeUnit.MINUTES)</span><br><span class="line">                .maximumSize(<span class="number">100</span>)</span><br><span class="line">                .buildAsync(k -&gt; setValue(key).get());</span><br><span class="line">        <span class="keyword">return</span> cache.get(key);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> CompletableFuture&lt;Object&gt; <span class="title">setValue</span><span class="params">(String key)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> CompletableFuture.supplyAsync(() -&gt; key + <span class="string">" world"</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="驱逐策略"><a href="#驱逐策略" class="headerlink" title="驱逐策略"></a>驱逐策略</h2><p>Caffeine提供三种回收策略：基于大小回收、基于时间回收、基于引用回收。</p>
+<h3 id="基于大小的驱逐策略"><a href="#基于大小的驱逐策略" class="headerlink" title="基于大小的驱逐策略"></a>基于大小的驱逐策略</h3><p>基于大小的回收策略有两种方式：一种是基于缓存数量，一种是基于权重。maximumSize与maximumWeight不可以同时使用。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sizeBasedEviction</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 根据缓存的数量进行驱逐</span></span><br><span class="line">        LoadingCache&lt;String, Object&gt; cache = Caffeine.newBuilder()</span><br><span class="line">                .maximumSize(<span class="number">10000</span>)</span><br><span class="line">                .build(key -&gt; function(key));</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 根据缓存的权重来进行驱逐（权重只是用于确定缓存大小，不会用于决定该缓存是否被驱逐）</span></span><br><span class="line">        LoadingCache&lt;String, Object&gt; cache1 = Caffeine.newBuilder()</span><br><span class="line">                .maximumWeight(<span class="number">10000</span>)</span><br><span class="line">                .weigher(key -&gt; function1(key))</span><br><span class="line">                .build(key -&gt; function(key));</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="基于时间的驱逐策略"><a href="#基于时间的驱逐策略" class="headerlink" title="基于时间的驱逐策略"></a>基于时间的驱逐策略</h3><p>基于时间的驱逐策略有三种类型：</p>
+<ol>
+<li>expireAfterAccess(long, TimeUnit)：在最后一次访问或者写入后开始计时，在指定的时间后过期。假如一直有请求访问该key，那么这个缓存将一直不会过期。</li>
+<li>expireAfterWrite(long, TimeUnit): 在最后一次写入缓存后开始计时，在指定的时间后过期。</li>
+<li>expireAfter(Expiry): 自定义策略，过期时间由Expiry实现独自计算。</li>
+</ol>
+<p>缓存的删除策略使用的是惰性删除和定时删除。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">timeBasedEviction</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 基于固定的到期策略进行退出</span></span><br><span class="line">        LoadingCache&lt;String, Object&gt; cache = Caffeine.newBuilder()</span><br><span class="line">                .expireAfterAccess(<span class="number">5</span>, TimeUnit.MINUTES)</span><br><span class="line">                .build(key -&gt; function(key));</span><br><span class="line">        LoadingCache&lt;String, Object&gt; cache1 = Caffeine.newBuilder()</span><br><span class="line">                .expireAfterWrite(<span class="number">10</span>, TimeUnit.MINUTES)</span><br><span class="line">                .build(key -&gt; function(key));</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 基于不同的到期策略进行退出</span></span><br><span class="line">        LoadingCache&lt;String, Object&gt; cache2 = Caffeine.newBuilder()</span><br><span class="line">                .expireAfter(<span class="keyword">new</span> Expiry&lt;String, Object&gt;() &#123;</span><br><span class="line">                    <span class="meta">@Override</span></span><br><span class="line">                    <span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">expireAfterCreate</span><span class="params">(String key, Object value, <span class="keyword">long</span> currentTime)</span> </span>&#123;</span><br><span class="line">                        <span class="keyword">return</span> TimeUnit.SECONDS.toNanos(seconds);</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    <span class="meta">@Override</span></span><br><span class="line">                    <span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">expireAfterUpdate</span><span class="params">(@Nonnull String s, @Nonnull Object o, <span class="keyword">long</span> l, <span class="keyword">long</span> l1)</span> </span>&#123;</span><br><span class="line">                        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    <span class="meta">@Override</span></span><br><span class="line">                    <span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">expireAfterRead</span><span class="params">(@Nonnull String s, @Nonnull Object o, <span class="keyword">long</span> l, <span class="keyword">long</span> l1)</span> </span>&#123;</span><br><span class="line">                        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;).build(key -&gt; function(key));</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="基于引用的驱逐"><a href="#基于引用的驱逐" class="headerlink" title="基于引用的驱逐"></a>基于引用的驱逐</h3><p>Java中四种引用类型：</p>
+<table>
+<thead>
+<tr>
+<th>引用类型</th>
+<th>被垃圾回收时间</th>
+<th>用途</th>
+<th>生存时间</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>强引用 Strong Reference</td>
+<td>从来不会</td>
+<td>对象的一般状态</td>
+<td>JVM停止运行时终止</td>
+</tr>
+<tr>
+<td>软引用 Soft Reference</td>
+<td>在内存不足时</td>
+<td>对象缓存</td>
+<td>内存不足时终止</td>
+</tr>
+<tr>
+<td>弱引用 Weak Reference</td>
+<td>在垃圾回收时</td>
+<td>对象缓存</td>
+<td>gc运行后终止</td>
+</tr>
+<tr>
+<td>虚引用 Phantom Reference</td>
+<td>从来不会</td>
+<td>可以用虚引用来跟踪对象被垃圾回收器回收的活动，当一个虚引用关联的对象被垃圾收集器回收之前会收到一条系统通知</td>
+<td>JVM停止运行时终止</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">referenceBasedEviction</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 当key和value都没有弱引用时驱逐缓存</span></span><br><span class="line">        LoadingCache&lt;String, Object&gt; cache = Caffeine.newBuilder()</span><br><span class="line">                .weakKeys()</span><br><span class="line">                .weakValues()</span><br><span class="line">                .build(key -&gt; function(key));</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 当垃圾收集器需要释放内存时驱逐</span></span><br><span class="line">        LoadingCache&lt;String, Object&gt; cache1 = Caffeine.newBuilder()</span><br><span class="line">                .softValues()</span><br><span class="line">                .build(key -&gt; function(key));</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p><strong>注意：AsyncLoadingCache不支持弱引用和软引用。</strong></p>
+<p><strong>Caffeine.weakValues()和Caffeine.softValues()不可以一起使用。</strong></p>
+<h2 id="移除事件监听"><a href="#移除事件监听" class="headerlink" title="移除事件监听"></a>移除事件监听</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">removalListener</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Cache&lt;String, Object&gt; cache = Caffeine.newBuilder()</span><br><span class="line">                .removalListener((String key, Object value, RemovalCause cause) -&gt;</span><br><span class="line">                        System.out.printf(<span class="string">"Key %s was removed (%s)%n"</span>, key, cause))</span><br><span class="line">                .build();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="刷新"><a href="#刷新" class="headerlink" title="刷新"></a>刷新</h2><p>可以将缓存配置为在定义的时间段后自动刷新条目。让我们看看如何使用<em>refreshAfterWrite</em>方法执行此操作：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">refresh</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Cache&lt;String, Object&gt; cache = Caffeine.newBuilder()</span><br><span class="line">                .maximumSize(<span class="number">10000</span>)</span><br><span class="line">                .refreshAfterWrite(<span class="number">1</span>, TimeUnit.MINUTES)</span><br><span class="line">                .build();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>expireAfter和refreshAfter之间的区别：</p>
+<ul>
+<li>expireAfter：当请求过期的数据时，请求将会被阻塞，直到build <em>Function</em>将计算出新值为止。</li>
+<li>refreshAfter：当数据符合刷新条件，则缓存将返回一个旧值，并<strong>异步重新加载该值</strong>。</li>
+</ul>
+<h2 id="统计"><a href="#统计" class="headerlink" title="统计"></a>统计</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">stats</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Cache&lt;String, Object&gt; cache = Caffeine.newBuilder()</span><br><span class="line">                .maximumSize(<span class="number">10000</span>)</span><br><span class="line">                .recordStats()</span><br><span class="line">                .build();</span><br><span class="line">        <span class="comment">// 缓存命中率</span></span><br><span class="line">        cache.stats().hitRate();</span><br><span class="line">        <span class="comment">// 回收数量</span></span><br><span class="line">        cache.stats().evictionCount();</span><br><span class="line">        <span class="comment">// 加载新值的平均时间</span></span><br><span class="line">        cache.stats().averageLoadPenalty();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>通过使用Caffeine.recordStats()可以转化成一个统计的集合. 通过Cache.stats() 返回一个CacheStats。CacheStats提供以下统计方法：</p>
+<ul>
+<li>hitRate: 返回缓存命中率</li>
+<li>evictionCount: 缓存回收数量</li>
+<li>averageLoadPenalty(): 加载新值的平均时间</li>
+</ul>
+
+    </div>
+    
+        <div class="reward" ontouchstart="">
+    <div class="reward-wrap">赏
+        <div class="reward-box">
+            
+            
+                <span class="reward-type">
+                    <img class="wechat" src="../img/reward-wepay.jpg"><b>微信打赏</b>
+                </span>
+            
+        </div>
+    </div>
+    <p class="reward-tip">赞赏是不耍流氓的鼓励</p>
+</div>
+
+
+    
+    <div class="post-footer">
+        <div>
+            
+        </div>
+        <div>
+            
+        </div>
+    </div>
+</article>
+
+<div class="article-nav prev-next-wrap clearfix">
+    
+    
+        <a href="/Spring之循环依赖/" class="next-post btn btn-default" title="Spring之循环依赖">
+            <span class="hidden-lg">下一篇</span>
+            <span class="hidden-xs">Spring之循环依赖</span><i class="fa fa-angle-right fa-fw"></i>
+        </a>
+    
+</div>
+
+
+    <div id="comments">
+        
+	
+    <div id="vcomments" class="valine"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="/assets/valine.min.js"></script>
+
+    <script>
+        new Valine({
+            av: AV,
+            el: "#vcomments",
+            appId: "8rKac39CM1EjFl9q7i97aDSu-gzGzoHsz",
+            appKey: "5wiSIVcjJCXPwgEwOqK8GaoJ",
+            placeholder: "说点什么吧",
+            notify: false,
+            verify: false,
+            avatar: "robohash",
+            meta: "nick,mail".split(","),
+            pageSize: "10",
+            path: window.location.pathname,
+            lang: "zh-CN".toLowerCase()
+        })
+    </script>
+
+
+    </div>
+
+
+
+
+
+                </main>
+                
+                    <aside id="article-toc" role="navigation" class="col-md-4">
+    <div class="widget">
+        <h3 class="title">文章目录</h3>
+        
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#引言"><span class="toc-text">引言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Caffeine-VS-Guava-Cache"><span class="toc-text">Caffeine VS Guava Cache</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Caffeine的使用"><span class="toc-text">Caffeine的使用</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#引入坐标"><span class="toc-text">引入坐标</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#缓存填充策略"><span class="toc-text">缓存填充策略</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#手动加载"><span class="toc-text">手动加载</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#同步加载"><span class="toc-text">同步加载</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#异步加载"><span class="toc-text">异步加载</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#驱逐策略"><span class="toc-text">驱逐策略</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#基于大小的驱逐策略"><span class="toc-text">基于大小的驱逐策略</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#基于时间的驱逐策略"><span class="toc-text">基于时间的驱逐策略</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#基于引用的驱逐"><span class="toc-text">基于引用的驱逐</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#移除事件监听"><span class="toc-text">移除事件监听</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#刷新"><span class="toc-text">刷新</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#统计"><span class="toc-text">统计</span></a></li></ol></li></ol>
+        
+    </div>
+</aside>
+
+                
+            </div>
+        </div>
+    </section>
+    <footer class="main-footer">
+    <div class="container">
+        <div class="row">
+        </div>
+    </div>
+</footer>
+
+<a id="back-to-top" class="icon-btn hide">
+	<i class="fa fa-chevron-up"></i>
+</a>
+
+
+
+
+    <div class="copyright">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="busuanzi">
+    
+        访问量:
+        <strong id="busuanzi_value_site_pv">
+            <i class="fa fa-spinner fa-spin"></i>
+        </strong>
+        &nbsp; | &nbsp;
+        访客数:
+        <strong id="busuanzi_value_site_uv">
+            <i class="fa fa-spinner fa-spin"></i>
+        </strong>
+    
+</div>
+
+            </div>
+            <div class="col-sm-12">
+                <span>Copyright &copy; 2017-2020
+                </span> |
+                <span>
+                    Powered by <a href="//hexo.io" class="copyright-links" target="_blank" rel="nofollow">Hexo</a>
+                </span> |
+                <span>
+                       <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=44030502003606"><img src="/img/beian.png"><p style="display: inline;">粤公网安备 44030502003606号</p></a>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+<script src="/js/app.js?rev=@@hash"></script>
+
+</body>
+</html>
