@@ -2282,6 +2282,53 @@
       </tags>
   </entry>
   <entry>
+    <title>Nginx无法日志轮转</title>
+    <url>/Nginx%E6%97%A5%E5%BF%97%E6%97%A0%E6%B3%95%E8%BD%AE%E8%BD%AC/</url>
+    <content><![CDATA[<h1 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h1><p>Nginx刚开始启动后日志记录正常，但是一段时间后，Nginx会把已产生的日志压缩为<code>.gz</code>文件。一旦压缩后，就不在记录新日志了，但日志文件存在，没有任何日志存在。旧的日志压缩后没有问题，但是自从压缩后，新的文件再也不记录新日志了(但是发现Nginx会很消耗内存，估计日志都存在内存里，不写文件了)。</p>
+<div align=center><img src= "/img/loading.gif" data-lazy-src="../../../../images/2021/4-6/nginx_bug_1.png" algin="center"/></div>
+
+<p>我们的Nginx部署在k8s中，查看Nginx的配置没有发现任何问题</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment">#user  nobody;</span></span><br><span class="line">worker_processes  4;</span><br><span class="line"></span><br><span class="line">error_log  /app/openresty/nginx/logs/error.log  error;</span><br><span class="line">pid        /app/openresty/nginx/logs/nginx.pid;</span><br><span class="line"><span class="comment">#error_log  logs/error.log;</span></span><br><span class="line"><span class="comment">#error_log  logs/error.log  notice;</span></span><br><span class="line"><span class="comment">#error_log  logs/error.log  info;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">events &#123;</span><br><span class="line">    worker_connections 65536 ;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">http &#123;</span><br><span class="line">    include       mime.types;</span><br><span class="line">    include       custom_upstream.conf;</span><br><span class="line">    default_type  application/octet-stream;</span><br><span class="line">    log_format  main  <span class="string">&#x27;$remote_addr|$remote_user|[$time_local]|&quot;$request&quot;&#x27;</span></span><br><span class="line">                      <span class="string">&#x27;|$status|$request_time|$body_bytes_sent|&quot;$http_referer&quot;&#x27;</span></span><br><span class="line">                <span class="string">&#x27;|&quot;$http_user_agent&quot;|&quot;$http_x_forwarded_for&quot;|$upstream_response_time|$upstream_status&#x27;</span>;    </span><br><span class="line">    access_log  /app/openresty/nginx/logs/access.log  main;</span><br><span class="line">    </span><br><span class="line">    server_tokens   off;</span><br><span class="line">    sendfile        on;</span><br><span class="line">    tcp_nopush      on;</span><br><span class="line">    tcp_nodelay     on;</span><br><span class="line">    client_max_body_size 100m;</span><br><span class="line">    client_header_buffer_size 100m;</span><br><span class="line">    keepalive_timeout  60;</span><br><span class="line">    proxy_buffering off;</span><br><span class="line">    gzip on;</span><br><span class="line"></span><br><span class="line">    server &#123;</span><br><span class="line">        listen       80;</span><br><span class="line">        server_name  localhost;</span><br><span class="line"></span><br><span class="line">        listen 443 ssl;</span><br><span class="line">        ssl_certificate_key /app/openresty/nginx/conf/key/sf.key;</span><br><span class="line">        ssl_certificate /app/openresty/nginx/conf/key/sf.crt;</span><br><span class="line"></span><br><span class="line">        <span class="comment">#charset koi8-r;</span></span><br><span class="line"></span><br><span class="line">        include       custom_location.conf;</span><br><span class="line"></span><br><span class="line">        location / &#123;</span><br><span class="line">            root   html;</span><br><span class="line">            index  index.html index.htm;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment"># redirect server error pages to the static page /50x.html</span></span><br><span class="line">        <span class="comment">#</span></span><br><span class="line">        error_page   500 502 503 504  /50x.html;</span><br><span class="line">        location = /50x.html &#123;</span><br><span class="line">            root   html;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        location = /nstats &#123;</span><br><span class="line">            check_status;</span><br><span class="line">            access_log      off;</span><br><span class="line">            allow           10.116.0.0/16;</span><br><span class="line">            allow           10.110.0.0/16;</span><br><span class="line">            allow           10.117.0.0/16;</span><br><span class="line">            allow           10.150.0.0/16;</span><br><span class="line">            allow           100.0.0.0/8;</span><br><span class="line">            allow           10.0.0.0/8;</span><br><span class="line">            deny            all;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h1><p>经过查询资料在<code>stackoverflow</code>发现了类似的问题，见链接：<a href="https://stackoverflow.com/questions/9552930/nginx-cannot-write-into-access-log">https://stackoverflow.com/questions/9552930/nginx-cannot-write-into-access-log</a></p>
+<p>原因是当Nginx压缩文件后，需要给master进程发送USR1信号后重新打开文件。</p>
+<p>于是查看了Nginx的进程ID为33</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[mwopr@k8s-opc-openapi-nginx-77787494c5-c77s8 logs]$ cat nginx.pid </span><br><span class="line">33</span><br></pre></td></tr></table></figure>
+
+<p>当执行重新打开log文件命令时提示没有权限</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[mwopr@k8s-opc-openapi-nginx-77787494c5-c77s8 logs]$ kill -USR1 33</span><br><span class="line">bash: kill: (33) - Operation not permitted</span><br></pre></td></tr></table></figure>
+
+<p>这个时候恍然大悟，登陆shell的默认用户是<code>mwopr</code>，没有权限执行<code>kill</code>命令，需要用<code>root</code>用户执行，当切换为<code>root</code>用户后命令执行成功且日志可以正常写入。</p>
+<div align=center><img src= "/img/loading.gif" data-lazy-src="../../../../images/2021/4-6/nginx_bug_2.png" algin="center"/></div>
+
+<h1 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h1><p>原文：<a href="http://nginx.org/en/docs/control.html">http://nginx.org/en/docs/control.html</a></p>
+<p>Nginx可以通过信号进行控制。对应Linux系统就是用<code>kill</code>命令。</p>
+<p>master进程ID默认写入到<code>/nginx/logs/nginx.pid</code>文件中。文件也可以在<code>nginx.conf</code>文件中指定。master进程支持以下信号：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">kill -TERM pid # 快速停止master进程。 </span><br><span class="line">kill -QUIT pid # 优雅的停止。 </span><br><span class="line">kill -HUB pid # 改变配置文件。开启一个新的worker进程处理，优雅的停止老的worker进程。相当于nginx -s reload </span><br><span class="line">kill -USR1 pid # 重新打开log文件。-s reopen命令 </span><br><span class="line">kill -USR2 pid # 升级可执行文件。热部署 </span><br><span class="line">kill -WINCH pid # 优雅的关闭worker进程。</span><br></pre></td></tr></table></figure>
+
+<p>每个worker进程也可以接收信号：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">kill -TERM pid # 快速关闭worker进程 </span><br><span class="line">kill -QUIT pid # 优雅退出 </span><br><span class="line">kill -USR1 pid # 重新打开日志文件,先mv一个，再去执行这个命令。-s reopen命令</span><br></pre></td></tr></table></figure>
+
+<p>日志轮转</p>
+<ol>
+<li>重命名log文件。</li>
+<li>给master进程发送USR1信号。</li>
+<li>重新打开文件。</li>
+</ol>
+<blockquote>
+<p>Rotating Log-files</p>
+<p>In order to rotate log files, they need to be renamed first. After that USR1 signal should be sent to the master process. The master process will then re-open all currently open log files and assign them an unprivileged user under which the worker processes are running, as an owner. After successful re-opening, the master process closes all open files and sends the message to worker process to ask them to re-open files. Worker processes also open new files and close old files right away. As a result, old files are almost immediately available for post processing, such as compression.</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>踩坑记录</category>
+      </categories>
+      <tags>
+        <tag>java</tag>
+        <tag>nginx</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>PG与MySQL选型分析</title>
     <url>/PG%E4%B8%8EMySQL%E9%80%89%E5%9E%8B%E5%88%86%E6%9E%90/</url>
     <content><![CDATA[<h1 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h1><p>PostgreSQL(简称pg)是近几年增长率较快的开源数据库，很多企业由原来的MySQL转向pg，在这里对比这两大开源关系型数据库的优劣，以便使用时快速选型。</p>
