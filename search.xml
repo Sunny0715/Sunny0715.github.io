@@ -199,7 +199,7 @@
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 解压</span></span><br><span class="line">unzip -q grafana-piechart-panel-1.6.1.zip</span><br><span class="line"><span class="meta">#</span><span class="bash"> 移动到grafana插件目录下</span></span><br><span class="line">mv grafana-piechart-panel /var/lib/grafana/plugins/</span><br><span class="line"><span class="meta">#</span><span class="bash"> 重启grafana</span></span><br><span class="line">systemctl restart grafana-server</span><br></pre></td></tr></table></figure>
 
 <h1 id="检查服务"><a href="#检查服务" class="headerlink" title="检查服务"></a>检查服务</h1><p>启动服务，打开浏览器，输入IP+端口，3000为Grafana的默认侦听端口。</p>
-]]></content>
+<div align=center><img src="../../../../images/2020/5-8/grafana_result.png" algin="center"/></div>]]></content>
       <categories>
         <category>工具</category>
         <category>Linux</category>
@@ -4263,18 +4263,6 @@
       </tags>
   </entry>
   <entry>
-    <title>网址收藏</title>
-    <url>/%E7%BD%91%E5%9D%80%E6%94%B6%E8%97%8F/</url>
-    <content><![CDATA[<h1 id="开发类"><a href="#开发类" class="headerlink" title="开发类"></a>开发类</h1><blockquote>
-<p>Jetbrains系列产品重置试用方法</p>
-<p><a href="https://zhile.io/2020/11/18/jetbrains-eval-reset-da33a93d.html">https://zhile.io/2020/11/18/jetbrains-eval-reset-da33a93d.html</a></p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>工具</category>
-      </categories>
-  </entry>
-  <entry>
     <title>线程池之ThreadPoolExecutor</title>
     <url>/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%B9%8BThreadPoolExecutor/</url>
     <content><![CDATA[<h1 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h1><p>JAVA对于多线程的封装非常丰富，提供了多种适用于不同场景的多并发实现。但如果并发的线程数量很多，并且每个线程都是执行一个时间很短的任务就结束了，这样频繁创建线程就会大大降低系统的效率，因为频繁创建线程和销毁线程需要时间。这里就引入了线程池来管理线程，其中最基础、最核心的线程池要属ThreadPoolExecutor类了。<div align=center><img src="../../../../images//2018-3/threadpoolexcetor/threadpoolexecutor.png" algin="center"/></div></p>
@@ -4379,6 +4367,18 @@
         <tag>java</tag>
         <tag>tips</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>网址收藏</title>
+    <url>/%E7%BD%91%E5%9D%80%E6%94%B6%E8%97%8F/</url>
+    <content><![CDATA[<h1 id="开发类"><a href="#开发类" class="headerlink" title="开发类"></a>开发类</h1><blockquote>
+<p>Jetbrains系列产品重置试用方法</p>
+<p><a href="https://zhile.io/2020/11/18/jetbrains-eval-reset-da33a93d.html">https://zhile.io/2020/11/18/jetbrains-eval-reset-da33a93d.html</a></p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>工具</category>
+      </categories>
   </entry>
   <entry>
     <title>自定义StopWatch</title>
@@ -5051,7 +5051,9 @@
 
 <p>脚本自动从<code>Maven</code>拉取<code>zip</code>包并解压，<code>zip</code>包中需包含 <strong>promtail</strong>、<strong>promtail-config.yaml</strong>文件</p>
 <h1 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h1><p>启动后进入实例的app目录下查看是否存在<code>Promtail</code>目录。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 验证promtail 是否已经正常启动</span></span><br><span class="line">ps -ef | grep promtail</span><br></pre></td></tr></table></figure>]]></content>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 验证promtail 是否已经正常启动</span></span><br><span class="line">ps -ef | grep promtail</span><br></pre></td></tr></table></figure>
+
+<div align=center><img src="../../../../images/2020/9-12/loki_result.png" algin="center"/></div>]]></content>
       <categories>
         <category>工具</category>
         <category>Linux</category>
