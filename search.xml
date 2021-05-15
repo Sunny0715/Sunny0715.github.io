@@ -5130,7 +5130,7 @@
 <h1 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h1><p>启动后进入实例的app目录下查看是否存在<code>Promtail</code>目录。</p>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 验证promtail 是否已经正常启动</span></span><br><span class="line">ps -ef | grep promtail</span><br></pre></td></tr></table></figure>
 
-<div align=center><img src="../../../../images/2020/9-12/loki_result.png" algin="center"/></div>]]></content>
+<div align=center><img src="../../../../images/2020/9-12/loki_result.jpg" algin="center"/></div>]]></content>
       <categories>
         <category>工具</category>
         <category>Linux</category>
